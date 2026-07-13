@@ -82,6 +82,35 @@ final class DenyAuditTest extends TestCase
         ]);
     }
 
+    public function test_a_denied_commission_persists_a_deny_audit(): void
+    {
+        // A non-Reserve write has no pre-flight; its authorization runs only through the registrar stack.
+        // Because Authorizing sits outside Transactional, the denial persists rather than rolling back.
+        $this->withResolver(AllowAllResolver::class);
+        $id = $this->app->make(ReserveIdentifier::class)(
+            new ReserveData($this->class(SimClass::PERSON), null, 'founder', $this->actor(), $this->at(), 'corr-a', 'key-a'),
+        );
+
+        $this->withResolver(DenyAllResolver::class);
+
+        try {
+            $this->app->make(CommissionIdentifier::class)(
+                new CommissionData($id, $this->actor(), $this->at(), 'corr-deny-c', 'key-c'),
+            );
+            $this->fail('Expected UnauthorizedCommandException.');
+        } catch (UnauthorizedCommandException) {
+            // expected
+        }
+
+        $this->assertDatabaseHas('sis_audit', [
+            'identifier' => (string) $id,
+            'action' => 'authorize',
+            'verdict' => 'denied',
+            'ability' => 'sis.identifier.commission',
+            'correlation_id' => 'corr-deny-c',
+        ]);
+    }
+
     public function test_an_allowed_effect_audit_carries_its_ability_and_an_allowed_verdict(): void
     {
         $this->withResolver(AllowAllResolver::class);

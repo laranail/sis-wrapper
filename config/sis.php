@@ -12,7 +12,6 @@ use Simtabi\Laranail\SIS\Registrar\EloquentRegistrar;
 use Simtabi\Laranail\SIS\Registrar\LoggingRegistrar;
 use Simtabi\Laranail\SIS\Registrar\OutboxRelayingRegistrar;
 use Simtabi\Laranail\SIS\Registrar\TransactionalRegistrar;
-use Simtabi\Laranail\SIS\Services\DefaultAliasStrategy;
 use Simtabi\SIS\Enums\Environment;
 
 return [
@@ -165,7 +164,8 @@ return [
     | candidate generator uses (legal suffixes and generic words it strips, the
     | padding letter, the vowels it drops, and the candidate length band). The
     | values below are the reference SIM vocabulary copied VERBATIM from the SDK.
-    | The alias-derivation strategy is swappable.
+    | Alias derivation itself is performed by the zero-dependency SDK core
+    | (`Simtabi\SIS\Identifier`), not a swappable in-package strategy class.
     */
     'aliases' => [
         'grammar' => ['min' => 4, 'max' => 6],
@@ -190,7 +190,6 @@ return [
             'min' => 4,
             'max' => 6,
         ],
-        'strategy' => DefaultAliasStrategy::class,
     ],
 
     /*
@@ -353,14 +352,17 @@ return [
     |--------------------------------------------------------------------------
     | The documented order is the default, not a law: a consumer may insert their
     | own decorator. Outermost first; EloquentRegistrar is the innermost core.
+    | Authorizing sits OUTSIDE Transactional: authorization runs before the
+    | transaction opens, so an unauthorized command never opens a transaction and
+    | its deny-audit row (written by the Authorizer) is not rolled back.
     */
     'registrar' => [
         'stack' => [
             LoggingRegistrar::class,
             OutboxRelayingRegistrar::class,
             ConstraintTranslatingRegistrar::class,
-            TransactionalRegistrar::class,
             AuthorizingRegistrar::class,
+            TransactionalRegistrar::class,
             EloquentRegistrar::class,
         ],
     ],

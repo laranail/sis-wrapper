@@ -54,10 +54,10 @@ final class Authorizer
      * one. The AuthorizingRegistrar re-checks the full command as defence in depth.
      *
      * A denial is recorded to the audit trail (verdict Denied) before the exception is thrown, so a rejected
-     * attempt leaves a trace. Transaction caveat: a pre-flight denial here (in an Action, with no active
-     * transaction) persists; the rare AuthorizingRegistrar-level denial runs INSIDE the write transaction and
-     * so rolls back with it. That is acceptable — the pre-flight check is the guaranteed early catch for real
-     * denials, and it is the one that persists.
+     * attempt leaves a trace. It always persists: the AuthorizingRegistrar sits OUTSIDE the Transactional
+     * decorator (see config('sis.registrar.stack')), so authorization — and this deny-audit write — runs
+     * before any write transaction opens and is never rolled back. The Reserve pre-flight (in ReserveIdentifier)
+     * likewise runs with no active transaction.
      */
     public function authorizeAbility(
         Actor $actor,
