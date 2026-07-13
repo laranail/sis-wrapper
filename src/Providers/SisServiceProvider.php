@@ -265,10 +265,10 @@ final class SisServiceProvider extends PackageServiceProvider
     /**
      * Registers the package's schedule from the provider (Part I §7), never asking a consumer to paste into
      * routes/console.php. Every entry is disableable in config; each runs onOneServer() and, where a run must
-     * not overlap, withoutOverlapping(). Boot fails loudly if scheduling is enabled with the `file` cache
-     * driver, which cannot serialise a lock across servers — better a loud failure than the sweep running on
-     * every server at once. (Kept explicit rather than via schedulesUsing(), whose degradable failure policy
-     * would swallow this fail-loud guard.)
+     * not overlap, withoutOverlapping(). Boot fails loudly if scheduling is enabled with a non-atomic cache
+     * lock driver — `file`, `array`, or `null` — none of which can serialise a lock across servers: better a
+     * loud failure than the sweep running on every server at once. (Kept explicit rather than via
+     * schedulesUsing(), whose degradable failure policy would swallow this fail-loud guard.)
      */
     private function bootSchedule(): void
     {
@@ -318,8 +318,16 @@ final class SisServiceProvider extends PackageServiceProvider
     {
         $default = Config::string('cache.default', 'array');
 
-        if (config("cache.stores.{$default}.driver") === 'file') {
-            throw SisBootException::incompatibleScheduleLock('file');
+        /** @var mixed $driver */
+        $driver = config("cache.stores.{$default}.driver");
+
+        // onOneServer() needs a lock that is exclusive ACROSS servers, and only an atomic store can give one.
+        // file has no atomic compare-and-set; array is per-process (so every server thinks it holds the lock);
+        // null is a no-op that hands the "lock" to everyone; and a missing driver is unresolvable. Any of them
+        // lets the sweeps run on every server at once, so fail loudly rather than run a subtly-wrong system.
+        // (The method's own fallback default is `array`, which is exactly one of the rejected drivers.)
+        if ($driver === null || in_array($driver, ['file', 'array', 'null'], true)) {
+            throw SisBootException::incompatibleScheduleLock(is_string($driver) ? $driver : 'null');
         }
     }
 }

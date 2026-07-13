@@ -253,11 +253,14 @@ return [
     | Scheduling
     |--------------------------------------------------------------------------
     | Registered from the provider, never pasted into routes/console.php. Every
-    | entry is disableable. onOneServer() needs a redis/database/memcached lock
-    | driver — boot fails loudly if scheduling is on with an incompatible driver.
+    | entry is disableable. onOneServer() needs an ATOMIC lock store (redis,
+    | database, memcached, …) — boot fails loudly if scheduling is on with a
+    | non-atomic driver (file, array, or null), which cannot serialise across
+    | servers. The master switch is env-driven so a test/CI run can turn the whole
+    | schedule off without touching the lock driver.
     */
     'schedule' => [
-        'enabled' => true,
+        'enabled' => filter_var(env('SIS_SCHEDULE_ENABLED', true), FILTER_VALIDATE_BOOL),
         'relay_outbox' => ['enabled' => true, 'cron' => '* * * * *'],
         'reap_lapsed' => ['enabled' => true, 'cron' => '0 * * * *'],
         'report_capacity' => ['enabled' => true, 'cron' => '0 6 * * *'],

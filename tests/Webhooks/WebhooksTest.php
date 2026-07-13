@@ -7,6 +7,7 @@ namespace Simtabi\Laranail\SIS\Tests\Webhooks;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Orchestra\Testbench\TestCase;
@@ -91,6 +92,56 @@ final class WebhooksTest extends TestCase
         $endpoint = $endpoint->fresh();
         $this->assertSame(CircuitState::Closed, $endpoint->circuit_state);
         $this->assertSame(0, $endpoint->failures);
+    }
+
+    public function test_after_cooldown_exactly_one_delivery_probes_and_the_rest_are_blocked(): void
+    {
+        // An open circuit whose cooldown has elapsed. Four queued deliveries each read their own copy of the
+        // still-open row, then race to probe — only the ONE that atomically flips open -> half_open is allowed.
+        $endpoint = $this->endpoint();
+        $endpoint->forceFill([
+            'circuit_state' => CircuitState::Open,
+            'circuit_opened_at' => Date::now()->subMinutes(10),
+            'failures' => 5,
+        ])->save();
+
+        $breaker = new CircuitBreaker(threshold: 5, cooldownSeconds: 300);
+
+        $copies = [$endpoint->fresh(), $endpoint->fresh(), $endpoint->fresh(), $endpoint->fresh()];
+        $blocked = array_map(static fn ($e): bool => $breaker->isOpen($e), $copies);
+
+        // isOpen() returns false for the single probe and true for everyone else.
+        $this->assertCount(1, array_filter($blocked, static fn (bool $open): bool => $open === false));
+        $this->assertSame(CircuitState::HalfOpen, $endpoint->fresh()->circuit_state);
+    }
+
+    public function test_a_half_open_success_closes_the_circuit(): void
+    {
+        $endpoint = $this->endpoint();
+        $endpoint->forceFill(['circuit_state' => CircuitState::HalfOpen, 'circuit_opened_at' => Date::now()->subMinutes(10), 'failures' => 5])->save();
+
+        (new CircuitBreaker)->recordSuccess($endpoint->fresh());
+
+        $endpoint = $endpoint->fresh();
+        $this->assertSame(CircuitState::Closed, $endpoint->circuit_state);
+        $this->assertSame(0, $endpoint->failures);
+        $this->assertNull($endpoint->circuit_opened_at);
+    }
+
+    public function test_a_half_open_failure_reopens_with_a_fresh_cooldown(): void
+    {
+        $openedAt = Date::now()->subMinutes(10);
+        $endpoint = $this->endpoint();
+        $endpoint->forceFill(['circuit_state' => CircuitState::HalfOpen, 'circuit_opened_at' => $openedAt, 'failures' => 5])->save();
+
+        (new CircuitBreaker(threshold: 5, cooldownSeconds: 300))->recordFailure($endpoint->fresh());
+
+        $endpoint = $endpoint->fresh();
+        $this->assertSame(CircuitState::Open, $endpoint->circuit_state);
+        // The cooldown is fresh: the reopened timestamp is later than the stale one, so isOpen() blocks again.
+        $this->assertNotNull($endpoint->circuit_opened_at);
+        $this->assertTrue($endpoint->circuit_opened_at->greaterThan($openedAt));
+        $this->assertTrue((new CircuitBreaker(threshold: 5, cooldownSeconds: 300))->isOpen($endpoint));
     }
 
     public function test_dispatcher_signs_and_posts_and_reports_success(): void

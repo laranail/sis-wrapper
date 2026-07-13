@@ -24,4 +24,10 @@
             <directory>src</directory>
         </include>
     </source>
+    <php>
+        <!-- The default test cache store is the per-process `array` driver, which the schedule guard now
+             rejects for onOneServer(). The scheduler is not under test in the general suite (ScheduleGuardTest
+             covers the guard directly), so disable it here; individual tests re-enable it when they need it. -->
+        <env name="SIS_SCHEDULE_ENABLED" value="false"/>
+    </php>
 </phpunit>
