@@ -1,0 +1,661 @@
+openapi: 3.1.0
+info:
+  title: Simtabi Identifier System — headless JSON API
+  version: "0.1.0"
+  summary: The headless HTTP surface of laranail/sis-wrapper (SIM-STD-0001:2026).
+  description: >-
+    The opt-in JSON API for the Simtabi Identifier System. Stateless endpoints call
+    the pure core (grammar, check characters, the class register, alias derivation,
+    version comparison); stateful endpoints act on the immutable register through the
+    Action → registrar-decorator stack. Every write requires an `Idempotency-Key`
+    header, a correlation id is threaded end to end, and every error is RFC 9457
+    application/problem+json.
+  contact:
+    name: Simtabi LLC
+    email: opensource@simtabi.com
+    url: https://opensource.simtabi.com/documentation/laranail/sis-wrapper/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: https://app.test/api/sis/v1
+    description: The configured API prefix (config sis.api.prefix, default api/sis/v1).
+tags:
+  - name: Stateless
+    description: Pure-core endpoints. Touch no register.
+  - name: Reads
+    description: Stateful reads from the register read model.
+  - name: Writes
+    description: Stateful writes. Require an Idempotency-Key.
+security:
+  - sanctum: []
+paths:
+  /validate:
+    post:
+      tags: [Stateless]
+      operationId: validateIdentifier
+      summary: Validate an identifier's grammar and check characters (§2, §4).
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [identifier]
+              properties:
+                identifier:
+                  type: string
+                  example: SIM-INV-ADIQ-000001-VY
+      responses:
+        '200':
+          description: Whether the value is a valid SIS/1 identifier.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [valid]
+                properties:
+                  valid: { type: boolean }
+                  class:
+                    $ref: '#/components/schemas/ClassCode'
+                  scope:
+                    type: [string, "null"]
+                    example: ADIQ
+                  serial:
+                    type: integer
+                    example: 1
+              examples:
+                valid:
+                  value: { valid: true, class: INV, scope: ADIQ, serial: 1 }
+                invalid:
+                  value: { valid: false }
+        '400':
+          $ref: '#/components/responses/Problem'
+  /alias-candidates:
+    get:
+      tags: [Stateless]
+      operationId: aliasCandidates
+      summary: Ranked, memorable alias candidates for a legal name (§5.2).
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema: { type: string }
+          example: AdelsaIQ LLC
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: The ranked candidate list, best first.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [candidates]
+                properties:
+                  candidates:
+                    type: array
+                    items: { $ref: '#/components/schemas/Alias' }
+              example: { candidates: [ADIQ, ADEL, AICM] }
+  /classes:
+    get:
+      tags: [Stateless]
+      operationId: listClasses
+      summary: The 22-class register, for discovery (§3).
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Every class code with its form, serial start, and alias flag.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [classes]
+                properties:
+                  classes:
+                    type: array
+                    items:
+                      type: object
+                      required: [code, label, form, serial_start, uses_alias]
+                      properties:
+                        code: { $ref: '#/components/schemas/ClassCode' }
+                        label: { type: string, example: Invoice }
+                        form:
+                          type: string
+                          enum: [G, S]
+                          description: G = global, S = scoped.
+                        serial_start: { type: integer, example: 1 }
+                        uses_alias: { type: boolean }
+              example:
+                classes:
+                  - { code: CLT, label: Client, form: G, serial_start: 100001, uses_alias: true }
+                  - { code: INV, label: Invoice, form: S, serial_start: 1, uses_alias: false }
+  /versions/compare:
+    post:
+      tags: [Stateless]
+      operationId: compareVersions
+      summary: Compare two release versions by semver 2.0.0 precedence (§7.2).
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [a, b]
+              properties:
+                a: { type: string, example: MALISA-1.4.2 }
+                b: { type: string, example: MALISA-2.0.0-rc.1 }
+      responses:
+        '200':
+          description: -1 if a precedes b, 0 if equal, 1 if a follows b.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [comparison]
+                properties:
+                  comparison:
+                    type: integer
+                    enum: [-1, 0, 1]
+              example: { comparison: -1 }
+        '400':
+          $ref: '#/components/responses/Problem'
+          description: An invalid version surfaces as problem+json.
+  /health:
+    get:
+      tags: [Stateless]
+      operationId: health
+      summary: Liveness/readiness probe — register reachable, morph map enforced, capacity.
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Healthy.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+              example:
+                status: ok
+                checks: { database: true, morph_map: true, serials_nearing_exhaustion: 0 }
+        '503':
+          description: Degraded — the database is unreachable or the morph map is not enforced.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+              example:
+                status: degraded
+                checks: { database: false, morph_map: true, serials_nearing_exhaustion: 0 }
+  /identifiers:
+    post:
+      tags: [Writes]
+      operationId: reserveIdentifier
+      summary: Reserve an identifier — allocate a serial (§6.5).
+      description: >-
+        Burns a serial permanently, so this is not idempotent by nature; the
+        Idempotency-Key makes a retry replay the same identifier.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [class, reason]
+              properties:
+                class: { $ref: '#/components/schemas/ClassCode' }
+                scope:
+                  type: [string, "null"]
+                  maxLength: 6
+                  description: The owning client's alias. Required for Form S classes, forbidden for Form G.
+                  example: ADIQ
+                reason:
+                  type: string
+                  example: onboarding AdelsaIQ
+                width:
+                  type: integer
+                  minimum: 6
+                  maximum: 9
+                  default: 6
+      responses:
+        '201':
+          description: The reserved record.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IdentifierRecord' }
+        '400':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '507':
+          $ref: '#/components/responses/Problem'
+  /identifiers/{identifier}:
+    parameters:
+      - $ref: '#/components/parameters/Identifier'
+    get:
+      tags: [Reads]
+      operationId: showIdentifier
+      summary: Fetch a register record by identifier.
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: The record.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IdentifierRecord' }
+        '404':
+          description: Unknown or malformed identifier.
+  /identifiers/{identifier}/chain:
+    parameters:
+      - $ref: '#/components/parameters/Identifier'
+    get:
+      tags: [Reads]
+      operationId: identifierChain
+      summary: Walk the supersession chain, cycle-safe, terminal successor last (§8).
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: The chain forward and its terminal successor.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [identifier, chain, terminal]
+                properties:
+                  identifier: { $ref: '#/components/schemas/Identifier' }
+                  chain:
+                    type: array
+                    items: { $ref: '#/components/schemas/Identifier' }
+                  terminal: { $ref: '#/components/schemas/Identifier' }
+              example:
+                identifier: SIM-INV-ADIQ-000001-VY
+                chain: [SIM-INV-ADIQ-000001-VY, SIM-INV-ADIQ-000002-K8]
+                terminal: SIM-INV-ADIQ-000002-K8
+        '404':
+          description: Unknown identifier.
+  /identifiers/{identifier}/audit:
+    parameters:
+      - $ref: '#/components/parameters/Identifier'
+    get:
+      tags: [Reads]
+      operationId: identifierAudit
+      summary: The append-only audit trail for one identifier, oldest first (§2.9).
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: The audit rows.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AuditEntry' }
+  /aliases/{alias}:
+    parameters:
+      - name: alias
+        in: path
+        required: true
+        schema: { $ref: '#/components/schemas/Alias' }
+        example: ADIQ
+    get:
+      tags: [Reads]
+      operationId: resolveAlias
+      summary: Resolve a mnemonic alias to its canonical identifier record (§5).
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: The record the alias names.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IdentifierRecord' }
+        '404':
+          description: No identifier carries that alias.
+  /subjects:
+    get:
+      tags: [Reads]
+      operationId: resolveSubject
+      summary: Reverse lookup — which identifier names this thing? (§2.5).
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema: { type: string }
+          description: A mapped morph alias, never a class name.
+          example: client
+        - name: id
+          in: query
+          required: true
+          schema: { type: string }
+          example: "42"
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: The record naming the subject.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IdentifierRecord' }
+        '404':
+          description: No identifier names that subject.
+        '422':
+          description: Missing type or id.
+  /identifiers/{identifier}/commission:
+    parameters:
+      - $ref: '#/components/parameters/Identifier'
+    post:
+      tags: [Writes]
+      operationId: commissionIdentifier
+      summary: Lock a reserved identifier forever; optionally bind alias and subject (§6.4).
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alias:
+                  type: [string, "null"]
+                  maxLength: 64
+                  example: ADIQ
+                description:
+                  type: [string, "null"]
+                  maxLength: 1024
+                subject:
+                  type: [object, "null"]
+                  required: [type, id]
+                  properties:
+                    type: { type: string, maxLength: 64, example: client }
+                    id: { type: string, maxLength: 64, example: "42" }
+      responses:
+        '200':
+          description: The commissioned record.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IdentifierRecord' }
+        '400':
+          $ref: '#/components/responses/Problem'
+        '403':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+          description: Alias taken, subject already named, or illegal state.
+  /identifiers/{identifier}/transition:
+    parameters:
+      - $ref: '#/components/parameters/Identifier'
+    post:
+      tags: [Writes]
+      operationId: transitionIdentifier
+      summary: Suspend, restore, or decommission a commissioned identifier (§6.2).
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [state]
+              properties:
+                state:
+                  type: string
+                  enum: [commissioned, suspended, decommissioned]
+                  description: >-
+                    'suspended' suspends; 'commissioned' restores a suspended identifier;
+                    'decommissioned' retires it. Reserving and voiding are separate acts.
+      responses:
+        '200':
+          description: The updated record.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IdentifierRecord' }
+        '403':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+          description: The transition is illegal from the current state.
+  /identifiers/{identifier}/supersede:
+    parameters:
+      - $ref: '#/components/parameters/Identifier'
+    post:
+      tags: [Writes]
+      operationId: supersedeIdentifier
+      summary: Record that a successor replaces this identifier, never editing it (§8).
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [successor]
+              properties:
+                successor:
+                  $ref: '#/components/schemas/Identifier'
+      responses:
+        '200':
+          description: The superseded record (with superseded_by set).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IdentifierRecord' }
+        '403':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+          description: The successor does not exist, is the same identifier, or forms a cycle.
+  /identifiers/{identifier}/subject:
+    parameters:
+      - $ref: '#/components/parameters/Identifier'
+    post:
+      tags: [Writes]
+      operationId: attachSubject
+      summary: Bind the thing a still-reserved identifier names (§5, §9).
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, id]
+              properties:
+                type:
+                  type: string
+                  maxLength: 64
+                  description: A mapped morph alias; a raw class name never crosses the wire.
+                  example: client
+                id: { type: string, maxLength: 64, example: "42" }
+      responses:
+        '200':
+          description: The updated record.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IdentifierRecord' }
+        '403':
+          $ref: '#/components/responses/Problem'
+        '409':
+          $ref: '#/components/responses/Problem'
+          description: The identifier already names a subject, or the transition is illegal.
+        '422':
+          $ref: '#/components/responses/Problem'
+          description: The type is not a mapped morph alias.
+components:
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      description: >-
+        Authentication is the consumer's — config sis.api.auth_middleware, default
+        auth:sanctum. The package denies otherwise.
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: >-
+        Required on every write. A retry with the same key replays instead of acting
+        twice. Scoped to (actor, key). Absence is rejected 400.
+      schema: { type: string }
+      example: 1c8f6b2e-9a41-4c3d-8f21-0e9d7a4b6f30
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      description: >-
+        Threaded into the command, decision, audit row, outbox, and webhook, and
+        echoed back on the response. Generated when absent.
+      schema: { type: string }
+      example: 7b21c9d4-1f0a-4e88-b3c2-2a5d6e7f8091
+    Identifier:
+      name: identifier
+      in: path
+      required: true
+      description: A SIS/1 identifier. Contains hyphens but no slashes; a malformed value is a 404.
+      schema: { $ref: '#/components/schemas/Identifier' }
+      example: SIM-CLT-100001-9O
+  schemas:
+    Identifier:
+      type: string
+      description: A canonical SIS/1 identifier, Form G or Form S (§2).
+      pattern: '^SIM-[A-Z]{3}(-[A-Z][A-Z0-9]{3,5})?-[0-9]{6,9}-[0-9A-Z]{2}$'
+      examples: [SIM-CLT-100001-9O, SIM-INV-ADIQ-000001-VY, SIM-PRD-100001-H3]
+    ClassCode:
+      type: string
+      description: A three-letter class code from the register (§3).
+      pattern: '^[A-Z]{3}$'
+      enum:
+        [CLT, PRS, VND, DPT, PRJ, SOW, CHG, MIL, QUO, INV, CRN, PRD, SVC, CMP,
+         REL, AST, DOC, STD, ADR, TKT, INC, ENV]
+    Alias:
+      type: string
+      description: A mnemonic alias, 4–6 chars (§5.1).
+      pattern: '^[A-Z][A-Z0-9]{3,5}$'
+      examples: [ADIQ, MALISA]
+    LifecycleState:
+      type: string
+      enum: [reserved, commissioned, suspended, decommissioned, void]
+    IdentifierRecord:
+      type: object
+      description: The stable wire format for a register record (§2.12). No data envelope.
+      required: [identifier, class, serial, state, spec_edition]
+      properties:
+        identifier: { $ref: '#/components/schemas/Identifier' }
+        class: { $ref: '#/components/schemas/ClassCode' }
+        scope:
+          type: [string, "null"]
+          example: null
+        serial: { type: integer, example: 100001 }
+        alias:
+          oneOf:
+            - { $ref: '#/components/schemas/Alias' }
+            - { type: "null" }
+        state: { $ref: '#/components/schemas/LifecycleState' }
+        spec_edition: { type: string, example: SIS/1 }
+        subject:
+          type: [object, "null"]
+          required: [type, id]
+          properties:
+            type: { type: string, example: client }
+            id: { type: string, example: "42" }
+        superseded_by:
+          oneOf:
+            - { $ref: '#/components/schemas/Identifier' }
+            - { type: "null" }
+      example:
+        identifier: SIM-CLT-100001-9O
+        class: CLT
+        scope: null
+        serial: 100001
+        alias: ADIQ
+        state: commissioned
+        spec_edition: SIS/1
+        subject: { type: client, id: "42" }
+        superseded_by: null
+    AuditEntry:
+      type: object
+      description: One append-only audit row (§2.9), with the hash chain exposed for tamper-evidence.
+      properties:
+        identifier: { $ref: '#/components/schemas/Identifier' }
+        action: { type: string, example: commission }
+        actor:
+          type: [object, "null"]
+          description: A morph reference, never a raw class name.
+          properties:
+            type: { type: string, example: user }
+            id: { type: string, example: "9" }
+        before_state:
+          type: [string, "null"]
+          example: reserved
+        after_state:
+          type: [string, "null"]
+          example: commissioned
+        ability:
+          type: [string, "null"]
+          example: sis.identifier.commission
+        verdict:
+          type: [string, "null"]
+          example: allow
+        correlation_id:
+          type: [string, "null"]
+        hash: { type: string }
+        prev_hash:
+          type: [string, "null"]
+        created_at:
+          type: [string, "null"]
+          format: date-time
+    Health:
+      type: object
+      required: [status, checks]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        checks:
+          type: object
+          properties:
+            database: { type: boolean }
+            morph_map: { type: boolean }
+            serials_nearing_exhaustion: { type: integer }
+    Problem:
+      type: object
+      description: RFC 9457 application/problem+json. The type URI is a stable public contract.
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+          example: https://opensource.simtabi.com/documentation/laranail/sis-wrapper/errors#alias-taken
+        title:
+          type: string
+          example: Conflict
+        status:
+          type: integer
+          example: 409
+        detail:
+          type: string
+          example: The alias ADIQ is already assigned.
+        spec_clause:
+          type: string
+          example: SIM-STD-0001:2026 §5
+        correlation_id:
+          type: string
+          example: 7b21c9d4-1f0a-4e88-b3c2-2a5d6e7f8091
+  responses:
+    Problem:
+      description: An error, rendered as RFC 9457 problem+json.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }

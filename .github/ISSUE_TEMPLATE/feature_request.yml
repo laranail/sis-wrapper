@@ -1,0 +1,35 @@
+name: Feature request
+description: Propose a change or addition to SIS.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        SIS is bound by a normative specification (SIM-STD-0001:2026). A change that would alter the grammar,
+        the check characters, the class register, or the lifecycle is a specification amendment, not a feature
+        — say so if that is what you are proposing.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that SIS does not let you do today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+  - type: checkboxes
+    id: spec
+    attributes:
+      label: Specification impact
+      options:
+        - label: This proposal would change the normative specification (grammar, check, register, or lifecycle).

@@ -1,0 +1,69 @@
+{
+    "name": "laranail/sis-monorepo",
+    "description": "Development monorepo for the Simtabi Identifier System — the pure core (simtabi/sis) and its Laravel binding (laranail/sis-wrapper). Not published; the two packages are split from src/Core and src/Laravel.",
+    "type": "project",
+    "license": "MIT",
+    "homepage": "https://opensource.simtabi.com/products/laranail/sis-wrapper",
+    "authors": [
+        { "name": "Imani Manyara", "email": "imani@simtabi.com" }
+    ],
+    "require": {
+        "php": "^8.5",
+        "simtabi/sis": "@dev",
+        "laranail/sis-wrapper": "@dev"
+    },
+    "require-dev": {
+        "deptrac/deptrac": "^3.0",
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "laravel/pint": "^1.18",
+        "orchestra/testbench": "^11.0",
+        "php-parallel-lint/php-parallel-lint": "^1.4",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "larastan/larastan": "^3.0",
+        "phpunit/phpunit": "^12.0",
+        "rector/rector": "^2.0",
+        "spatie/laravel-permission": "^6.0",
+        "vimeo/psalm": "^6.0"
+    },
+    "repositories": [
+        { "type": "path", "url": "src/Core", "options": { "symlink": true } },
+        { "type": "path", "url": "src/Laravel", "options": { "symlink": true } },
+        { "type": "path", "url": "../package/tools", "options": { "symlink": true } },
+        { "type": "path", "url": "../console", "options": { "symlink": true } }
+    ],
+    "autoload-dev": {
+        "psr-4": {
+            "Simtabi\\SIS\\Tests\\": "tests/Core/",
+            "Simtabi\\Laranail\\SIS\\Tests\\": "tests/Laravel/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "lint": "parallel-lint --exclude vendor src tests",
+        "pint": "pint --test",
+        "pint:fix": "pint",
+        "analyse:core": "phpstan analyse -c phpstan-core.neon --memory-limit=512M",
+        "analyse:shell": "phpstan analyse -c phpstan-shell.neon --memory-limit=512M",
+        "analyse": [
+            "@analyse:core",
+            "@analyse:shell"
+        ],
+        "rector": "rector process --dry-run",
+        "deptrac": "deptrac analyse --config-file=deptrac.yaml",
+        "test": "phpunit",
+        "test:core": "phpunit --testsuite=core",
+        "test:shell": "phpunit --testsuite=laravel",
+        "quality": [
+            "@lint",
+            "@pint",
+            "@deptrac",
+            "@analyse",
+            "@test"
+        ]
+    }
+}

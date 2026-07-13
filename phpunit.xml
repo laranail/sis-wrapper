@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         failOnWarning="true"
+         failOnRisky="true"
+         beStrictAboutOutputDuringTests="true">
+    <testsuites>
+        <testsuite name="core">
+            <directory>tests/Core</directory>
+        </testsuite>
+        <testsuite name="laravel">
+            <directory>tests/Laravel</directory>
+        </testsuite>
+    </testsuites>
+    <groups>
+        <!-- The PostgreSQL trigger tests need a real server; the postgres.yml workflow opts in via the
+             pgsql group. Excluded here so the default (SQLite) run stays clean. -->
+        <exclude>
+            <group>pgsql</group>
+        </exclude>
+    </groups>
+    <source>
+        <include>
+            <directory>src/Core/src</directory>
+            <directory>src/Laravel/src</directory>
+        </include>
+    </source>
+</phpunit>

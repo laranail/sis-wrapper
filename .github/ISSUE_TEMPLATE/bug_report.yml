@@ -1,0 +1,49 @@
+name: Bug report
+description: Report a defect in simtabi/sis or laranail/sis-wrapper.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a report. Please do not include secrets, tokens, or production identifiers.
+        Suspected security issues should go through SECURITY.md instead of a public issue.
+  - type: input
+    id: package
+    attributes:
+      label: Package and version
+      description: Which package (simtabi/sis or laranail/sis-wrapper) and what version/tag or commit?
+      placeholder: laranail/sis-wrapper v0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: PHP and Laravel versions, and the database driver in use.
+      placeholder: PHP 8.5.8, Laravel 13.2, PostgreSQL 17
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include the exact error, stack trace, or problem+json response.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: A minimal, self-contained reproduction — the smaller, the faster the fix.
+      placeholder: |
+        1. Reserve a CLT identifier
+        2. Commission it with alias ADIQ
+        3. ...
+    validations:
+      required: true

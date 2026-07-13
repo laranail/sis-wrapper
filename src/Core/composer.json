@@ -1,0 +1,38 @@
+{
+    "name": "simtabi/sis",
+    "description": "The Simtabi Identifier System — a pure-PHP, zero-dependency functional core: grammar, ISO 7064 check characters, the class register, the lifecycle state machine, alias derivation, and semver releases. The reference implementation of SIM-STD-0001:2026.",
+    "type": "library",
+    "keywords": ["identifier", "iso-7064", "check-digit", "value-object", "sis", "specification"],
+    "license": "MIT",
+    "homepage": "https://opensource.simtabi.com/products/simtabi/sis",
+    "authors": [
+        { "name": "Imani Manyara", "email": "imani@simtabi.com", "role": "Maintainer" }
+    ],
+    "support": {
+        "issues": "https://github.com/laranail/sis/issues",
+        "source": "https://github.com/simtabi/sis",
+        "docs": "https://opensource.simtabi.com/documentation/simtabi/sis/"
+    },
+    "require": {
+        "php": "^8.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0",
+        "phpstan/phpstan": "^2.0"
+    },
+    "suggest": {
+        "ext-intl": "Best-quality alias transliteration (Any-Latin; Latin-ASCII). Without it, and without ext-iconv, transliteration falls back to raw ASCII.",
+        "ext-iconv": "Fallback alias transliteration when ext-intl is absent."
+    },
+    "autoload": {
+        "psr-4": { "Simtabi\\SIS\\": "src/" }
+    },
+    "extra": {
+        "branch-alias": { "dev-main": "0.1.x-dev" }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    }
+}

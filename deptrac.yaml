@@ -1,0 +1,72 @@
+# The boundary. A convention is not a boundary; this is. Gated in CI.
+#
+# The core (src/Core) is a library of total functions over immutable values. It may not reference
+# Illuminate or the Laravel shell. Layering inside the core is strictly one-directional:
+#
+#   CoreValue <- CorePolicy <- CoreDecider <- CoreEntry
+#
+# The shell may depend on the core and on Illuminate; the core may depend on neither.
+deptrac:
+  paths:
+    - ./src
+
+  layers:
+    - name: CoreValue
+      collectors:
+        - type: directory
+          value: src/Core/src/(Identifier|Version|Support|Contract|Exception|Event)/.*
+
+    - name: CorePolicy
+      collectors:
+        - type: directory
+          value: src/Core/src/Policy/.*
+
+    - name: CoreDecider
+      collectors:
+        - type: directory
+          value: src/Core/src/(Command|Snapshot|Decision|Decider)/.*
+
+    - name: CoreEntry
+      collectors:
+        - type: directory
+          value: src/Core/src/Sis\.php
+
+    - name: CoreTesting
+      collectors:
+        - type: directory
+          value: src/Core/src/Testing/.*
+
+    - name: Shell
+      collectors:
+        - type: directory
+          value: src/Laravel/src/.*
+
+    # Framework tokens, defined only so the core can be forbidden from touching them.
+    - name: Illuminate
+      collectors:
+        - type: classNameRegex
+          value: '#^Illuminate\\#'
+
+  ruleset:
+    CoreValue: ~
+    CorePolicy:
+      - CoreValue
+    CoreDecider:
+      - CoreValue
+      - CorePolicy
+    CoreEntry:
+      - CoreValue
+      - CorePolicy
+      - CoreDecider
+    CoreTesting:
+      - CoreValue
+      - CorePolicy
+      - CoreDecider
+      - CoreEntry
+    Shell:
+      - CoreValue
+      - CorePolicy
+      - CoreDecider
+      - CoreEntry
+      - CoreTesting
+      - Illuminate

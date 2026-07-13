@@ -1,0 +1,10 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+    level: 10
+    paths:
+        - src/Core/src
+    # No baseline. Greenfield; a baseline is just permission to be wrong.
+    treatPhpDocTypesAsCertain: true
+    reportUnmatchedIgnoredErrors: true
