@@ -45,6 +45,7 @@ return [
         'permissions' => [
             'resolver' => 'Resolver: <info>:resolver</info>',
             'ability' => '  :ability <comment>(:label)</comment>',
+            'ability_description' => '      :description',
             'ability_actor' => '  :decision :ability <comment>(:label)</comment>',
         ],
     ],

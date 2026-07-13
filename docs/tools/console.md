@@ -56,7 +56,7 @@ php artisan sis:permissions                    # ability list + current resolver
 php artisan sis:permissions --actor=user:1     # per-ability [allow]/[deny] for user:1
 ```
 
-The `--actor` value is `type:id` (e.g. `user:1`); each of the fourteen `SisAbility` values is checked against the resolver and printed `[allow]` or `[deny]`. See [authorization](authorization.md).
+Without `--actor`, each ability is listed with its label and a one-line description of what it governs and how dangerous it is (`Reserve`, which burns a serial, is called out as the ability to grant most sparingly) — sourced from the `#[Label]`/`#[Description]` attributes on `SisAbility` via `laranail/enumerator`. With `--actor` (a `type:id` value such as `user:1`), each of the fourteen `SisAbility` values is checked against the resolver and printed `[allow]` or `[deny]`. See [authorization](authorization.md).
 
 ## Scheduled jobs (not commands)
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Authorization;
 
+use Simtabi\Laranail\Enumerator\Attributes\Description;
 use Simtabi\Laranail\Enumerator\Attributes\Label;
 use Simtabi\Laranail\Enumerator\Concerns\HasEnumeratorBehavior;
 use Simtabi\Laranail\Enumerator\Contracts\Enumerator;
@@ -18,54 +19,69 @@ use Simtabi\Laranail\Enumerator\Contracts\Enumerator;
  * reserving burns a serial permanently, and serials are never reused, so an actor who can reserve in a
  * loop can exhaust the space forever. It is the most dangerous ability in the package, not the safest.
  *
- * The human labels come from `laranail/enumerator`: each case carries a `#[Label]` attribute and the
- * `HasEnumeratorBehavior` trait exposes `label()`, `labels()`, and `options()` — so panels and the
- * `sis:permissions` command present abilities without hand-formatting the enum names.
+ * Each case carries its human `#[Label]` and an operator-facing `#[Description]` (of *what the ability
+ * governs and how dangerous it is*) via `laranail/enumerator`; the `HasEnumeratorBehavior` trait exposes
+ * `label()`, `description()`, `labels()`, and `options()` — so panels and the `sis:permissions` command
+ * present abilities, and explain them, without hand-formatting the enum names.
  */
 enum SisAbility: string implements Enumerator
 {
     use HasEnumeratorBehavior;
 
     #[Label('View register')]
+    #[Description('Read identifiers and their lifecycle state from the register.')]
     case ViewRegister = 'sis.register.view';
 
     #[Label('View audit trail')]
+    #[Description('Read the append-only audit trail of who did what.')]
     case ViewAudit = 'sis.audit.view';
 
     #[Label('Reserve identifier')]
+    #[Description('Allocate an identifier, permanently burning a serial. The most dangerous ability — serials are never reused, so an actor who can reserve in a loop can exhaust the space forever. Grant to the fewest actors.')]
     case Reserve = 'sis.identifier.reserve';
 
     #[Label('Mint identifier')]
+    #[Description('Construct an identifier value without touching the register — no serial is burned.')]
     case Mint = 'sis.identifier.mint';
 
     #[Label('Commission identifier')]
+    #[Description('Bring a reserved identifier into active service.')]
     case Commission = 'sis.identifier.commission';
 
     #[Label('Attach subject')]
+    #[Description('Bind an identifier to the domain model it names.')]
     case AttachSubject = 'sis.identifier.attach-subject';
 
     #[Label('Suspend identifier')]
+    #[Description('Temporarily take a commissioned identifier out of service.')]
     case Suspend = 'sis.identifier.suspend';
 
     #[Label('Restore identifier')]
+    #[Description('Return a suspended identifier to active service.')]
     case Restore = 'sis.identifier.restore';
 
     #[Label('Decommission identifier')]
+    #[Description('Permanently retire an identifier from service.')]
     case Decommission = 'sis.identifier.decommission';
 
     #[Label('Supersede identifier')]
+    #[Description('Replace an identifier with a successor, chaining the old to the new.')]
     case Supersede = 'sis.identifier.supersede';
 
     #[Label('Release reservation')]
+    #[Description('Void a reservation before it is commissioned.')]
     case Release = 'sis.identifier.release';
 
     #[Label('Verify register integrity')]
+    #[Description('Run the register integrity checks — audit hash chain and check characters.')]
     case VerifyIntegrity = 'sis.register.verify';
 
     #[Label('Backfill register')]
+    #[Description('Import pre-SIS identifiers as grandfathered register rows.')]
     case Backfill = 'sis.register.backfill';
 
     #[Label('Manage webhooks')]
+    #[Description('Create, rotate, and remove webhook endpoints.')]
     case ManageWebhooks = 'sis.webhooks.manage';
 
     /**

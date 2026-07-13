@@ -43,6 +43,14 @@ final class SisPermissionsCommand extends Command
                     'label' => $ability->label(),
                 ]));
 
+                $description = $ability->description();
+
+                if ($description !== null) {
+                    $this->line(__('sis::messages.commands.permissions.ability_description', [
+                        'description' => $description,
+                    ]));
+                }
+
                 continue;
             }
 

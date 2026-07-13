@@ -8,8 +8,9 @@ use Orchestra\Testbench\TestCase;
 use Simtabi\Laranail\SIS\Authorization\SisAbility;
 
 /**
- * `SisAbility` carries its human labels through `laranail/enumerator`: each case has a `#[Label]` attribute
- * and the `HasEnumeratorBehavior` trait exposes `label()`, `labels()`, and `options()`.
+ * `SisAbility` carries its human labels and operator-facing descriptions through `laranail/enumerator`:
+ * each case has `#[Label]` and `#[Description]` attributes and the `HasEnumeratorBehavior` trait exposes
+ * `label()`, `description()`, `labels()`, and `options()`.
  */
 final class SisAbilityTest extends TestCase
 {
@@ -19,6 +20,16 @@ final class SisAbilityTest extends TestCase
         self::assertSame('Commission identifier', SisAbility::Commission->label());
         self::assertSame('View register', SisAbility::ViewRegister->label());
         self::assertSame('Manage webhooks', SisAbility::ManageWebhooks->label());
+    }
+
+    public function test_description_reads_the_attribute_and_every_case_has_one(): void
+    {
+        self::assertStringContainsString('burning a serial', (string) SisAbility::Reserve->description());
+        self::assertSame('Create, rotate, and remove webhook endpoints.', SisAbility::ManageWebhooks->description());
+
+        foreach (SisAbility::cases() as $ability) {
+            self::assertNotNull($ability->description(), "{$ability->value} has no description");
+        }
     }
 
     public function test_labels_maps_every_backing_value_to_its_label(): void
