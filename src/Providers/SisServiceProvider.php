@@ -234,9 +234,10 @@ final class SisServiceProvider extends PackageServiceProvider
 
         $this->registerProblemRenderer();
 
+        // The URL prefix and middleware are set here; the route-name tree (the `sis.` prefix and below) is
+        // owned entirely by routes/api.php via its group `->name()` prefixes.
         Route::group([
             'prefix' => Config::string('sis.api.prefix', 'api/sis/v1'),
-            'as' => 'sis.',
             'middleware' => array_merge(
                 Config::array('sis.api.middleware', ['api']),
                 Config::array('sis.api.auth_middleware', []),

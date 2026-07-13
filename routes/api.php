@@ -20,11 +20,11 @@ use Simtabi\Laranail\SIS\Http\Controllers\ValidateController;
 use Simtabi\Laranail\SIS\Http\Middleware\CorrelationId;
 use Simtabi\Laranail\SIS\Http\Middleware\RequireIdempotencyKey;
 
-// Every route is named; SisServiceProvider's group prefixes the names with `sis.`, and the shared
-// `identifiers.` segment is carried by the read/write groups' own `->name('identifiers.')` prefix — so a
-// route named `show` inside them resolves as `sis.identifiers.show`. Reference them with
-// route('sis.identifiers.show', $identifier) rather than hard-coding the (configurable) URL prefix.
-Route::middleware(CorrelationId::class)->group(function (): void {
+// The whole route-name tree lives here: the outer group prefixes every name with `sis.`, the identifier
+// read/write groups add `identifiers.`, and each route carries only its leaf — so `show` resolves as
+// `sis.identifiers.show`. (SisServiceProvider adds only the configurable URL prefix and the middleware,
+// not the name.) Reference them with route('sis.identifiers.show', $identifier), never a hard-coded path.
+Route::middleware(CorrelationId::class)->name('sis.')->group(function (): void {
     // Stateless (pure core, no register).
     Route::post('validate', ValidateController::class)->name('validate');
     Route::get('alias-candidates', AliasCandidatesController::class)->name('alias-candidates');
