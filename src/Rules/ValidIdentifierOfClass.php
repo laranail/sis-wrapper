@@ -23,7 +23,7 @@ final class ValidIdentifierOfClass implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_string($value) || app(SisEngine::class)->identify($value)?->code !== $this->class->code) {
-            $fail(sprintf('The :attribute is not a valid %s identifier (SIM-STD-0001:2026 §3).', $this->class->label()));
+            $fail('sis::validation.invalid_identifier_of_class')->translate(['class' => $this->class->label()]);
         }
     }
 }

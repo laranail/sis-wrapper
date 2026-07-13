@@ -1,6 +1,4 @@
 /vendor/
-/src/Core/vendor/
-/src/Laravel/vendor/
 composer.lock
 /build/
 /.phpunit.cache/

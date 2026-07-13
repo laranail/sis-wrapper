@@ -20,7 +20,7 @@ final class ValidLifecycleTransition implements ValidationRule
         $to = is_string($value) ? LifecycleState::tryFrom($value) : null;
 
         if ($to === null || !$this->from->canTransitionTo($to)) {
-            $fail(sprintf('The :attribute is not a legal transition from %s (SIM-STD-0001:2026 §6.2).', $this->from->value));
+            $fail('sis::validation.illegal_transition')->translate(['from' => $this->from->value]);
         }
     }
 }

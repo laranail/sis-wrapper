@@ -18,7 +18,7 @@ final class AvailableAlias implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_string($value)) {
-            $fail('The :attribute is not a valid alias (SIM-STD-0001:2026 §5.1).');
+            $fail('sis::validation.invalid_alias')->translate();
 
             return;
         }
@@ -26,13 +26,13 @@ final class AvailableAlias implements ValidationRule
         $alias = strtoupper($value);
 
         if (app(SisEngine::class)->isReservedAlias($alias)) {
-            $fail('The :attribute is a reserved alias (SIM-STD-0001:2026 §5.3).');
+            $fail('sis::validation.reserved_alias')->translate();
 
             return;
         }
 
         if (SisRecord::query()->where('alias', $alias)->exists()) {
-            $fail('The :attribute is already taken (SIM-STD-0001:2026 §5).');
+            $fail('sis::validation.alias_taken')->translate();
         }
     }
 }

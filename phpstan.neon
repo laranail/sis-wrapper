@@ -5,6 +5,8 @@ parameters:
     level: 9
     paths:
         - src
+        - database/factories
+        - database/seeders
     reportUnmatchedIgnoredErrors: true
     ignoreErrors:
         # Two library traits whose only users live outside the analysed source: SisSchema is used by the

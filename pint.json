@@ -8,7 +8,6 @@
         "concat_space": { "spacing": "one" }
     },
     "exclude": [
-        "planning",
         "vendor"
     ]
 }

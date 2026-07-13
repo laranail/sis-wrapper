@@ -40,9 +40,12 @@ final class SerialSpaceNearingExhaustionNotification extends Notification
             : $this->event->class;
 
         return (new MailMessage)
-            ->subject('SIS: a serial space is nearing exhaustion')
-            ->line(sprintf('%s is %d%% through its serial space.', $where, (int) round($this->event->usage * 100)))
-            ->line('Widen the serial width — widening is always safe; narrowing is forbidden (SIM-STD-0001:2026 §2, §10).');
+            ->subject(__('sis::messages.notifications.serial_capacity.subject'))
+            ->line(__('sis::messages.notifications.serial_capacity.usage', [
+                'where' => $where,
+                'percent' => (int) round($this->event->usage * 100),
+            ]))
+            ->line(__('sis::messages.notifications.serial_capacity.advice'));
     }
 
     /**

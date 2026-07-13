@@ -2,7 +2,7 @@
 
 The model factories that feed the test suite and the seeders that populate a fresh register.
 
-The package ships six model factories (discovered from `src/Database/Factories`) and one aggregate seeder, `SisDatabaseSeeder`, registered by `SisServiceProvider`. Factories are honest — they mint coherent rows the database triggers would accept — and the seeders are safe by default: the always-safe ones run everywhere, the demo register runs only outside production.
+The package ships six model factories (discovered from `database/factories`) and one aggregate seeder, `SisDatabaseSeeder` (in `database/seeders`), registered by `SisServiceProvider`. Factories are honest — they mint coherent rows the database triggers would accept — and the seeders are safe by default: the always-safe ones run everywhere, the demo register runs only outside production.
 
 ## Factories
 

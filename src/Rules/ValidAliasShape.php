@@ -17,7 +17,7 @@ final class ValidAliasShape implements ValidationRule
         try {
             app(SisEngine::class)->alias(is_string($value) ? $value : '');
         } catch (MalformedAliasException) {
-            $fail('The :attribute is not a valid mnemonic alias: it must match [A-Z][A-Z0-9]{3,5} (SIM-STD-0001:2026 §5.1).');
+            $fail('sis::validation.invalid_mnemonic_alias')->translate();
         }
     }
 }

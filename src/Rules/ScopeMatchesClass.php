@@ -20,11 +20,11 @@ final class ScopeMatchesClass implements ValidationRule
         $hasScope = is_string($value) && $value !== '';
 
         if ($this->class->isScoped() && !$hasScope) {
-            $fail(sprintf('%s is a Form S class and requires a scope (SIM-STD-0001:2026 §2, §3).', $this->class->label()));
+            $fail('sis::validation.form_s_requires_scope')->translate(['class' => $this->class->label()]);
         }
 
         if (!$this->class->isScoped() && $hasScope) {
-            $fail(sprintf('%s is a Form G class and takes no scope (SIM-STD-0001:2026 §2, §3).', $this->class->label()));
+            $fail('sis::validation.form_g_takes_no_scope')->translate(['class' => $this->class->label()]);
         }
     }
 }

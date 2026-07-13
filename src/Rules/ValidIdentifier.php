@@ -19,7 +19,7 @@ final class ValidIdentifier implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_string($value) || !app(SisEngine::class)->validate($value)) {
-            $fail('The :attribute is not a valid SIS/1 identifier — its grammar or check characters do not verify (SIM-STD-0001:2026 §2, §4).');
+            $fail('sis::validation.invalid_identifier')->translate();
         }
     }
 }

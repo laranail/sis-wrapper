@@ -21,7 +21,7 @@ final class KnownMorphAlias implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_string($value) || !$this->registry->hasAlias($value)) {
-            $fail('The :attribute is not a known SIS morph alias (SIM-STD-0001:2026 §2.5).');
+            $fail('sis::validation.unknown_morph_alias')->translate();
         }
     }
 }

@@ -18,7 +18,7 @@ final class ValidSubtype implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (is_string($value) && $value !== '' && !$this->class->permitsSubtype($value)) {
-            $fail(sprintf('The :attribute is not a permitted subtype for %s (SIM-STD-0001:2026 §3.7).', $this->class->label()));
+            $fail('sis::validation.invalid_subtype')->translate(['class' => $this->class->label()]);
         }
     }
 }

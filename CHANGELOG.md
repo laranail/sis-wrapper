@@ -23,6 +23,16 @@ This is the Laravel wrapper for the Simtabi Identifier System. It consumes the p
   `laranail::sis-wrapper.*` (aliased `sis:*`) Artisan commands.
 - Built on the laranail toolkits: **package-tools** (a single `PackageServiceProvider`), **console** (the
   command base), **enumerator** (ability labels), and **toolkit** (the reusable morph-alias registry).
+- Native Laravel translations: every user-facing string (validation rule messages, console output, the
+  capacity notification, RFC 9457 problem titles) is served from `resources/lang/` under the `sis::`
+  namespace (also `laranail/sis-wrapper::`), publishable to the app's `lang/vendor/`.
+- Full audit of denied authorization attempts (verdict `denied`) alongside the ability and verdict
+  recorded on every applied effect, through one append-only, hash-chained audit writer.
+
+### Changed
+
+- Factories and seeders now live under `database/factories` and `database/seeders` (Laravel's
+  conventional home), keeping the `Simtabi\Laranail\SIS\Database\{Factories,Seeders}` namespaces.
 
 [Unreleased]: https://github.com/laranail/sis-wrapper/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/laranail/sis-wrapper/releases/tag/v0.1.0

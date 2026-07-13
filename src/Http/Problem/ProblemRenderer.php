@@ -59,14 +59,16 @@ final class ProblemRenderer
 
     private static function titleFor(int $status): string
     {
-        return match ($status) {
-            403 => 'Forbidden',
-            409 => 'Conflict',
-            422 => 'Unprocessable Entity',
-            500 => 'Register Integrity Failure',
-            507 => 'Insufficient Storage',
-            default => 'Bad Request',
-        };
+        $key = "sis::messages.problem.{$status}";
+        $title = __($key);
+
+        if (is_string($title) && $title !== $key) {
+            return $title;
+        }
+
+        $default = __('sis::messages.problem.default');
+
+        return is_string($default) ? $default : 'Bad Request';
     }
 
     private static function slug(SisException $exception): string

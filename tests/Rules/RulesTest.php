@@ -6,6 +6,7 @@ namespace Simtabi\Laranail\SIS\Tests\Rules;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Application;
+use Illuminate\Translation\PotentiallyTranslatedString;
 use Orchestra\Testbench\TestCase;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 use Simtabi\Laranail\SIS\Rules\NotReservedAlias;
@@ -42,8 +43,10 @@ final class RulesTest extends TestCase
     private function fails(ValidationRule $rule, mixed $value): bool
     {
         $failed = false;
-        $rule->validate('field', $value, function () use (&$failed): void {
+        $rule->validate('field', $value, function (string $message) use (&$failed): PotentiallyTranslatedString {
             $failed = true;
+
+            return new PotentiallyTranslatedString($message, $this->app->make('translator'));
         });
 
         return $failed;

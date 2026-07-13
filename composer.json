@@ -45,7 +45,11 @@
         "ext-pgsql": "PostgreSQL is the reference production driver; its triggers enforce the storage-layer immutability guarantee."
     },
     "autoload": {
-        "psr-4": { "Simtabi\\Laranail\\SIS\\": "src/" }
+        "psr-4": {
+            "Simtabi\\Laranail\\SIS\\": "src/",
+            "Simtabi\\Laranail\\SIS\\Database\\Factories\\": "database/factories/",
+            "Simtabi\\Laranail\\SIS\\Database\\Seeders\\": "database/seeders/"
+        }
     },
     "autoload-dev": {
         "psr-4": { "Simtabi\\Laranail\\SIS\\Tests\\": "tests/" }

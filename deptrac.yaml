@@ -7,12 +7,16 @@
 deptrac:
   paths:
     - ./src
+    - ./database/factories
+    - ./database/seeders
 
   layers:
     - name: Wrapper
       collectors:
         - type: directory
           value: src/.*
+        - type: directory
+          value: database/(factories|seeders)/.*
 
     - name: Sdk
       collectors:

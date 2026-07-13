@@ -17,7 +17,7 @@ final class ValidSemver implements ValidationRule
         try {
             Version::parse(is_string($value) ? $value : '');
         } catch (InvalidVersionException) {
-            $fail('The :attribute is not a valid SIS/1 release version (SIM-STD-0001:2026 §7.2).');
+            $fail('sis::validation.invalid_semver')->translate();
         }
     }
 }

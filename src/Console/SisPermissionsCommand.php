@@ -31,25 +31,27 @@ final class SisPermissionsCommand extends Command
 
     public function handle(PermissionResolver $resolver): int
     {
-        $this->line('Resolver: <info>' . $resolver::class . '</info>');
+        $this->line(__('sis::messages.commands.permissions.resolver', ['resolver' => $resolver::class]));
 
         $actor = $this->actorOption();
         $context = new AuthorizationContext(app(SisEngine::class)->class(SimClass::STANDARD));
 
         foreach (SisAbility::cases() as $ability) {
             if ($actor === null) {
-                $this->line(sprintf('  %s <comment>(%s)</comment>', $ability->value, $ability->label()));
+                $this->line(__('sis::messages.commands.permissions.ability', [
+                    'ability' => $ability->value,
+                    'label' => $ability->label(),
+                ]));
 
                 continue;
             }
 
             $allowed = $resolver->allows($actor, $ability, $context);
-            $this->line(sprintf(
-                '  %s %s <comment>(%s)</comment>',
-                $allowed ? '<info>[allow]</info>' : '<fg=red>[deny]</>',
-                $ability->value,
-                $ability->label(),
-            ));
+            $this->line(__('sis::messages.commands.permissions.ability_actor', [
+                'decision' => $allowed ? '<info>[allow]</info>' : '<fg=red>[deny]</>',
+                'ability' => $ability->value,
+                'label' => $ability->label(),
+            ]));
         }
 
         return self::SUCCESS;
