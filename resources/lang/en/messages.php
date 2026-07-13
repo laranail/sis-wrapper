@@ -32,6 +32,8 @@ return [
             'triggers_unsupported' => "[WARN] storage-layer immutability is NOT enforced on driver ':driver' — not for production",
             'sample_clean' => 'no check-character failures in the sample',
             'sample_corrupt' => 'corrupt identifiers: :identifiers',
+            'chain_intact' => 'audit hash chain intact',
+            'chain_broken' => 'audit hash chain broken at :rows',
             'aliases_resolve' => 'every stored subject alias resolves',
             'aliases_unknown' => 'unknown morph aliases in the register: :aliases',
             'outbox_drained' => 'outbox drained',

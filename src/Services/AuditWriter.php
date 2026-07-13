@@ -42,13 +42,15 @@ final class AuditWriter
         $hash = null;
 
         if ((bool) config('sis.audit.hash_chain', true)) {
+            // Read the committed head. Concurrent writers must be serialised OUTSIDE this call (the
+            // SerializingRegistrar holds a lock across the whole transaction+commit); an unlocked read here
+            // would let two writers chain off the same head and FORK the chain. See SerializingRegistrar.
             /** @var string|null $prevHash */
             $prevHash = SisAudit::query()->orderByDesc('id')->value('hash');
-            $content = json_encode([
-                $identifier, $action, $actor->reference(),
+            $hash = self::chainHash(
+                $prevHash, $identifier, $action, $actor->reference(),
                 $before, $after, $correlationId, $context,
-            ], JSON_THROW_ON_ERROR);
-            $hash = hash('sha256', (string) $prevHash . $content);
+            );
         }
 
         SisAudit::query()->create([
@@ -67,5 +69,33 @@ final class AuditWriter
             'prev_hash' => $prevHash,
             'created_at' => $at,
         ]);
+    }
+
+    /**
+     * The one definition of a chain link. write() computes each row's hash through here, and the verifier
+     * (IntegrityService::verifyAuditChain) recomputes it through the SAME method — so the writer and the
+     * checker cannot drift: a change to the hashed shape changes both at once, and a stored hash that no
+     * longer recomputes is tampering, not a version skew. The ability and verdict are recorded on the row
+     * but are deliberately NOT folded in — the chain shape is a stored contract and must not shift.
+     *
+     * @param  string  $actorReference  the actor's PII-free reference, `actor_type . ':' . actor_id`
+     * @param  array<string, mixed>  $context  the redacted context, re-encoded exactly as stored
+     */
+    public static function chainHash(
+        ?string $prevHash,
+        ?string $identifier,
+        string $action,
+        string $actorReference,
+        ?string $before,
+        ?string $after,
+        string $correlationId,
+        array $context,
+    ): string {
+        $content = json_encode([
+            $identifier, $action, $actorReference,
+            $before, $after, $correlationId, $context,
+        ], JSON_THROW_ON_ERROR);
+
+        return hash('sha256', (string) $prevHash . $content);
     }
 }

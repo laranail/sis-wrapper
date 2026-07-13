@@ -62,7 +62,17 @@ final class SisDoctorCommand extends Command
             $this->problem(__('sis::messages.commands.doctor.sample_corrupt', ['identifiers' => implode(', ', array_slice($corrupt, 0, 5))]));
         }
 
-        // 4. Every stored subject alias is resolvable through the morph map.
+        // 4. The audit hash chain is intact (no rewritten row, no fork from a concurrent write). Skipped
+        // when hash-chaining is off, in which case verifyAuditChain() returns [] and this reports clean.
+        $broken = $integrity->verifyAuditChain();
+        if ($broken === []) {
+            $this->ok(__('sis::messages.commands.doctor.chain_intact'));
+        } else {
+            $failed = true;
+            $this->problem(__('sis::messages.commands.doctor.chain_broken', ['rows' => implode(', ', array_slice($broken, 0, 5))]));
+        }
+
+        // 5. Every stored subject alias is resolvable through the morph map.
         $unknown = $this->unresolvableSubjectAliases($morphs);
         if ($unknown === []) {
             $this->ok(__('sis::messages.commands.doctor.aliases_resolve'));
@@ -71,7 +81,7 @@ final class SisDoctorCommand extends Command
             $this->problem(__('sis::messages.commands.doctor.aliases_unknown', ['aliases' => implode(', ', $unknown)]));
         }
 
-        // 5. Outbox lag.
+        // 6. Outbox lag.
         $pending = SisOutbox::query()->whereNull('relayed_at')->count();
         if ($pending === 0) {
             $this->ok(__('sis::messages.commands.doctor.outbox_drained'));
@@ -79,7 +89,7 @@ final class SisDoctorCommand extends Command
             $this->warn(__('sis::messages.commands.doctor.outbox_pending', ['count' => $pending]));
         }
 
-        // 6. Capacity headroom.
+        // 7. Capacity headroom.
         $nearing = $capacity->nearingExhaustion();
         if ($nearing === []) {
             $this->ok(__('sis::messages.commands.doctor.capacity_headroom'));
@@ -93,7 +103,7 @@ final class SisDoctorCommand extends Command
             }
         }
 
-        // 7. Admin panels (informational): where the RegisterPanelPresenter can be wired. SIS is headless, so
+        // 8. Admin panels (informational): where the RegisterPanelPresenter can be wired. SIS is headless, so
         // none is the norm — the JSON API and the Sis facade are the integration surface.
         $panels = PanelSupport::detected();
         $this->ok($panels === []

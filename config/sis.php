@@ -11,6 +11,7 @@ use Simtabi\Laranail\SIS\Registrar\ConstraintTranslatingRegistrar;
 use Simtabi\Laranail\SIS\Registrar\EloquentRegistrar;
 use Simtabi\Laranail\SIS\Registrar\LoggingRegistrar;
 use Simtabi\Laranail\SIS\Registrar\OutboxRelayingRegistrar;
+use Simtabi\Laranail\SIS\Registrar\SerializingRegistrar;
 use Simtabi\Laranail\SIS\Registrar\TransactionalRegistrar;
 use Simtabi\SIS\Enums\Environment;
 
@@ -355,12 +356,16 @@ return [
     | Authorizing sits OUTSIDE Transactional: authorization runs before the
     | transaction opens, so an unauthorized command never opens a transaction and
     | its deny-audit row (written by the Authorizer) is not rolled back.
+    | Serializing sits OUTSIDE both, so its single lock wraps the deny-audit
+    | (Authorizing) AND the effect-audit (Transactional) writes: every append to
+    | the audit hash chain is serialised, so the chain cannot fork under concurrency.
     */
     'registrar' => [
         'stack' => [
             LoggingRegistrar::class,
             OutboxRelayingRegistrar::class,
             ConstraintTranslatingRegistrar::class,
+            SerializingRegistrar::class,
             AuthorizingRegistrar::class,
             TransactionalRegistrar::class,
             EloquentRegistrar::class,
