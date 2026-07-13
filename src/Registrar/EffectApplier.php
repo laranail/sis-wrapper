@@ -21,22 +21,36 @@ use Simtabi\SIS\Identifier\Identifier;
 /**
  * Applies a Decision's effects to the register and the audit trail. The core produced these as pure
  * descriptions; this is the only place they become writes. The caller runs it inside one transaction.
+ *
+ * Register-row mutations are coalesced into ONE UPDATE per identifier. The storage-layer immutability
+ * trigger keys on OLD.state: it only blocks a segment change once the row has left 'reserved'. Commission
+ * changes state → commissioned AND assigns the alias/subject in the same Decision; applying those as
+ * separate saves would flip the state first, then trip the trigger on the following alias write. Staging the
+ * mutations and saving once keeps OLD.state = 'reserved' for the whole write, so the trigger correctly
+ * permits it — a bug that only surfaces on a trigger-capable driver (PostgreSQL/MySQL), never on SQLite.
  */
 final class EffectApplier
 {
     public function apply(Decision $decision): void
     {
+        /** @var array<string, SisRecord> $updates one loaded record per identifier, mutated in place */
+        $updates = [];
+
         foreach ($decision->effects() as $effect) {
             match (true) {
                 $effect instanceof InsertRecord => $this->insert($effect),
-                $effect instanceof ChangeState => $this->changeState($effect),
-                $effect instanceof AssignAlias => $this->assignAlias($effect),
-                $effect instanceof SetSubject => $this->setSubject($effect),
-                $effect instanceof SetSupersededBy => $this->setSupersededBy($effect),
+                $effect instanceof ChangeState => $this->changeState($effect, $this->staged($effect->identifier, $updates)),
+                $effect instanceof AssignAlias => $this->assignAlias($effect, $this->staged($effect->identifier, $updates)),
+                $effect instanceof SetSubject => $this->setSubject($effect, $this->staged($effect->identifier, $updates)),
+                $effect instanceof SetSupersededBy => $this->setSupersededBy($effect, $this->staged($effect->identifier, $updates)),
                 $effect instanceof DeleteRecord => $this->delete($effect),
                 $effect instanceof AppendAudit => $this->appendAudit($effect),
                 default => null,
             };
+        }
+
+        foreach ($updates as $record) {
+            $record->save();
         }
     }
 
@@ -63,9 +77,8 @@ final class EffectApplier
         $record->save();
     }
 
-    private function changeState(ChangeState $effect): void
+    private function changeState(ChangeState $effect, SisRecord $record): void
     {
-        $record = $this->record($effect->identifier);
         $record->setAttribute('state', $effect->to);
 
         if ($effect->to === LifecycleState::Commissioned && $record->getAttribute('commissioned_at') === null) {
@@ -75,30 +88,22 @@ final class EffectApplier
         if ($effect->to === LifecycleState::Decommissioned) {
             $record->setAttribute('decommissioned_at', $effect->at);
         }
-
-        $record->save();
     }
 
-    private function assignAlias(AssignAlias $effect): void
+    private function assignAlias(AssignAlias $effect, SisRecord $record): void
     {
-        $record = $this->record($effect->identifier);
         $record->setAttribute('alias', $effect->alias->value);
-        $record->save();
     }
 
-    private function setSubject(SetSubject $effect): void
+    private function setSubject(SetSubject $effect, SisRecord $record): void
     {
-        $record = $this->record($effect->identifier);
         $record->setAttribute('subject_type', $effect->subject->type);
         $record->setAttribute('subject_id', $effect->subject->id);
-        $record->save();
     }
 
-    private function setSupersededBy(SetSupersededBy $effect): void
+    private function setSupersededBy(SetSupersededBy $effect, SisRecord $record): void
     {
-        $record = $this->record($effect->identifier);
         $record->setAttribute('superseded_by', (string) $effect->successor);
-        $record->save();
     }
 
     private function delete(DeleteRecord $effect): void
@@ -135,6 +140,17 @@ final class EffectApplier
             'prev_hash' => $prevHash,
             'created_at' => $effect->at,
         ]);
+    }
+
+    /**
+     * The single loaded record for an identifier within this Decision, loaded once and mutated in place so
+     * all of a Decision's register updates land in one save (see the class docblock).
+     *
+     * @param  array<string, SisRecord>  $updates
+     */
+    private function staged(Identifier $identifier, array &$updates): SisRecord
+    {
+        return $updates[(string) $identifier] ??= $this->record($identifier);
     }
 
     private function record(Identifier $identifier): SisRecord
