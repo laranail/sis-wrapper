@@ -25,7 +25,7 @@ php artisan sis:install
 php artisan sis:install --force     # overwrite already-published config/migrations
 ```
 
-It runs, in order: `vendor:publish --tag=laranail::sis-wrapper-config`, `vendor:publish --tag=laranail::sis-wrapper-migrations`, `migrate`, then `sis:doctor` (whose exit code becomes the install's). Zero required config to start.
+It runs, in order: `vendor:publish --tag=laranail::sis-wrapper-config`, `vendor:publish --tag=laranail::sis-wrapper-migrations`, `migrate`, then `sis:doctor` (whose exit code becomes the install's). Zero required config to start. It does not publish the language files — do that opt-in with `vendor:publish --tag=laranail::sis-wrapper-translations` when you want to [localise the output](translations.md).
 
 ## `sis:doctor`
 

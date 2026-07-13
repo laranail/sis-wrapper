@@ -99,6 +99,7 @@ Hosted docs: **https://opensource.simtabi.com/documentation/laranail/sis-wrapper
 - [The Artisan commands](../../docs/tools/console.md)
 - [The `Sis` facade](../../docs/tools/facade.md)
 - [Factories and seeders](../../docs/tools/factories-and-seeders.md)
+- [Translations](../../docs/tools/translations.md)
 
 ### Recipes
 

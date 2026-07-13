@@ -36,6 +36,8 @@ php artisan migrate
 php artisan sis:doctor                           # health check
 ```
 
+The `laranail::sis-wrapper-translations` tag publishes the language files for [localising or rewording](tools/translations.md) the package's output. It is opt-in — `sis:install` does not publish it.
+
 The whole storage layer ships as a single migration, `0001_create_sis_schema.php`, which builds all seven tables (`register`, `serials`, `audit`, `outbox`, `idempotency_keys`, `morph_aliases`, `webhook_endpoints`) with their profile-generated `CHECK` constraints and immutability triggers in dependency order.
 
 ## The service provider
@@ -44,7 +46,7 @@ The package registers a single provider, `SisServiceProvider`, via package disco
 
 | Phase | Responsibility |
 |-------|----------------|
-| `configurePackage()` | Config file, migration discovery, the three Artisan commands, the model policy, event listeners, factories, and the database seeder (via the Package DSL). |
+| `configurePackage()` | Config file, migration discovery, the three Artisan commands, the model policy, event listeners, translations, factories, and the database seeder (via the Package DSL). |
 | `packageRegistered()` | Container bindings — the profile-driven `simtabi/sis-sdk` engine (`Simtabi\SIS\Sis` bound to `SisEngine`), the registrar decorator stack, resolvers, serial issuer, and webhook dispatcher — plus **morph-map enforcement** (`Relation::enforceMorphMap()`), done here before any subject write. |
 | `packageBooted()` | The ability gates, the opt-in HTTP surface (**only when `sis.api.enabled` is true**), and the scheduled maintenance jobs (each disableable). |
 
