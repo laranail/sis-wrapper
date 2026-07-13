@@ -8,6 +8,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Simtabi\Laranail\SIS\Authorization\SisAbility;
 use Simtabi\Laranail\SIS\Database\Factories\SisAuditFactory;
 use Simtabi\Laranail\SIS\Enums\AuditVerdict;
 use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
@@ -17,13 +18,13 @@ use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
  * UPDATE or DELETE, so this model never carries an updated_at.
  *
  * @property int $id
- * @property string $identifier
+ * @property ?string $identifier
  * @property string $action
  * @property ?string $actor_type
  * @property ?string $actor_id
  * @property ?string $before_state
  * @property ?string $after_state
- * @property ?string $ability
+ * @property ?SisAbility $ability
  * @property ?AuditVerdict $verdict
  * @property string $correlation_id
  * @property ?string $idempotency_key
@@ -48,6 +49,7 @@ final class SisAudit extends Model
     {
         return [
             'context' => 'array',
+            'ability' => SisAbility::class,
             'verdict' => AuditVerdict::class,
             'created_at' => 'immutable_datetime',
         ];

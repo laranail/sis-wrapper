@@ -231,7 +231,7 @@ return new class extends Migration
     {
         Schema::connection($this->sisConnection())->create($this->sisTable('audit'), function (Blueprint $table): void {
             $table->bigIncrements('id');
-            $table->string('identifier', 40)->index();
+            $table->string('identifier', 40)->nullable()->index();
             $table->string('action', 64);
             $table->string('actor_type', 64)->nullable();
             $table->string('actor_id', 64)->nullable();

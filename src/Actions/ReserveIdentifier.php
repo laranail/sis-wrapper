@@ -37,6 +37,8 @@ final class ReserveIdentifier
             $data->actor,
             SisAbility::Reserve,
             new AuthorizationContext($data->class, $data->scope),
+            $data->correlationId,
+            $data->idempotencyKey,
         );
 
         $requestHash = hash('sha256', json_encode(

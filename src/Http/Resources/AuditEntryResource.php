@@ -29,7 +29,7 @@ final class AuditEntryResource extends JsonResource
                 : null,
             'before_state' => $this->before_state,
             'after_state' => $this->after_state,
-            'ability' => $this->ability,
+            'ability' => $this->ability?->value,
             'verdict' => $this->verdict?->value,
             'correlation_id' => $this->correlation_id,
             'hash' => $this->hash,

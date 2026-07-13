@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Simtabi\Laranail\SIS\Models\SisAudit;
+use Simtabi\Laranail\SIS\Authorization\SisAbility;
+use Simtabi\Laranail\SIS\Enums\AuditVerdict;
 use Simtabi\Laranail\SIS\Models\SisRecord;
+use Simtabi\Laranail\SIS\Services\AuditWriter;
 use Simtabi\SIS\Decision\AppendAudit;
 use Simtabi\SIS\Decision\AssignAlias;
 use Simtabi\SIS\Decision\ChangeState;
@@ -31,6 +33,10 @@ use Simtabi\SIS\Identifier\Identifier;
  */
 final class EffectApplier
 {
+    public function __construct(
+        private readonly AuditWriter $audit = new AuditWriter,
+    ) {}
+
     public function apply(Decision $decision): void
     {
         /** @var array<string, SisRecord> $updates one loaded record per identifier, mutated in place */
@@ -113,33 +119,21 @@ final class EffectApplier
 
     private function appendAudit(AppendAudit $effect): void
     {
-        $prevHash = null;
-        $hash = null;
-
-        if ((bool) config('sis.audit.hash_chain', true)) {
-            /** @var string|null $prevHash */
-            $prevHash = SisAudit::query()->orderByDesc('id')->value('hash');
-            $content = json_encode([
-                $effect->identifier, $effect->action, $effect->actor->reference(),
-                $effect->before, $effect->after, $effect->correlationId, $effect->context,
-            ], JSON_THROW_ON_ERROR);
-            $hash = hash('sha256', (string) $prevHash . $content);
-        }
-
-        SisAudit::query()->create([
-            'identifier' => $effect->identifier,
-            'action' => $effect->action,
-            'actor_type' => $effect->actor->type,
-            'actor_id' => $effect->actor->id,
-            'before_state' => $effect->before,
-            'after_state' => $effect->after,
-            'correlation_id' => $effect->correlationId,
-            'idempotency_key' => $effect->idempotencyKey,
-            'context' => $effect->context,
-            'hash' => $hash,
-            'prev_hash' => $prevHash,
-            'created_at' => $effect->at,
-        ]);
+        // An applied effect was authorized by definition — it only runs past the Authorizer. Record the
+        // ability its action implied and an Allowed verdict, through the shared hash-chained writer.
+        $this->audit->write(
+            identifier: $effect->identifier,
+            action: $effect->action,
+            actor: $effect->actor,
+            before: $effect->before,
+            after: $effect->after,
+            ability: SisAbility::forAuditAction($effect->action),
+            verdict: AuditVerdict::Allowed,
+            correlationId: $effect->correlationId,
+            idempotencyKey: $effect->idempotencyKey,
+            context: $effect->context,
+            at: $effect->at,
+        );
     }
 
     /**

@@ -67,4 +67,26 @@ enum SisAbility: string implements Enumerator
 
     #[Label('Manage webhooks')]
     case ManageWebhooks = 'sis.webhooks.manage';
+
+    /**
+     * The ability an audit `action` string implies, for recording on the audit row. The action strings are
+     * the deciders' own vocabulary (`Simtabi\SIS\Decider\*`): `reserve`, `commission`, `supersede`,
+     * `release`, `void`, `attach-subject`, and `transition:<state>` (built as `'transition:' . $to->value`).
+     * A `void` maps to `Release` (voiding a reservation is the release ability). An action with no ability —
+     * e.g. the internal `authorize` marker on a deny row — returns null.
+     */
+    public static function forAuditAction(string $action): ?self
+    {
+        return match ($action) {
+            'reserve' => self::Reserve,
+            'commission' => self::Commission,
+            'supersede' => self::Supersede,
+            'release', 'void' => self::Release,
+            'attach-subject' => self::AttachSubject,
+            'transition:suspended' => self::Suspend,
+            'transition:decommissioned' => self::Decommission,
+            'transition:commissioned' => self::Restore,
+            default => null,
+        };
+    }
 }
