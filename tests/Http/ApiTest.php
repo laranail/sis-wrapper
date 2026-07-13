@@ -31,32 +31,32 @@ final class ApiTest extends TestCase
 
     public function test_classes_endpoint_lists_the_register(): void
     {
-        $this->getJson('api/sis/v1/classes')
+        $this->getJson(route('sis.classes'))
             ->assertOk()
             ->assertJsonCount(22, 'classes');
     }
 
     public function test_validate_endpoint(): void
     {
-        $this->postJson('api/sis/v1/validate', ['identifier' => 'SIM-PRS-100001-FA'])
+        $this->postJson(route('sis.validate'), ['identifier' => 'SIM-PRS-100001-FA'])
             ->assertOk()
             ->assertJson(['valid' => true, 'class' => 'PRS']);
 
-        $this->postJson('api/sis/v1/validate', ['identifier' => 'not-an-id'])
+        $this->postJson(route('sis.validate'), ['identifier' => 'not-an-id'])
             ->assertOk()
             ->assertJson(['valid' => false]);
     }
 
     public function test_alias_candidates_endpoint(): void
     {
-        $this->getJson('api/sis/v1/alias-candidates?name=' . urlencode('AdelsaIQ LLC'))
+        $this->getJson(route('sis.alias-candidates', ['name' => 'AdelsaIQ LLC']))
             ->assertOk()
             ->assertJsonPath('candidates.0', 'ADIQ');
     }
 
     public function test_a_write_requires_an_idempotency_key(): void
     {
-        $this->postJson('api/sis/v1/identifiers', ['class' => 'PRS', 'reason' => 'x'])
+        $this->postJson(route('sis.identifiers.store'), ['class' => 'PRS', 'reason' => 'x'])
             ->assertStatus(400);
     }
 
@@ -64,13 +64,13 @@ final class ApiTest extends TestCase
     {
         $headers = ['Idempotency-Key' => 'key-1'];
 
-        $first = $this->postJson('api/sis/v1/identifiers', ['class' => 'PRS', 'reason' => 'new hire'], $headers)
+        $first = $this->postJson(route('sis.identifiers.store'), ['class' => 'PRS', 'reason' => 'new hire'], $headers)
             ->assertStatus(201)
             ->assertJson(['state' => 'reserved', 'class' => 'PRS']);
 
         $identifier = $first->json('identifier');
 
-        $this->postJson('api/sis/v1/identifiers', ['class' => 'PRS', 'reason' => 'new hire'], $headers)
+        $this->postJson(route('sis.identifiers.store'), ['class' => 'PRS', 'reason' => 'new hire'], $headers)
             ->assertStatus(201)
             ->assertJsonPath('identifier', $identifier);
 
@@ -80,19 +80,21 @@ final class ApiTest extends TestCase
 
     public function test_show_endpoint(): void
     {
-        $created = $this->postJson('api/sis/v1/identifiers', ['class' => 'PRS', 'reason' => 'x'], ['Idempotency-Key' => 'k'])
+        $created = $this->postJson(route('sis.identifiers.store'), ['class' => 'PRS', 'reason' => 'x'], ['Idempotency-Key' => 'k'])
             ->assertStatus(201);
 
         $identifier = (string) $created->json('identifier');
 
-        $this->getJson('api/sis/v1/identifiers/' . $identifier)
+        $created->assertHeader('Location', route('sis.identifiers.show', ['identifier' => $identifier]));
+
+        $this->getJson(route('sis.identifiers.show', ['identifier' => $identifier]))
             ->assertOk()
             ->assertJson(['identifier' => $identifier, 'state' => 'reserved']);
     }
 
     public function test_problem_json_on_a_scope_mismatch_leaks_nothing(): void
     {
-        $response = $this->postJson('api/sis/v1/identifiers', ['class' => 'INV', 'reason' => 'x'], ['Idempotency-Key' => 'k2'])
+        $response = $this->postJson(route('sis.identifiers.store'), ['class' => 'INV', 'reason' => 'x'], ['Idempotency-Key' => 'k2'])
             ->assertStatus(400);
 
         $body = $response->json();

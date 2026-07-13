@@ -229,6 +229,10 @@ paths:
       responses:
         '201':
           description: The reserved record.
+          headers:
+            Location:
+              description: URL of the newly reserved identifier (its GET /identifiers/{identifier} endpoint).
+              schema: { type: string, format: uri }
           content:
             application/json:
               schema: { $ref: '#/components/schemas/IdentifierRecord' }

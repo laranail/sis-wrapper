@@ -36,7 +36,7 @@ final class LifecycleApiTest extends TestCase
     {
         $identifier = Sis::reserve(SimClass::CLIENT, reason: 'test');
 
-        $this->postJson("api/sis/v1/identifiers/{$identifier}/commission", [
+        $this->postJson(route('sis.identifiers.commission', ['identifier' => (string) $identifier]), [
             'alias' => 'ADIQ',
             'description' => 'Adiq Technologies',
         ], ['Idempotency-Key' => 'commit-1'])
@@ -50,11 +50,11 @@ final class LifecycleApiTest extends TestCase
         $identifier = Sis::reserve(SimClass::CLIENT, reason: 'test');
         Sis::commission($identifier);
 
-        $this->postJson("api/sis/v1/identifiers/{$identifier}/transition", ['state' => 'suspended'], ['Idempotency-Key' => 's1'])
+        $this->postJson(route('sis.identifiers.transition', ['identifier' => (string) $identifier]), ['state' => 'suspended'], ['Idempotency-Key' => 's1'])
             ->assertOk()
             ->assertJsonPath('state', 'suspended');
 
-        $this->postJson("api/sis/v1/identifiers/{$identifier}/transition", ['state' => 'commissioned'], ['Idempotency-Key' => 's2'])
+        $this->postJson(route('sis.identifiers.transition', ['identifier' => (string) $identifier]), ['state' => 'commissioned'], ['Idempotency-Key' => 's2'])
             ->assertOk()
             ->assertJsonPath('state', 'commissioned');
     }
@@ -64,7 +64,7 @@ final class LifecycleApiTest extends TestCase
         $identifier = Sis::reserve(SimClass::CLIENT, reason: 'test');
         Sis::commission($identifier);
 
-        $this->postJson("api/sis/v1/identifiers/{$identifier}/transition", ['state' => 'banana'], ['Idempotency-Key' => 'x'])
+        $this->postJson(route('sis.identifiers.transition', ['identifier' => (string) $identifier]), ['state' => 'banana'], ['Idempotency-Key' => 'x'])
             ->assertStatus(422);
     }
 
@@ -75,11 +75,11 @@ final class LifecycleApiTest extends TestCase
         $new = Sis::reserve(SimClass::PRODUCT, reason: 'v2');
         Sis::commission($new);
 
-        $this->postJson("api/sis/v1/identifiers/{$old}/supersede", ['successor' => (string) $new], ['Idempotency-Key' => 'sup1'])
+        $this->postJson(route('sis.identifiers.supersede', ['identifier' => (string) $old]), ['successor' => (string) $new], ['Idempotency-Key' => 'sup1'])
             ->assertOk()
             ->assertJsonPath('superseded_by', (string) $new);
 
-        $this->getJson("api/sis/v1/identifiers/{$old}/chain")
+        $this->getJson(route('sis.identifiers.chain', ['identifier' => (string) $old]))
             ->assertOk()
             ->assertJsonPath('terminal', (string) $new)
             ->assertJsonPath('chain.0', (string) $new);
@@ -90,7 +90,7 @@ final class LifecycleApiTest extends TestCase
         $identifier = Sis::reserve(SimClass::CLIENT, reason: 'test');
         Sis::commission($identifier);
 
-        $this->getJson("api/sis/v1/identifiers/{$identifier}/audit")
+        $this->getJson(route('sis.identifiers.audit', ['identifier' => (string) $identifier]))
             ->assertOk()
             ->assertJsonFragment(['identifier' => (string) $identifier]);
     }
@@ -100,16 +100,16 @@ final class LifecycleApiTest extends TestCase
         $identifier = Sis::reserve(SimClass::CLIENT, reason: 'test');
         Sis::commission($identifier, app(SisEngine::class)->alias('ZEDX'));
 
-        $this->getJson('api/sis/v1/aliases/ZEDX')
+        $this->getJson(route('sis.aliases.resolve', ['alias' => 'ZEDX']))
             ->assertOk()
             ->assertJsonPath('identifier', (string) $identifier);
 
-        $this->getJson('api/sis/v1/aliases/NONE')->assertNotFound();
+        $this->getJson(route('sis.aliases.resolve', ['alias' => 'NONE']))->assertNotFound();
     }
 
     public function test_health_endpoint_reports_ok(): void
     {
-        $this->getJson('api/sis/v1/health')
+        $this->getJson(route('sis.health'))
             ->assertOk()
             ->assertJsonPath('status', 'ok')
             ->assertJsonPath('checks.morph_map', true);
@@ -119,7 +119,7 @@ final class LifecycleApiTest extends TestCase
     {
         $identifier = Sis::reserve(SimClass::CLIENT, reason: 'test');
 
-        $this->postJson("api/sis/v1/identifiers/{$identifier}/commission", [])
+        $this->postJson(route('sis.identifiers.commission', ['identifier' => (string) $identifier]), [])
             ->assertStatus(400);
     }
 }

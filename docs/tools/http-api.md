@@ -53,13 +53,30 @@ A write without an `Idempotency-Key` is rejected `400` with a problem+json body 
 
 | Method | Path | Body | Returns |
 |--------|------|------|---------|
-| `POST` | `identifiers` | `{ class, scope?, reason, width? }` | `201` the reserved record |
+| `POST` | `identifiers` | `{ class, scope?, reason, width? }` | `201` the reserved record, with a `Location` header pointing at its `GET identifiers/{identifier}` URL |
 | `POST` | `identifiers/{identifier}/commission` | `{ alias?, description?, subject?{type,id} }` | `200` the commissioned record |
 | `POST` | `identifiers/{identifier}/transition` | `{ state: commissioned\|suspended\|decommissioned }` | `200` the updated record |
 | `POST` | `identifiers/{identifier}/supersede` | `{ successor: "SIM-…" }` | `200` the superseded record |
 | `POST` | `identifiers/{identifier}/subject` | `{ type, id }` | `200` the updated record |
 
 `{identifier}` accepts hyphens (identifiers contain no slashes). A malformed `{identifier}` is a `404`, never a `500`.
+
+## Route names
+
+Every route is named, under a `sis.` prefix applied by the route group — so generate URLs with `route()` instead of hard-coding the (configurable) `sis.api.prefix`:
+
+```php
+route('sis.identifiers.show', ['identifier' => 'SIM-PRS-100001-FA']);
+route('sis.classes');
+route('sis.alias-candidates', ['name' => 'AdelsaIQ LLC']);   // extra params become the query string
+```
+
+| Name | Route |
+|------|-------|
+| `sis.validate` · `sis.alias-candidates` · `sis.classes` · `sis.versions.compare` · `sis.health` | the stateless endpoints |
+| `sis.identifiers.show` · `sis.identifiers.chain` · `sis.identifiers.audit` | the identifier reads |
+| `sis.aliases.resolve` · `sis.subjects.resolve` | the alias / subject reads |
+| `sis.identifiers.store` · `.commission` · `.transition` · `.supersede` · `.subject` | the writes |
 
 ## The identifier record
 

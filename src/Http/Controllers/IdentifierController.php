@@ -35,7 +35,10 @@ final class IdentifierController
             abort(500);
         }
 
-        return (new IdentifierResource($record))->response()->setStatusCode(201);
+        return (new IdentifierResource($record))
+            ->response()
+            ->setStatusCode(201)
+            ->header('Location', route('sis.identifiers.show', ['identifier' => (string) $identifier]));
     }
 
     public function show(string $identifier): JsonResponse

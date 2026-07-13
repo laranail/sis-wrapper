@@ -236,6 +236,7 @@ final class SisServiceProvider extends PackageServiceProvider
 
         Route::group([
             'prefix' => Config::string('sis.api.prefix', 'api/sis/v1'),
+            'as' => 'sis.',
             'middleware' => array_merge(
                 Config::array('sis.api.middleware', ['api']),
                 Config::array('sis.api.auth_middleware', []),
