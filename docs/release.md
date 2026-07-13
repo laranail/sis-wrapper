@@ -11,7 +11,7 @@ The wrapper and the SDK it consumes are independent polyrepos, each published on
 | `simtabi/sis-sdk` | `github.com/simtabi/sis-sdk` | The pure, zero-dependency SDK engine. Owned by the `simtabi` org. |
 | `laranail/sis-wrapper` | `github.com/laranail/sis-wrapper` | This Laravel binding. Owned by the `laranail` org. |
 
-There is no monorepo and no `git subtree` split — each repo is developed and tagged on its own. During local development the wrapper's `composer.json` uses `path` repositories to sibling checkouts (`../../simtabi/sis-sdk`, `../package-tools`, `../console`, `../enumerator`); on a consumer's machine the same dependencies resolve from git VCS.
+There is no monorepo and no `git subtree` split — each repo is developed and tagged on its own. The wrapper's `composer.json` resolves the SDK and every `laranail/*` toolkit from git **VCS** repositories, the same way in local development and on a consumer's machine (a `branch-alias` of `dev-main → 0.1.x-dev` lets a `path` or `dev-main` checkout still satisfy `^0.1` when you do want to work against a sibling checkout).
 
 ## Inter-package dependencies resolve via VCS, not Packagist
 
@@ -24,7 +24,8 @@ The wrapper declares the `vcs` repositories it needs, including the full transit
     { "type": "vcs", "url": "https://github.com/simtabi/sis-sdk" },
     { "type": "vcs", "url": "https://github.com/laranail/package-tools" },
     { "type": "vcs", "url": "https://github.com/laranail/console" },
-    { "type": "vcs", "url": "https://github.com/laranail/enumerator" }
+    { "type": "vcs", "url": "https://github.com/laranail/enumerator" },
+    { "type": "vcs", "url": "https://github.com/laranail/toolkit" }
 ]
 ```
 
