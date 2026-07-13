@@ -21,4 +21,16 @@ final class IdempotencyConflictException extends SisConflictException
             ['operation' => 'idempotency', 'idempotency_key' => $key],
         );
     }
+
+    /**
+     * The key is claimed but its first request has not committed — a concurrent in-flight request, or a
+     * crashed one. Never act again under a claimed key; the client should retry once the first completes.
+     */
+    public static function inProgress(string $key): self
+    {
+        return new self(
+            sprintf('Idempotency key "%s" is already in progress; retry once the first request completes.', $key),
+            ['operation' => 'idempotency', 'idempotency_key' => $key],
+        );
+    }
 }
