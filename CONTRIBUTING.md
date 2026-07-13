@@ -19,12 +19,16 @@ in the SDK — this repo is the Eloquent / HTTP / console shell around it.
 
 ## Local setup
 
-The monorepo resolves its sibling laranail packages (`laranail/console`, `laranail/package-tools`) through
-path repositories at `../console` and `../package/tools`. Check those out next to this repo, then:
+The package resolves `simtabi/sis-sdk` and its laranail toolkits through git VCS repositories (declared in
+`composer.json`, never Packagist — the laranail family convention), so a plain install pulls everything:
 
 ```bash
 composer install
 ```
+
+To co-develop against a local checkout of the SDK (or a toolkit) instead of the published tag, add a
+`path` repository to your own `composer.json` locally (do not commit it) and `composer update` — the path
+repo takes precedence over the VCS one.
 
 Tests run against SQLite; no database server is needed locally. The PostgreSQL trigger tests run in CI only.
 

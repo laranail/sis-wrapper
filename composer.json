@@ -51,11 +51,11 @@
         "psr-4": { "Simtabi\\Laranail\\SIS\\Tests\\": "tests/" }
     },
     "repositories": [
-        { "type": "path", "url": "../../simtabi/sis-sdk", "options": { "symlink": true } },
-        { "type": "path", "url": "../package-tools", "options": { "symlink": true } },
-        { "type": "path", "url": "../console", "options": { "symlink": true } },
-        { "type": "path", "url": "../enumerator", "options": { "symlink": true } },
-        { "type": "path", "url": "../toolkit", "options": { "symlink": true } }
+        { "type": "vcs", "url": "https://github.com/simtabi/sis-sdk" },
+        { "type": "vcs", "url": "https://github.com/laranail/package-tools" },
+        { "type": "vcs", "url": "https://github.com/laranail/console" },
+        { "type": "vcs", "url": "https://github.com/laranail/enumerator" },
+        { "type": "vcs", "url": "https://github.com/laranail/toolkit" }
     ],
     "extra": {
         "branch-alias": { "dev-main": "0.1.x-dev" },
