@@ -1,19 +1,20 @@
 # Contributing
 
-Thanks for your interest in improving SIS. This repository is the development monorepo for two published
-packages — the pure core `simtabi/sis` (`src/Core`) and its Laravel binding `laranail/sis-wrapper`
-(`src/Laravel`) — split to their own repositories via `git subtree`.
+Thanks for your interest in improving the SIS Laravel wrapper. This package (`laranail/sis-wrapper`) is the
+Laravel 13 binding for the Simtabi Identifier System; it consumes the pure, framework-free SDK
+`simtabi/sis-sdk` (a separate repository). The identifier grammar, check characters, and register logic live
+in the SDK — this repo is the Eloquent / HTTP / console shell around it.
 
 ## Ground rules
 
-- **The specification is authoritative.** `SIM-STD-0001:2026` (`SIM-STD-0001-2026.md`) governs the grammar,
-  check characters, class register, and lifecycle. A change to any of those is a specification amendment,
-  not a feature — raise it as such.
-- **The functional core stays pure.** Nothing in `src/Core` may touch I/O, the clock, randomness, or the
-  framework. Time and identity enter as command inputs, never as ambient state. `deptrac` enforces the
-  boundary and fails the build if you cross it.
-- **Defence in depth is deliberate.** Core preconditions are advisory; the database constraints and triggers
-  are authoritative. Do not remove one because the other exists.
+- **The specification is authoritative.** `SIM-STD-0001:2026` (in the SDK repo) governs the grammar, check
+  characters, class register, and lifecycle. A change to any of those is a specification amendment made in
+  the SDK, not a feature here — raise it as such.
+- **The dependency direction is one-way.** The wrapper depends on `simtabi/sis-sdk`; the SDK must never
+  depend back on the wrapper. `deptrac` enforces the boundary and fails the build if you cross it. Register
+  vocabulary is config, not code — it lives in `config/sis.php`, never hardcoded in the shell.
+- **Defence in depth is deliberate.** The SDK's core preconditions are advisory; the database constraints and
+  triggers are authoritative. Do not remove one because the other exists.
 - **No AI/assistant attribution** in commits or pull requests.
 
 ## Local setup

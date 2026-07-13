@@ -111,7 +111,7 @@ Hosted docs: **https://opensource.simtabi.com/documentation/laranail/sis-wrapper
 ### Project
 
 - Repository: https://github.com/laranail/sis-wrapper
-- Issues: https://github.com/laranail/sis/issues
+- Issues: https://github.com/laranail/sis-wrapper/issues
 - Specification: [`SIM-STD-0001:2026`](https://github.com/simtabi/sis-sdk/blob/main/SIM-STD-0001-2026.md) (in the SDK repo)
 
 ## Stability
@@ -136,7 +136,7 @@ PostgreSQL is the reference production driver (its triggers enforce the §6.4 st
 
 ## Community
 
-- Issues and questions: https://github.com/laranail/sis/issues
+- Issues and questions: https://github.com/laranail/sis-wrapper/issues
 - Security disclosures: `opensource@simtabi.com` (see [SECURITY.md](SECURITY.md)).
 
 ## Contributing & security

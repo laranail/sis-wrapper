@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security disclosure
-    url: https://github.com/laranail/sis/security/policy
+    url: https://github.com/laranail/sis-wrapper/security/policy
     about: Report a vulnerability privately — never in a public issue. See SECURITY.md.
   - name: Documentation
     url: https://opensource.simtabi.com/documentation/laranail/sis-wrapper/

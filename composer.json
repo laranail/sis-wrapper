@@ -9,7 +9,7 @@
         { "name": "Imani Manyara", "email": "imani@simtabi.com", "role": "Maintainer" }
     ],
     "support": {
-        "issues": "https://github.com/laranail/sis/issues",
+        "issues": "https://github.com/laranail/sis-wrapper/issues",
         "source": "https://github.com/laranail/sis-wrapper",
         "docs": "https://opensource.simtabi.com/documentation/laranail/sis-wrapper/"
     },

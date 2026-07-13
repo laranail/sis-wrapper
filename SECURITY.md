@@ -7,12 +7,12 @@ vulnerability.
 
 Email **opensource@simtabi.com** with:
 
-- the affected package (`simtabi/sis` or `laranail/sis-wrapper`) and version,
+- the affected package (`simtabi/sis-sdk` or `laranail/sis-wrapper`) and version,
 - a description of the vulnerability and its impact,
 - steps to reproduce, and a proof of concept if you have one.
 
 You can also use GitHub's private
-[security advisory](https://github.com/laranail/sis/security/advisories/new) flow.
+[security advisory](https://github.com/laranail/sis-wrapper/security/advisories/new) flow.
 
 We aim to acknowledge a report within three business days and to provide a remediation timeline after
 triage. Please give us a reasonable window to release a fix before any public disclosure.

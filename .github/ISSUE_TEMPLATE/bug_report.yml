@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a defect in simtabi/sis or laranail/sis-wrapper.
+description: Report a defect in simtabi/sis-sdk or laranail/sis-wrapper.
 labels: [bug]
 body:
   - type: markdown
@@ -11,7 +11,7 @@ body:
     id: package
     attributes:
       label: Package and version
-      description: Which package (simtabi/sis or laranail/sis-wrapper) and what version/tag or commit?
+      description: Which package (simtabi/sis-sdk or laranail/sis-wrapper) and what version/tag or commit?
       placeholder: laranail/sis-wrapper v0.1.0
     validations:
       required: true
