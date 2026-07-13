@@ -44,8 +44,8 @@ LoggingRegistrar               structured log + correlation id; logs and rethrow
   └ OutboxRelayingRegistrar    after commit, eagerly relays the outbox; relay failure is degradable
       └ ConstraintTranslatingRegistrar   catches DB constraint/trigger violations, rethrows the
           │                              SAME core exception the advisory check would have raised
-          └ TransactionalRegistrar       one transaction: effects + audit + outbox + idempotency
-              └ AuthorizingRegistrar     re-checks the full command (defence in depth)
+          └ AuthorizingRegistrar         authorizes the command BEFORE the transaction (defence in depth)
+              └ TransactionalRegistrar       one transaction: effects + audit + outbox
                   └ EloquentRegistrar     innermost: load snapshot → run decider → apply effects → write outbox
 ```
 
@@ -53,7 +53,7 @@ Ordering is deliberate:
 
 - `ConstraintTranslating` sits **outside** the transaction, so it catches violations surfaced at *commit*, not just at statement time.
 - `OutboxRelaying` sits **outside** the transaction too, so it only relays events that actually committed.
-- `Authorizing` sits **inside**, as defence in depth: a test asserts no path reaches `EloquentRegistrar` without passing it, even though the Action already pre-authorized.
+- `Authorizing` sits **outside** the transaction: authorization runs before a transaction opens, so an unauthorized command never opens one and its `verdict=Denied` audit row is never rolled back. It is still defence in depth — a test asserts no path reaches `EloquentRegistrar` without passing it, even though the Reserve Action already pre-authorized.
 
 ## Advisory core, authoritative database
 

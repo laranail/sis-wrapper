@@ -44,7 +44,7 @@ Sis::isValid('SIM-INV-ADIQ-000001-VY');   // true
 Sis::aliasCandidates('AdelsaIQ LLC');      // ranked candidates
 ```
 
-The `Sis` facade resolves `SisManager`, the programmatic register API — see [the facade reference](../../docs/tools/facade.md) for every method.
+The `Sis` facade resolves `SisManager`, the programmatic register API — see [the facade reference](docs/tools/facade.md) for every method.
 
 ### Over the JSON API
 
@@ -60,7 +60,7 @@ curl -X POST https://app.test/api/sis/v1/identifiers \
 # { "identifier": "SIM-CLT-100001-9O", "class": "CLT", "state": "reserved", ... }
 ```
 
-Errors are RFC 9457 `application/problem+json`. The whole surface is described by [`openapi.yaml`](../../openapi.yaml).
+Errors are RFC 9457 `application/problem+json`. The whole surface is described by [`openapi.yaml`](openapi.yaml).
 
 ## The layering
 
@@ -70,11 +70,11 @@ The shell is a functional core wrapped in an imperative shell. A request flows o
 HTTP Controller  →  Action  →  Registrar decorator stack  →  pure core Decider
 (thin: request     (the only     Logging → OutboxRelaying →   (validates, emits
  in, resource       thing that    ConstraintTranslating →      a Decision; never
- out)               builds a      Transactional →              touches the DB)
-                    Command)      Authorizing → Eloquent
+ out)               builds a      Authorizing → Transactional  touches the DB)
+                    Command)      → Eloquent
 ```
 
-The core's preconditions are **advisory**; the database's `CHECK` constraints and immutability triggers are **authoritative**. Both enforce the same rules — defence in depth — so a lost race surfaces as one exception type whether it failed at the check or at the commit. See [architecture](../../docs/architecture.md).
+The core's preconditions are **advisory**; the database's `CHECK` constraints and immutability triggers are **authoritative**. Both enforce the same rules — defence in depth — so a lost race surfaces as one exception type whether it failed at the check or at the commit. See [architecture](docs/architecture.md).
 
 ## <a name="documentation"></a>Documentation
 
@@ -82,32 +82,32 @@ Hosted docs: **https://opensource.simtabi.com/documentation/laranail/sis-wrapper
 
 ### Guides
 
-- [Installation](../../docs/installation.md) — requirements, `sis:install`, drivers.
-- [Getting started](../../docs/getting-started.md) — reserve, commission, and query your first identifier.
-- [Configuration](../../docs/configuration.md) — every `config/sis.php` section.
-- [Architecture](../../docs/architecture.md) — functional core / imperative shell, the decider pattern, the registrar stack.
-- [Release](../../docs/release.md) — tag-driven, VCS-url inter-package deps.
+- [Installation](docs/installation.md) — requirements, `sis:install`, drivers.
+- [Getting started](docs/getting-started.md) — reserve, commission, and query your first identifier.
+- [Configuration](docs/configuration.md) — every `config/sis.php` section.
+- [Architecture](docs/architecture.md) — functional core / imperative shell, the decider pattern, the registrar stack.
+- [Release](docs/release.md) — tag-driven, VCS-url inter-package deps.
 
 ### Reference
 
-- [The class register and lifecycle](../../docs/tools/register.md)
-- [Check characters](../../docs/tools/check-characters.md)
-- [Alias derivation](../../docs/tools/aliases.md)
-- [The HTTP API](../../docs/tools/http-api.md)
-- [Authorization](../../docs/tools/authorization.md)
-- [Webhooks](../../docs/tools/webhooks.md)
-- [The Artisan commands](../../docs/tools/console.md)
-- [The `Sis` facade](../../docs/tools/facade.md)
-- [Factories and seeders](../../docs/tools/factories-and-seeders.md)
-- [Translations](../../docs/tools/translations.md)
+- [The class register and lifecycle](docs/tools/register.md)
+- [Check characters](docs/tools/check-characters.md)
+- [Alias derivation](docs/tools/aliases.md)
+- [The HTTP API](docs/tools/http-api.md)
+- [Authorization](docs/tools/authorization.md)
+- [Webhooks](docs/tools/webhooks.md)
+- [The Artisan commands](docs/tools/console.md)
+- [The `Sis` facade](docs/tools/facade.md)
+- [Factories and seeders](docs/tools/factories-and-seeders.md)
+- [Translations](docs/tools/translations.md)
 
 ### Recipes
 
-- [Reserve and commission an identifier](../../docs/recipes/reserve-and-commission.md)
-- [Attach a subject](../../docs/recipes/attach-a-subject.md)
-- [Supersede an identifier](../../docs/recipes/supersede-an-identifier.md)
-- [Plug in Spatie permissions](../../docs/recipes/plug-in-spatie-permissions.md)
-- [Register a webhook](../../docs/recipes/register-a-webhook.md)
+- [Reserve and commission an identifier](docs/recipes/reserve-and-commission.md)
+- [Attach a subject](docs/recipes/attach-a-subject.md)
+- [Supersede an identifier](docs/recipes/supersede-an-identifier.md)
+- [Plug in Spatie permissions](docs/recipes/plug-in-spatie-permissions.md)
+- [Register a webhook](docs/recipes/register-a-webhook.md)
 
 ### Project
 
@@ -121,7 +121,7 @@ Pre-1.0. A single `v0.1.0` tag is kept and *moved* on each change; consumers on 
 
 ## Local development
 
-This wrapper and the `simtabi/sis-sdk` it consumes are separate repos; each is its own polyrepo. The wrapper's `composer.json` declares `path` repositories to the sibling checkouts (`../../simtabi/sis-sdk`, `../package-tools`, `../console`, `../enumerator`), so a local clone resolves against them:
+This wrapper and the `simtabi/sis-sdk` it consumes are separate repos; each is its own polyrepo. The wrapper's `composer.json` declares `vcs` repositories for the SDK and every `laranail/*` toolkit it needs (`simtabi/sis-sdk`, `package-tools`, `console`, `enumerator`, `toolkit`), so a fresh clone and a downstream consumer both resolve them from git — not Packagist. A `branch-alias` of `dev-main → 0.1.x-dev` lets a `path` or `dev-main` checkout still satisfy `^0.1` when you want to work against a sibling checkout:
 
 ```bash
 composer install
