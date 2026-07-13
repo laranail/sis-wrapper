@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use LogicException;
 use Simtabi\Laranail\SIS\Contract\PermissionResolver;
 use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Exception\UnauthorizedCommandException;
 use Simtabi\Laranail\SIS\Services\AuditWriter;
 use Simtabi\SIS\Command\AttachSubject;

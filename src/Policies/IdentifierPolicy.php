@@ -8,8 +8,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Simtabi\Laranail\SIS\Authorization\ActorResolver;
 use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
 use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Models\SisRecord;
 
 /**

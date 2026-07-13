@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Services;
 
 use DateTimeInterface;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
 use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Models\SisAudit;
 use Simtabi\SIS\Identifier\Actor;
 

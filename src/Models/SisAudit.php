@@ -8,9 +8,9 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
 use Simtabi\Laranail\SIS\Database\Factories\SisAuditFactory;
 use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
 
 /**

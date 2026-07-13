@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\SIS\Database\Concerns;
+namespace Simtabi\Laranail\SIS\Concerns;
 
 use Illuminate\Support\Facades\Schema;
 use Simtabi\SIS\Profile\SisProfile;

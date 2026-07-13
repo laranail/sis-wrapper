@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Contract;
 
 use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\SIS\Identifier\Actor;
 
 /**

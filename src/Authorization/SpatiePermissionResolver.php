@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Authorization;
 
 use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
 use Simtabi\SIS\Identifier\Actor;
 use Throwable;

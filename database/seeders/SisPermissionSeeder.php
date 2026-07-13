@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 

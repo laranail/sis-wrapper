@@ -6,6 +6,7 @@ namespace Simtabi\Laranail\SIS\Authorization;
 
 use Illuminate\Contracts\Auth\Access\Gate;
 use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\SIS\Identifier\Actor;
 
 /**

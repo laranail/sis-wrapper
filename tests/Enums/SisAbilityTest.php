@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\SIS\Tests\Authorization;
+namespace Simtabi\Laranail\SIS\Tests\Enums;
 
 use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 
 /**
  * `SisAbility` carries its human labels and operator-facing descriptions through `laranail/enumerator`:

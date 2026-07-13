@@ -6,8 +6,8 @@ namespace Simtabi\Laranail\SIS\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Date;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
 use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Models\SisAudit;
 use Simtabi\SIS\Enums\LifecycleState;
 use Simtabi\SIS\Enums\SimClass;

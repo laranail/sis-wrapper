@@ -7,7 +7,7 @@ namespace Simtabi\Laranail\SIS\Tests\Authorization;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Gate;
 use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
 

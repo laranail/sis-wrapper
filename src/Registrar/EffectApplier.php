@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
 use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\Laranail\SIS\Services\AuditWriter;
 use Simtabi\SIS\Decision\AppendAudit;

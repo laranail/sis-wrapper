@@ -6,8 +6,8 @@ namespace Simtabi\Laranail\SIS\Panel;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
-use Simtabi\Laranail\SIS\Authorization\SisAbility;
 use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\Laranail\SIS\Read\SisReadModel;
 use Simtabi\SIS\Contract\SisEngine;

@@ -15,5 +15,5 @@ parameters:
         -
             identifier: trait.unused
             paths:
-                - src/Database/Concerns/SisSchema.php
+                - src/Concerns/SisSchema.php
                 - src/Concerns/HasSisIdentifier.php

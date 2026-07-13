@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Simtabi\Laranail\SIS\Authorization;
+namespace Simtabi\Laranail\SIS\Enums;
 
 use Simtabi\Laranail\Enumerator\Attributes\Description;
 use Simtabi\Laranail\Enumerator\Attributes\Label;
