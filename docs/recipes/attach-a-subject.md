@@ -19,7 +19,7 @@ The subject is a polymorphic reference stored as a morph **alias** plus an id �
 use Simtabi\Laranail\SIS\Facades\Sis;
 use Simtabi\SIS\Identifier\SubjectRef;
 
-$id = Sis::reserve(\Simtabi\SIS\Identifier\IdClass::Client, reason: 'onboarding AdelsaIQ');
+$id = Sis::reserve(\Simtabi\SIS\Enums\SimClass::CLIENT, reason: 'onboarding AdelsaIQ');
 
 Sis::attachSubject($id, SubjectRef::of('client', '42'));   // alias 'client', id 42
 ```
@@ -32,7 +32,7 @@ curl -X POST https://app.test/api/sis/v1/identifiers/SIM-CLT-100001-9O/subject \
   -d '{"type":"client","id":"42"}'
 ```
 
-An unmapped `type` is rejected — at the HTTP edge by the `KnownMorphAlias` rule, and at the storage layer because `SisMorphServiceProvider` calls `Relation::enforceMorphMap()` at boot. A raw class name never crosses the wire. Reverse-lookup with `Sis::resolveSubject(SubjectRef::of('client', '42'))` or `GET /subjects?type=client&id=42`.
+An unmapped `type` is rejected — at the HTTP edge by the `KnownMorphAlias` rule, and at the storage layer because `SisServiceProvider::packageRegistered()` calls `Relation::enforceMorphMap()`. A raw class name never crosses the wire. Reverse-lookup with `Sis::resolveSubject(SubjectRef::of('client', '42'))` or `GET /subjects?type=client&id=42`.
 
 See [configuration → morph map](../configuration.md#morph-map) and [architecture → enforced morph map](../architecture.md#enforced-morph-map).
 

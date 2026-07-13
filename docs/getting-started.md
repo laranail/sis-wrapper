@@ -20,16 +20,16 @@ Reserving records who reserved it, when, and why (§6.5). Through the `Sis` faca
 
 ```php
 use Simtabi\Laranail\SIS\Facades\Sis;
-use Simtabi\SIS\Identifier\IdClass;
+use Simtabi\SIS\Enums\SimClass;
 
-$id = Sis::reserve(IdClass::Client, reason: 'onboarding AdelsaIQ');
+$id = Sis::reserve(SimClass::CLIENT, reason: 'onboarding AdelsaIQ');
 // $id is an Identifier value object, e.g. SIM-CLT-100001-9O
 ```
 
-For a Form S (scoped) class, pass the owning client's alias as the scope:
+`reserve()` accepts a `SimClass` case, a `ClassDefinition`, or a bare class code string (`Sis::reserve('CLT', …)`) — whatever your register defines. For a Form S (scoped) class, pass the owning client's alias as the scope:
 
 ```php
-$invoice = Sis::reserve(IdClass::Invoice, scope: 'ADIQ', reason: 'March retainer');
+$invoice = Sis::reserve(SimClass::INVOICE, scope: 'ADIQ', reason: 'March retainer');
 // SIM-INV-ADIQ-000001-VY
 ```
 
@@ -45,7 +45,7 @@ use Simtabi\SIS\Identifier\SubjectRef;
 
 Sis::commission(
     $id,
-    alias: Alias::of('ADIQ'),
+    alias: new Alias('ADIQ'),
     subject: SubjectRef::of('client', '42'),   // 'client' is a mapped morph alias
 );
 ```
@@ -65,7 +65,7 @@ Pure grammar helpers pass straight through to the core:
 
 ```php
 Sis::isValid('SIM-INV-ADIQ-000001-VY');   // true
-Sis::classOf('SIM-PRS-100001-FA');         // IdClass::Person
+Sis::classOf('SIM-PRS-100001-FA');         // the ClassDefinition for PRS (Person)
 Sis::aliasCandidates('AdelsaIQ LLC');      // ranked: ADIQ, ADEL, ...
 ```
 

@@ -1,0 +1,17 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 9
+    paths:
+        - src
+    reportUnmatchedIgnoredErrors: true
+    ignoreErrors:
+        # Two library traits whose only users live outside the analysed source: SisSchema is used by the
+        # migrations (raw DDL, deliberately not statically analysed), and HasSisIdentifier is applied to a
+        # consumer's own models. Neither is a defect — it is an analysis-scope artifact for library traits.
+        -
+            identifier: trait.unused
+            paths:
+                - src/Database/Concerns/SisSchema.php
+                - src/Concerns/HasSisIdentifier.php

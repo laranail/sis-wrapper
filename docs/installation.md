@@ -6,12 +6,12 @@ How to add the Simtabi Identifier System to a Laravel 13 application and prepare
 
 | Requirement | Version | Notes |
 |-------------|---------|-------|
-| PHP | `^8.5` | Both `simtabi/sis` and `laranail/sis-wrapper`. |
+| PHP | `^8.5` | Both `simtabi/sis-sdk` and `laranail/sis-wrapper`. |
 | Laravel | `^13.0` | The shell binds against `illuminate/*` `^13.0`. |
-| `simtabi/sis` | `^0.1` | The pure core; installed transitively. |
+| `simtabi/sis-sdk` | `^0.1` | The pure SDK engine; installed transitively. |
 | Database | PostgreSQL (reference), MySQL 8, or SQLite | See [drivers](#database-drivers). |
 
-The pure core (`simtabi/sis`) has **zero runtime dependencies**. `ext-intl` (or `ext-iconv`) is suggested for best-quality alias transliteration but is not required.
+The pure SDK (`simtabi/sis-sdk`) has **zero runtime dependencies**. `ext-intl` (or `ext-iconv`) is suggested for best-quality alias transliteration but is not required.
 
 ## Install the package
 
@@ -19,7 +19,7 @@ The pure core (`simtabi/sis`) has **zero runtime dependencies**. `ext-intl` (or 
 composer require laranail/sis-wrapper
 ```
 
-Because `laranail/*` packages resolve through git VCS repositories rather than Packagist, `laranail/sis-wrapper` already declares the `vcs` repositories it needs (`simtabi/sis`, `laranail/package-tools`, `laranail/console`). A consuming application only needs to add these same `repositories` entries to its own root `composer.json` if it pins the packages directly.
+Because `laranail/*` packages resolve through git VCS repositories rather than Packagist, `laranail/sis-wrapper` already declares the `vcs` repositories it needs (`simtabi/sis-sdk`, `laranail/package-tools`, `laranail/console`, `laranail/enumerator`, `laranail/toolkit`). A consuming application only needs to add these same `repositories` entries to its own root `composer.json` if it pins the packages directly.
 
 ## Run the installer
 
@@ -30,24 +30,23 @@ php artisan sis:install
 `sis:install` publishes the config and migrations, runs `migrate`, and finishes by running `sis:doctor`. Pass `--force` to overwrite already-published files. The steps individually:
 
 ```bash
-php artisan vendor:publish --tag=sis-config      # config/sis.php
-php artisan vendor:publish --tag=sis-migrations  # the register schema
+php artisan vendor:publish --tag=laranail::sis-wrapper-config      # config/sis.php
+php artisan vendor:publish --tag=laranail::sis-wrapper-migrations  # 0001_create_sis_schema.php
 php artisan migrate
 php artisan sis:doctor                           # health check
 ```
 
-## Service providers
+The whole storage layer ships as a single migration, `0001_create_sis_schema.php`, which builds all seven tables (`register`, `serials`, `audit`, `outbox`, `idempotency_keys`, `morph_aliases`, `webhook_endpoints`) with their profile-generated `CHECK` constraints and immutability triggers in dependency order.
 
-The package auto-registers six providers via package discovery, in boot order:
+## The service provider
 
-| Provider | Responsibility |
-|----------|----------------|
-| `SisMorphServiceProvider` | Boots **first**; enforces the morph map with `Relation::enforceMorphMap()`. |
-| `SisServiceProvider` | Core bindings — the registrar stack, actions, services, resolvers. |
-| `SisAuthServiceProvider` | Wires the configured `PermissionResolver`. |
-| `SisEventServiceProvider` | Maps SIS domain events to listeners. |
-| `SisScheduleServiceProvider` | Registers the scheduled maintenance jobs (each disableable). |
-| `SisRouteServiceProvider` | Loads the JSON API routes — **only when `sis.api.enabled` is true**. |
+The package registers a single provider, `SisServiceProvider`, via package discovery. Built on `laranail/package-tools`' `PackageServiceProvider`, it folds together what used to be several providers:
+
+| Phase | Responsibility |
+|-------|----------------|
+| `configurePackage()` | Config file, migration discovery, the three Artisan commands, the model policy, event listeners, factories, and the database seeder (via the Package DSL). |
+| `packageRegistered()` | Container bindings — the profile-driven `simtabi/sis-sdk` engine (`Simtabi\SIS\Sis` bound to `SisEngine`), the registrar decorator stack, resolvers, serial issuer, and webhook dispatcher — plus **morph-map enforcement** (`Relation::enforceMorphMap()`), done here before any subject write. |
+| `packageBooted()` | The ability gates, the opt-in HTTP surface (**only when `sis.api.enabled` is true**), and the scheduled maintenance jobs (each disableable). |
 
 ## Database drivers
 

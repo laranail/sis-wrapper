@@ -1,63 +1,88 @@
 {
-    "name": "laranail/sis-monorepo",
-    "description": "Development monorepo for the Simtabi Identifier System — the pure core (simtabi/sis) and its Laravel binding (laranail/sis-wrapper). Not published; the two packages are split from src/Core and src/Laravel.",
-    "type": "project",
+    "name": "laranail/sis-wrapper",
+    "description": "The Laravel 13 binding for the Simtabi Identifier System: enforced morphs, an immutable append-only register with storage-layer triggers, actions and services, a transactional outbox, deny-by-default pluggable RBAC, and a headless JSON API. Consumes simtabi/sis-sdk.",
+    "type": "library",
+    "keywords": ["laravel", "identifier", "register", "sis", "morph", "audit", "headless"],
     "license": "MIT",
     "homepage": "https://opensource.simtabi.com/products/laranail/sis-wrapper",
     "authors": [
-        { "name": "Imani Manyara", "email": "imani@simtabi.com" }
+        { "name": "Imani Manyara", "email": "imani@simtabi.com", "role": "Maintainer" }
     ],
+    "support": {
+        "issues": "https://github.com/laranail/sis/issues",
+        "source": "https://github.com/laranail/sis-wrapper",
+        "docs": "https://opensource.simtabi.com/documentation/laranail/sis-wrapper/"
+    },
     "require": {
         "php": "^8.5",
-        "simtabi/sis": "@dev",
-        "laranail/sis-wrapper": "@dev"
+        "simtabi/sis-sdk": "^0.1",
+        "illuminate/support": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/bus": "^13.0",
+        "illuminate/queue": "^13.0",
+        "illuminate/events": "^13.0",
+        "illuminate/notifications": "^13.0",
+        "illuminate/http": "^13.0",
+        "laranail/package-tools": "^0.1",
+        "laranail/console": "^0.1",
+        "laranail/enumerator": "^0.1",
+        "laranail/toolkit": "^0.1"
     },
     "require-dev": {
         "deptrac/deptrac": "^3.0",
-        "friendsofphp/php-cs-fixer": "^3.64",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "^1.18",
         "orchestra/testbench": "^11.0",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.0",
-        "phpstan/phpstan-strict-rules": "^2.0",
-        "larastan/larastan": "^3.0",
         "phpunit/phpunit": "^12.0",
-        "rector/rector": "^2.0",
-        "spatie/laravel-permission": "^6.0",
-        "vimeo/psalm": "^6.0"
+        "spatie/laravel-permission": "^6.0"
+    },
+    "suggest": {
+        "spatie/laravel-permission": "Use the Spatie PermissionResolver for role/permission-backed authorization (never required; class_exists-guarded).",
+        "ext-pgsql": "PostgreSQL is the reference production driver; its triggers enforce the storage-layer immutability guarantee."
+    },
+    "autoload": {
+        "psr-4": { "Simtabi\\Laranail\\SIS\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Simtabi\\Laranail\\SIS\\Tests\\": "tests/" }
     },
     "repositories": [
-        { "type": "path", "url": "src/Core", "options": { "symlink": true } },
-        { "type": "path", "url": "src/Laravel", "options": { "symlink": true } },
-        { "type": "path", "url": "../package/tools", "options": { "symlink": true } },
-        { "type": "path", "url": "../console", "options": { "symlink": true } }
+        { "type": "path", "url": "../../simtabi/sis-sdk", "options": { "symlink": true } },
+        { "type": "path", "url": "../package-tools", "options": { "symlink": true } },
+        { "type": "path", "url": "../console", "options": { "symlink": true } },
+        { "type": "path", "url": "../enumerator", "options": { "symlink": true } },
+        { "type": "path", "url": "../toolkit", "options": { "symlink": true } }
     ],
-    "autoload-dev": {
-        "psr-4": {
-            "Simtabi\\SIS\\Tests\\": "tests/Core/",
-            "Simtabi\\Laranail\\SIS\\Tests\\": "tests/Laravel/"
+    "extra": {
+        "branch-alias": { "dev-main": "0.1.x-dev" },
+        "laravel": {
+            "providers": [
+                "Simtabi\\Laranail\\SIS\\Providers\\SisServiceProvider"
+            ],
+            "aliases": {
+                "Sis": "Simtabi\\Laranail\\SIS\\Facades\\Sis"
+            }
         }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "*": false
+        }
     },
     "scripts": {
         "lint": "parallel-lint --exclude vendor src tests",
         "pint": "pint --test",
         "pint:fix": "pint",
-        "analyse:core": "phpstan analyse -c phpstan-core.neon --memory-limit=512M",
-        "analyse:shell": "phpstan analyse -c phpstan-shell.neon --memory-limit=512M",
-        "analyse": [
-            "@analyse:core",
-            "@analyse:shell"
-        ],
-        "rector": "rector process --dry-run",
+        "analyse": "phpstan analyse -c phpstan.neon --memory-limit=512M",
         "deptrac": "deptrac analyse --config-file=deptrac.yaml",
         "test": "phpunit",
-        "test:core": "phpunit --testsuite=core",
-        "test:shell": "phpunit --testsuite=laravel",
         "quality": [
             "@lint",
             "@pint",

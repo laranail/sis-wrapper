@@ -16,7 +16,7 @@ The API is off by default. Turn it on in `config/sis.php`:
 ],
 ```
 
-`SisRouteServiceProvider` loads the routes only when `enabled` is true, under the configured prefix and middleware. Authentication is the consumer's — `auth:sanctum` by default if present, deny otherwise.
+`SisServiceProvider::packageBooted()` loads the routes only when `enabled` is true, under the configured prefix and middleware. Authentication is the consumer's — `auth:sanctum` by default if present, deny otherwise.
 
 ## Cross-cutting headers
 
@@ -35,7 +35,7 @@ A write without an `Idempotency-Key` is rejected `400` with a problem+json body 
 |--------|------|--------------|---------|
 | `POST` | `validate` | `{ "identifier": "SIM-…" }` | `{ valid, class?, scope?, serial? }` |
 | `GET` | `alias-candidates` | `?name=AdelsaIQ LLC` | `{ candidates: ["ADIQ", …] }` |
-| `GET` | `classes` | — | `{ classes: [{ code, label, form, serial_start, uses_alias }] }` |
+| `GET` | `classes` | — | `{ classes: [{ code, label, form, serial_start, uses_alias }] }` — projected from the configured profile (`config('sis.classes')`) |
 | `POST` | `versions/compare` | `{ "a": "MALISA-1.0.0", "b": "MALISA-2.0.0" }` | `{ comparison: -1 \| 0 \| 1 }` |
 | `GET` | `health` | — | `{ status, checks: { database, morph_map, serials_nearing_exhaustion } }` — `200` ok, `503` degraded |
 

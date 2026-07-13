@@ -1,72 +1,37 @@
-# The boundary. A convention is not a boundary; this is. Gated in CI.
+# The boundary. Gated in CI.
 #
-# The core (src/Core) is a library of total functions over immutable values. It may not reference
-# Illuminate or the Laravel shell. Layering inside the core is strictly one-directional:
-#
-#   CoreValue <- CorePolicy <- CoreDecider <- CoreEntry
-#
-# The shell may depend on the core and on Illuminate; the core may depend on neither.
+# This is the Laravel wrapper. It consumes the pure SDK (Simtabi\SIS\) and Illuminate + the laranail
+# toolkits. The one rule that matters: the wrapper may depend on the SDK, but the SDK is a separate
+# package that must never depend back on the wrapper (that direction is enforced in the SDK repo's own
+# deptrac). Here we assert the wrapper is allowed to reach the SDK / framework.
 deptrac:
   paths:
     - ./src
 
   layers:
-    - name: CoreValue
+    - name: Wrapper
       collectors:
         - type: directory
-          value: src/Core/src/(Identifier|Version|Support|Contract|Exception|Event)/.*
+          value: src/.*
 
-    - name: CorePolicy
+    - name: Sdk
       collectors:
-        - type: directory
-          value: src/Core/src/Policy/.*
+        - type: classNameRegex
+          value: '#^Simtabi\\SIS\\#'
 
-    - name: CoreDecider
-      collectors:
-        - type: directory
-          value: src/Core/src/(Command|Snapshot|Decision|Decider)/.*
-
-    - name: CoreEntry
-      collectors:
-        - type: directory
-          value: src/Core/src/Sis\.php
-
-    - name: CoreTesting
-      collectors:
-        - type: directory
-          value: src/Core/src/Testing/.*
-
-    - name: Shell
-      collectors:
-        - type: directory
-          value: src/Laravel/src/.*
-
-    # Framework tokens, defined only so the core can be forbidden from touching them.
     - name: Illuminate
       collectors:
         - type: classNameRegex
           value: '#^Illuminate\\#'
 
+    - name: Laranail
+      collectors:
+        - type: classNameRegex
+          value: '#^Simtabi\\Laranail\\(Package|Console|Enumerator|Toolkit)\\#'
+
   ruleset:
-    CoreValue: ~
-    CorePolicy:
-      - CoreValue
-    CoreDecider:
-      - CoreValue
-      - CorePolicy
-    CoreEntry:
-      - CoreValue
-      - CorePolicy
-      - CoreDecider
-    CoreTesting:
-      - CoreValue
-      - CorePolicy
-      - CoreDecider
-      - CoreEntry
-    Shell:
-      - CoreValue
-      - CorePolicy
-      - CoreDecider
-      - CoreEntry
-      - CoreTesting
+    Wrapper:
+      - Sdk
       - Illuminate
+      - Laranail
+    # Sdk / Illuminate / Laranail are external tokens with no allowed dependents inside this repo.

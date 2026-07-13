@@ -6,12 +6,12 @@ Identifiers and the records that carry them are never edited (§8). A wrong invo
 
 ```php
 use Simtabi\Laranail\SIS\Facades\Sis;
-use Simtabi\SIS\Identifier\IdClass;
+use Simtabi\SIS\Enums\SimClass;
 
 $wrong = Sis::parse('SIM-INV-ADIQ-000001-VY');
 
 // Reserve + commission the replacement first...
-$corrected = Sis::reserve(IdClass::Invoice, scope: 'ADIQ', reason: 'reissue of 000001');
+$corrected = Sis::reserve(SimClass::INVOICE, scope: 'ADIQ', reason: 'reissue of 000001');
 Sis::commission($corrected);
 
 // ...then record the supersession. Returns the successor.

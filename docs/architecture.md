@@ -6,10 +6,12 @@ How the system is built: a pure functional core wrapped in an imperative Laravel
 
 | Package | Namespace | Role |
 |---------|-----------|------|
-| `simtabi/sis` | `Simtabi\SIS\` | The **functional core** — total functions over immutable values. Grammar, check characters, the class register, the lifecycle state machine, alias derivation, deciders. Zero dependencies. |
+| `simtabi/sis-sdk` | `Simtabi\SIS\` | The **functional core** — total functions over immutable values, driven by a `SisProfile`. Grammar, check characters, the profile-driven class register, the lifecycle state machine, alias derivation, deciders. Zero dependencies. |
 | `laranail/sis-wrapper` | `Simtabi\Laranail\SIS\` | The **imperative shell** — persistence, transactions, authorization, HTTP, the outbox, webhooks, scheduling. Everything with a side effect. |
 
-The boundary is enforced by `deptrac`: the core must not reference the shell. The core never persists, reads a clock, logs, or dispatches — it builds commands and answers questions, and the shell applies the commands it produces.
+The two are separate packages: the wrapper depends on the SDK, and the SDK never depends back. `deptrac` gates it — the wrapper may reach the SDK (`Simtabi\SIS\`), Illuminate, and the laranail toolkits, and the SDK's own repo forbids the reverse direction. The SDK never persists, reads a clock, logs, or dispatches — it builds commands and answers questions, and the shell applies the commands it produces.
+
+The wrapper consumes the config-driven SDK **engine**: `SisServiceProvider::packageRegistered()` builds a `SisProfile` from `config('sis')` (or `SisProfile::sim()` with zero config), binds `Simtabi\SIS\Sis` over it as a singleton, and aliases the `SisEngine` contract to it. So the whole register vocabulary — classes, aliases, serials — is data a consumer edits in one config file, not code.
 
 ## Functional core, imperative shell
 
@@ -63,14 +65,14 @@ The core's preconditions are **advisory**; the database is **authoritative**. Bo
 | Check characters (§4) | `CheckCharacters::verify()` | (verified on read; corruption caught by `sis:doctor`) |
 | Lifecycle transitions (§6.2) | `LifecycleState::canTransitionTo()` | immutability triggers |
 | Commissioned = locked (§6.4) | decider refuses | trigger rejects any edit to a frozen row |
-| Subtype vocabulary (§3.7) | `IdClass::permitsSubtype()` | `subtype_vocabulary` `CHECK` |
+| Subtype vocabulary (§3.7) | `ClassDefinition::permitsSubtype()` | `subtype_vocabulary` `CHECK` |
 | Alias / serial / subject shape | value objects | `alias_shape`, `serial_positive`, `subject_pair` `CHECK` |
 
-The register table carries `CHECK` constraints for every frozen shape and immutability triggers on the trigger-capable drivers (PostgreSQL, MySQL 8). So a bad row cannot exist even if application code has a bug — the `ConstraintTranslatingRegistrar` then re-surfaces a lost race as the *same* exception type whether it failed at the check or at the commit. A grandfathered pre-SIS row (Annex C.3) bypasses the shape checks via its `spec_edition`.
+The whole storage layer is one migration — `0001_create_sis_schema.php` — that builds all seven tables in dependency order. The register table carries `CHECK` constraints for every frozen shape and immutability triggers on the trigger-capable drivers (PostgreSQL, MySQL 8). Crucially, the issuer and subtype-vocabulary constraints are **generated from the same `SisProfile`** the engine runs over (resolved lazily in `up()`), so a custom register produces matching constraints and the database can never drift from config; only the fixed pieces — the grammar shape and the `LifecycleState` vocabulary — are not profile data. So a bad row cannot exist even if application code has a bug — the `ConstraintTranslatingRegistrar` then re-surfaces a lost race as the *same* exception type whether it failed at the check or at the commit. A grandfathered pre-SIS row (Annex C.3) bypasses the shape checks via its `spec_edition`.
 
 ## Enforced morph map
 
-`SisMorphServiceProvider` boots first and calls `Relation::enforceMorphMap()`. From that point, an unmapped morph is a loud Eloquent failure, never a silently stored class name. The subject an identifier names crosses every boundary as a morph **alias** (`SubjectRef` = alias + id), never a fully-qualified class name — because a raw FQCN in an immutable, never-deleted row breaks the day you rename a namespace. The register is designed to outlive your namespace layout.
+`SisServiceProvider::packageRegistered()` calls `Relation::enforceMorphMap()` in the register phase, before any boot hook or subject write. From that point, an unmapped morph is a loud Eloquent failure, never a silently stored class name. The subject an identifier names crosses every boundary as a morph **alias** (`SubjectRef` = alias + id), never a fully-qualified class name — because a raw FQCN in an immutable, never-deleted row breaks the day you rename a namespace. The register is designed to outlive your namespace layout.
 
 ## Transactional outbox
 
@@ -82,7 +84,7 @@ Every command writes an append-only audit row (identifier, action, actor referen
 
 ## Why …?
 
-**Why a pure core at all?** The four guarantees that must never be wrong — the grammar, the ISO 7064 check, the class register, and the state machine — are total functions with no I/O. Isolating them makes them exhaustively testable (the check algorithm is proven by property-based tests over every identifier shape) and reusable outside Laravel. `IdClass` and `LifecycleState` are native enums *by design*: they must not be extensible, because an extensible class register is a class register that can be corrupted.
+**Why a pure core at all?** The guarantees that must never be wrong — the grammar, the ISO 7064 check, the class register, and the state machine — are total functions with no I/O. Isolating them in the SDK makes them exhaustively testable (the check algorithm is proven by property-based tests over every identifier shape) and reusable outside Laravel. The class register is **data** (a `SisProfile` a consumer configures), not a hard-coded enum, so a company can run the standard for its own vocabulary — but `LifecycleState` stays a fixed native enum *by design*: it must not be extensible, because an extensible state machine is a state machine that can be corrupted.
 
 **Why enforce rules in the database when the code already checks them?** Application code has bugs, and a register is forever. The spec (§6.4, §9) mandates storage-layer enforcement precisely because "we'll be careful in the service layer" is how immutable data gets mutated. The code check gives a good error message and avoids a round-trip; the database check is the guarantee.
 

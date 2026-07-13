@@ -102,7 +102,11 @@ paths:
     get:
       tags: [Stateless]
       operationId: listClasses
-      summary: The 22-class register, for discovery (§3).
+      summary: The class register, for discovery (§3).
+      description: >-
+        Projects the configured register for discovery. The class set is
+        profile-driven — it reflects `config('sis.classes')`, defaulting to the
+        22-class reference SIM register when the register is left unconfigured.
       parameters:
         - $ref: '#/components/parameters/CorrelationId'
       responses:

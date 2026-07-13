@@ -1,6 +1,6 @@
 # The class register and lifecycle
 
-The 22-class register (`IdClass`) and the five-state lifecycle machine (`LifecycleState`) — the two enums that define what an identifier *is* and what may happen to it.
+The profile-driven class register and the five-state lifecycle machine (`LifecycleState`) — what an identifier *is* and what may happen to it. The register is **configuration**: it is built from `config('sis.classes')` into a `SisProfile`, so a company defines its own vocabulary. The table below is the reference SIM register the package ships. For the SDK's authoritative treatment, see the SDK's [register](https://opensource.simtabi.com/documentation/simtabi/sis-sdk/register) and [profiles](https://opensource.simtabi.com/documentation/simtabi/sis-sdk/profiles) docs.
 
 ## Identifier grammar
 
@@ -21,9 +21,9 @@ Form S — scoped:   SIM-{CLASS}-{SCOPE}-{SERIAL}-{CHECK}  SIM-INV-ADIQ-000001-V
 
 Every segment of a commissioned identifier is immutable; comparison is case-insensitive and ignores separators (`sim-prs-100001-fa` = `SIMPRS100001FA` = `SIM-PRS-100001-FA`).
 
-## The 22-class register
+## The default 22-class register
 
-`IdClass` is a native `string` enum — by design not extensible, because the register is a guarantee. Global (Form G) serials start at `100001` so the sequence never advertises how many things exist; scoped (Form S) serials start at `1`. `STD` is the deliberate exception: a global class that starts at `1`.
+The shipped register carries 22 classes, defined as rows in `config('sis.classes')` and resolved into `ClassDefinition` value objects on the `SisProfile`. Edit, add, or remove rows to run the standard for your own organisation (see [configuration → class register](../configuration.md#class-register)). Global (Form G) serials start at `100001` so the sequence never advertises how many things exist; scoped (Form S) serials start at `1`. `STD` is the deliberate exception: a global class that starts at `1`. The `SimClass` enum in the SDK is a convenience handle on the reference codes (`SimClass::CLIENT` = `'CLT'`).
 
 | Code | Class | Form | Serial start | Alias? | Subtypes |
 |------|-------|:----:|:------------:|:------:|----------|
@@ -48,13 +48,13 @@ Every segment of a commissioned identifier is immutable; comparison is case-inse
 | `ADR` | Decision record | G | 100001 | — | — |
 | `TKT` | Ticket | S | 1 | — | — |
 | `INC` | Incident | G | 100001 | — | — |
-| `ENV` | Environment | S | 1 | — | — |
+| `ENV` | Environment | S | 1 | — | `TST` `DEV` `SPT` `TRN` `STG` `PRD` |
 
-`IdClass` exposes `isScoped()`, `serialStart()`, `usesAlias()`, `subtypes()`, `permitsSubtype()`, and `label()`. The `GET /classes` endpoint projects this register for discovery.
+Each `ClassDefinition` exposes `isScoped()`, `serialStart()`, `usesAlias()`, `subtypes()`, `permitsSubtype()`, and `label()`. The `GET /classes` endpoint projects the configured register for discovery, so it reflects a custom profile automatically.
 
 ### Subtypes are attributes, not segments
 
-A subtype (§3.7) is a value in the register's `subtype` column, **never** a segment of the identifier — a laptop's identifier is `SIM-AST-100001-8W`; *that it is a laptop* (`LAP`) is a column. A class not listed above carries no subtype; its column must be null. The register enforces the vocabulary with a `subtype_vocabulary` `CHECK` constraint that mirrors `IdClass::permitsSubtype()` exactly.
+A subtype (§3.7) is a value in the register's `subtype` column, **never** a segment of the identifier — a laptop's identifier is `SIM-AST-100001-8W`; *that it is a laptop* (`LAP`) is a column. A class with an empty `subtypes` list carries no subtype; its column must be null. The register enforces the vocabulary with a `subtype_vocabulary` `CHECK` constraint generated from the profile, so it mirrors `ClassDefinition::permitsSubtype()` exactly for whatever classes you configure.
 
 ## The lifecycle state machine
 

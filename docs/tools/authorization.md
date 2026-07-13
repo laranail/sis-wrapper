@@ -26,28 +26,30 @@ This is the load-bearing rule: a resolver decides **who may ask**, never **what 
 
 `SisAbility` is a **public contract** — these strings appear in consumers' permission tables and role definitions, so they are governed like class codes: allocated once, never reassigned, retired with the thing they name. Renaming one silently revokes access in every app that stored it.
 
-| Ability | Value |
-|---------|-------|
-| View register | `sis.register.view` |
-| View audit | `sis.audit.view` |
-| Reserve | `sis.identifier.reserve` |
-| Mint | `sis.identifier.mint` |
-| Commission | `sis.identifier.commission` |
-| Attach subject | `sis.identifier.attach-subject` |
-| Suspend | `sis.identifier.suspend` |
-| Restore | `sis.identifier.restore` |
-| Decommission | `sis.identifier.decommission` |
-| Supersede | `sis.identifier.supersede` |
-| Release | `sis.identifier.release` |
-| Verify integrity | `sis.register.verify` |
-| Backfill | `sis.register.backfill` |
-| Manage webhooks | `sis.webhooks.manage` |
+| Case | Label (`->label()`) | Value |
+|------|---------------------|-------|
+| `ViewRegister` | View register | `sis.register.view` |
+| `ViewAudit` | View audit trail | `sis.audit.view` |
+| `Reserve` | Reserve identifier | `sis.identifier.reserve` |
+| `Mint` | Mint identifier | `sis.identifier.mint` |
+| `Commission` | Commission identifier | `sis.identifier.commission` |
+| `AttachSubject` | Attach subject | `sis.identifier.attach-subject` |
+| `Suspend` | Suspend identifier | `sis.identifier.suspend` |
+| `Restore` | Restore identifier | `sis.identifier.restore` |
+| `Decommission` | Decommission identifier | `sis.identifier.decommission` |
+| `Supersede` | Supersede identifier | `sis.identifier.supersede` |
+| `Release` | Release reservation | `sis.identifier.release` |
+| `VerifyIntegrity` | Verify register integrity | `sis.register.verify` |
+| `Backfill` | Backfill register | `sis.register.backfill` |
+| `ManageWebhooks` | Manage webhooks | `sis.webhooks.manage` |
+
+`SisAbility` adopts `laranail/enumerator`: each case carries a `#[Label('…')]` attribute and the enum uses the `HasEnumeratorBehavior` trait, so `SisAbility::Reserve->label()` returns `'Reserve identifier'` and `SisAbility::labels()` / `SisAbility::options()` produce select-ready maps. The panel presenter (`permittedActionLabels()`) and `sis:permissions` print these labels instead of hand-formatting the enum names. The backing **values** remain the public contract — the labels are display sugar and may be re-worded or translated freely.
 
 > `Reserve` is gated **harder** than the rest and should be granted to fewer actors than `Commission`: reserving burns a serial permanently, and serials are never reused, so an actor who can reserve in a loop can exhaust the space forever. It is the most dangerous ability in the package, not the safest.
 
 ## Class and scope granularity
 
-`AuthorizationContext` carries the `IdClass`, the `scope`, and (when known) the record — enough granularity without a permission matrix. The ability is the action; the class and scope are arguments:
+`AuthorizationContext` carries the `ClassDefinition`, the `scope`, and (when known) the record — enough granularity without a permission matrix. The ability is the action; the class and scope are arguments:
 
 - **Class-level** — "commission invoices, not people".
 - **Scope-level** — "commission for `ADIQ`, not `ADLS`". This is the multi-tenant control: without it, any user who can raise an invoice can raise it against any client in the company.

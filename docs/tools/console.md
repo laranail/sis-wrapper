@@ -25,7 +25,7 @@ php artisan sis:install
 php artisan sis:install --force     # overwrite already-published config/migrations
 ```
 
-It runs, in order: `vendor:publish --tag=sis-config`, `vendor:publish --tag=sis-migrations`, `migrate`, then `sis:doctor` (whose exit code becomes the install's). Zero required config to start.
+It runs, in order: `vendor:publish --tag=laranail::sis-wrapper-config`, `vendor:publish --tag=laranail::sis-wrapper-migrations`, `migrate`, then `sis:doctor` (whose exit code becomes the install's). Zero required config to start.
 
 ## `sis:doctor`
 
@@ -60,7 +60,7 @@ The `--actor` value is `type:id` (e.g. `user:1`); each of the fourteen `SisAbili
 
 ## Scheduled jobs (not commands)
 
-Recurring maintenance runs as scheduled jobs registered by `SisScheduleServiceProvider`, not as invokable commands — `RelayOutbox`, `ReapLapsedReservations`, `ReportSerialCapacity`, `VerifyRegisterIntegrity`, `DetectOrphanedSubjects`, and `PruneIdempotencyKeys`. Each is individually disableable in [`config('sis.schedule')`](../configuration.md#schedule).
+Recurring maintenance runs as scheduled jobs registered by `SisServiceProvider::packageBooted()`, not as invokable commands — `RelayOutbox`, `ReapLapsedReservations`, `ReportSerialCapacity`, `VerifyRegisterIntegrity`, `DetectOrphanedSubjects`, and `PruneIdempotencyKeys`. Each is individually disableable in [`config('sis.schedule')`](../configuration.md#schedule).
 
 ---
 

@@ -8,7 +8,7 @@ Each runs through the registrar stack. `$actor` is optional — it defaults to t
 
 | Method | Signature | Does |
 |--------|-----------|------|
-| `reserve` | `reserve(IdClass $class, ?string $scope = null, string $reason = '', ?Actor $actor = null, int $width = 6): Identifier` | Reserve a serial (§6.5). |
+| `reserve` | `reserve(ClassDefinition\|SimClass\|string $class, ?string $scope = null, string $reason = '', ?Actor $actor = null, int $width = 6): Identifier` | Reserve a serial (§6.5). |
 | `commission` | `commission(Identifier $id, ?Alias $alias = null, string $description = '', ?SubjectRef $subject = null, ?Actor $actor = null): Identifier` | Lock a reserved identifier; optionally bind alias + subject. |
 | `suspend` | `suspend(Identifier $id, ?Actor $actor = null): Identifier` | Commissioned → suspended. |
 | `restore` | `restore(Identifier $id, ?Actor $actor = null): Identifier` | Suspended → commissioned. |
@@ -19,11 +19,11 @@ Each runs through the registrar stack. `$actor` is optional — it defaults to t
 
 ```php
 use Simtabi\Laranail\SIS\Facades\Sis;
-use Simtabi\SIS\Identifier\IdClass;
+use Simtabi\SIS\Enums\SimClass;
 use Simtabi\SIS\Identifier\Alias;
 
-$id = Sis::reserve(IdClass::Product, reason: 'new SKU');
-Sis::commission($id, alias: Alias::of('MALISA'), description: 'Malisa platform');
+$id = Sis::reserve(SimClass::PRODUCT, reason: 'new SKU');
+Sis::commission($id, alias: new Alias('MALISA'), description: 'Malisa platform');
 Sis::suspend($id);
 Sis::restore($id);
 ```
@@ -42,20 +42,20 @@ Delegate to the read model — they do not run through the registrar stack.
 
 ## Pure passthroughs to the core
 
-These call straight into the zero-dependency `simtabi/sis` core — no register access.
+These call straight into the zero-dependency `simtabi/sis-sdk` engine — no register access.
 
 | Method | Returns |
 |--------|---------|
-| `mint(IdClass $class)` | `Minter` — the fluent command builder |
+| `mint(ClassDefinition\|SimClass\|string $class)` | `Minter` — the fluent command builder |
 | `isValid(string $value)` | `bool` |
 | `parse(string $value)` | `Identifier` |
-| `classOf(string $value)` | `IdClass\|null` |
+| `classOf(string $value)` | `ClassDefinition\|null` — the configured definition for the code |
 | `aliasCandidates(string $legalName)` | `AliasCandidates` |
 | `version(string $value)` | `Version` — a parsed release version (§7.2) |
 
 ```php
 Sis::isValid('SIM-INV-ADIQ-000001-VY');          // true
-Sis::classOf('SIM-PRS-100001-FA');                // IdClass::Person
+Sis::classOf('SIM-PRS-100001-FA');                // the ClassDefinition for PRS (Person)
 Sis::aliasCandidates('AdelsaIQ LLC')->all();      // ['ADIQ', 'ADEL', ...]
 Sis::version('MALISA-2.0.0-rc.1')->precedes(Sis::version('MALISA-2.0.0'));   // true
 ```

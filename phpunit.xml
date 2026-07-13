@@ -8,11 +8,8 @@
          failOnRisky="true"
          beStrictAboutOutputDuringTests="true">
     <testsuites>
-        <testsuite name="core">
-            <directory>tests/Core</directory>
-        </testsuite>
-        <testsuite name="laravel">
-            <directory>tests/Laravel</directory>
+        <testsuite name="wrapper">
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
     <groups>
@@ -24,8 +21,7 @@
     </groups>
     <source>
         <include>
-            <directory>src/Core/src</directory>
-            <directory>src/Laravel/src</directory>
+            <directory>src</directory>
         </include>
     </source>
 </phpunit>

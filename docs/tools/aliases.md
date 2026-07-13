@@ -6,29 +6,28 @@
 
 A client carries **both** a canonical identifier (`SIM-CLT-100001-9O`, machine-facing, immutable) and a mnemonic alias (`ADIQ`, human-facing, unique, also immutable once commissioned) — the DNS pattern. The alias appears as the `SCOPE` segment of every Form S identifier belonging to that client (`SIM-INV-ADIQ-000001-VY`), which is exactly why it can never change: it is embedded in every invoice, SOW, and ticket ever issued against them.
 
-Classes that carry an alias: `CLT`, `PRD`, `SVC`, `CMP`, `DPT` (`IdClass::usesAlias()`).
+In the reference SIM register, the classes that carry an alias are `CLT`, `PRD`, `SVC`, `CMP`, `DPT` (`ClassDefinition::usesAlias()`) — but which classes use an alias is profile data (`uses_alias` in `config('sis.classes')`).
 
 ## Grammar
 
 ```
-[A-Z][A-Z0-9]{3,5}          4 to 6 characters
+[A-Z][A-Z0-9]{3,5}          4 to 6 characters (the sis.aliases.grammar band)
 ```
 
-The `Alias` value object (`Alias::of('ADIQ')`) guarantees the shape; whether an alias is *taken* is a register question the shell answers.
+The `Alias` value object (`new Alias('ADIQ')`, or the validated `app(SisEngine::class)->alias('ADIQ')`) carries the mnemonic; the SDK codec validates the shape against the profile's alias grammar. Whether an alias is *taken* is a register question the shell answers.
 
 ## The API
 
+From Laravel, reach the ranked candidates through the facade or the HTTP endpoint:
+
 ```php
-use Simtabi\SIS\Policy\AliasPolicy;
+use Simtabi\Laranail\SIS\Facades\Sis;
 
-$candidates = AliasPolicy::candidates('AdelsaIQ LLC');
+$candidates = Sis::aliasCandidates('AdelsaIQ LLC');   // an AliasCandidates value
 $candidates->all();     // ['ADIQ', 'ADEL', ...] — ranked, de-duplicated, reserved-filtered
-
-// choose() picks the first candidate not already taken (the shell supplies the taken set):
-$candidates->choose($takenAliases);   // Alias('ADIQ'), or ExhaustedAliasSpaceException
 ```
 
-From Laravel, reach it through `Sis::aliasCandidates('AdelsaIQ LLC')` or `GET /alias-candidates?name=`. `candidates()` is pure and deterministic — the ranking never leaves the core.
+Or `GET /alias-candidates?name=AdelsaIQ LLC`. The ranking is pure and deterministic — it runs in the SDK's `AliasPolicy` over the profile's derivation vocabulary and never leaves the engine. Picking the first candidate not already taken is the shell's job (it supplies the taken set); see the SDK's [aliases](https://opensource.simtabi.com/documentation/simtabi/sis-sdk/aliases) docs for `AliasCandidates::choose()`.
 
 ## Widen before you mangle
 

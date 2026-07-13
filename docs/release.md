@@ -1,29 +1,30 @@
 # Release
 
-How the two packages are versioned, tagged, and split from the monorepo.
+How the wrapper is versioned and tagged, and how it resolves the SDK it consumes.
 
-## One monorepo, two published packages
+## Two separate repos
 
-Development happens in `laranail/sis-monorepo` (this repo, `"type": "project"`, not published). Two packages are split out and published:
+The wrapper and the SDK it consumes are independent polyrepos, each published on its own:
 
-| Source path | Published package | Repository |
-|-------------|-------------------|------------|
-| `src/Core` | `simtabi/sis` | `github.com/simtabi/sis` |
-| `src/Laravel` | `laranail/sis-wrapper` | `github.com/laranail/sis-wrapper` |
+| Package | Repository | Role |
+|---------|------------|------|
+| `simtabi/sis-sdk` | `github.com/simtabi/sis-sdk` | The pure, zero-dependency SDK engine. Owned by the `simtabi` org. |
+| `laranail/sis-wrapper` | `github.com/laranail/sis-wrapper` | This Laravel binding. Owned by the `laranail` org. |
 
-The split is performed with `git subtree` — each package's `src/` and `README.md` are pushed to its own repo. Consumers install the published packages; nothing depends on the monorepo.
+There is no monorepo and no `git subtree` split — each repo is developed and tagged on its own. During local development the wrapper's `composer.json` uses `path` repositories to sibling checkouts (`../../simtabi/sis-sdk`, `../package-tools`, `../console`, `../enumerator`); on a consumer's machine the same dependencies resolve from git VCS.
 
 ## Inter-package dependencies resolve via VCS, not Packagist
 
 `laranail/*` packages resolve their inter-package dependencies through **git VCS repositories**, not Packagist. Packagist is treated as unreliable for this family (force-pushed history leaves stale cached clones), so routine work does not push or update these packages on Packagist.
 
-Each package declares the `vcs` repositories it needs, including the full transitive `laranail/*` closure. `laranail/sis-wrapper` lists:
+The wrapper declares the `vcs` repositories it needs, including the full transitive `laranail/*` closure and the SDK:
 
 ```json
 "repositories": [
-    { "type": "vcs", "url": "https://github.com/simtabi/sis" },
+    { "type": "vcs", "url": "https://github.com/simtabi/sis-sdk" },
     { "type": "vcs", "url": "https://github.com/laranail/package-tools" },
-    { "type": "vcs", "url": "https://github.com/laranail/console" }
+    { "type": "vcs", "url": "https://github.com/laranail/console" },
+    { "type": "vcs", "url": "https://github.com/laranail/enumerator" }
 ]
 ```
 
@@ -37,11 +38,11 @@ Each repo carries a `branch-alias` of `dev-main → 0.1.x-dev`, so a path or dev
 
 ## Version compatibility
 
-| | `simtabi/sis` | `laranail/sis-wrapper` |
+| | `simtabi/sis-sdk` | `laranail/sis-wrapper` |
 |---|---|---|
 | PHP | `^8.5` | `^8.5` |
 | Laravel | — (zero deps) | `^13.0` |
-| Depends on | — | `simtabi/sis ^0.1` |
+| Depends on | — | `simtabi/sis-sdk ^0.1` |
 
 ## Release versions (the domain, not the package)
 
