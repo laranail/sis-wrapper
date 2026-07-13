@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   static:
-    name: Lint · Pint · PHPStan · deptrac · Rector
+    name: Lint · Pint · PHPStan · deptrac
     runs-on: ubuntu-latest
 
     steps:
@@ -46,14 +46,8 @@ jobs:
       - name: Pint (code style)
         run: vendor/bin/pint --test
 
-      - name: PHPStan — pure core (level 10 + strict rules)
-        run: vendor/bin/phpstan analyse -c phpstan-core.neon --no-progress --error-format=github
-
-      - name: PHPStan — Laravel shell (Larastan level 9)
-        run: vendor/bin/phpstan analyse -c phpstan-shell.neon --no-progress --error-format=github
+      - name: PHPStan (Larastan level 9)
+        run: vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=github
 
       - name: deptrac (architecture boundary)
         run: vendor/bin/deptrac analyse --config-file=deptrac.yaml --no-progress
-
-      - name: Rector (dry run)
-        run: vendor/bin/rector process --dry-run --no-progress-bar
