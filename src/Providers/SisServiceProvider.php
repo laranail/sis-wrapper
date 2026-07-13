@@ -47,7 +47,6 @@ use Simtabi\Laranail\SIS\Policies\IdentifierPolicy;
 use Simtabi\Laranail\SIS\Registrar\RegistrarFactory;
 use Simtabi\Laranail\SIS\Security\UrlGuard;
 use Simtabi\Laranail\SIS\Services\DatabaseSerialIssuer;
-use Simtabi\Laranail\SIS\Services\MorphResolver;
 use Simtabi\Laranail\SIS\Services\SisManager;
 use Simtabi\Laranail\SIS\Webhooks\HttpWebhookDispatcher;
 use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
@@ -119,8 +118,6 @@ final class SisServiceProvider extends PackageServiceProvider
 
             return new MorphAliasRegistry($map);
         });
-
-        $this->app->singleton(MorphResolver::class);
 
         // The pure SDK engine and the register vocabulary it runs over. Zero-config resolves the built-in
         // SIM profile (byte-identical to the pre-profile core); a consumer that declares `sis.classes` gets

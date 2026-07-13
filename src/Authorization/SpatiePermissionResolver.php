@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Authorization;
 
 use Simtabi\Laranail\SIS\Contract\PermissionResolver;
-use Simtabi\Laranail\SIS\Services\MorphResolver;
+use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
 use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Identifier\SubjectRef;
 use Throwable;
 
 /**
@@ -19,7 +18,7 @@ use Throwable;
 final class SpatiePermissionResolver implements PermissionResolver
 {
     public function __construct(
-        private readonly MorphResolver $morphs,
+        private readonly MorphAliasRegistry $morphs,
     ) {}
 
     public function allows(Actor $actor, SisAbility $ability, AuthorizationContext $context): bool
@@ -29,7 +28,7 @@ final class SpatiePermissionResolver implements PermissionResolver
         }
 
         try {
-            $model = $this->morphs->resolve(SubjectRef::of($actor->type, $actor->id));
+            $model = $this->morphs->resolve($actor->type, $actor->id);
         } catch (Throwable) {
             return false;
         }

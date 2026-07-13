@@ -6,7 +6,7 @@ namespace Simtabi\Laranail\SIS\Authorization;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Simtabi\Laranail\SIS\Services\MorphResolver;
+use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
 use Simtabi\SIS\Identifier\Actor;
 use Simtabi\SIS\Identifier\SubjectRef;
 use Throwable;
@@ -19,7 +19,7 @@ use Throwable;
 final class ActorResolver
 {
     public function __construct(
-        private readonly MorphResolver $morphs,
+        private readonly MorphAliasRegistry $morphs,
     ) {}
 
     public function current(): Actor
@@ -28,7 +28,7 @@ final class ActorResolver
 
         if ($user instanceof Model) {
             try {
-                return self::toActor($this->morphs->subjectRefFor($user));
+                return self::toActor($this->subjectRefFor($user));
             } catch (Throwable) {
                 // An unmapped user falls back to guest rather than leaking a class name.
             }
@@ -39,7 +39,13 @@ final class ActorResolver
 
     public function forModel(Model $model): Actor
     {
-        return self::toActor($this->morphs->subjectRefFor($model));
+        return self::toActor($this->subjectRefFor($model));
+    }
+
+    /** The subject reference for a model — its governed morph alias plus its key — via the toolkit registry. */
+    private function subjectRefFor(Model $model): SubjectRef
+    {
+        return SubjectRef::of(...$this->morphs->aliasAndKeyFor($model));
     }
 
     public function guest(): Actor
