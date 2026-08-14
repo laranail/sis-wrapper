@@ -99,7 +99,7 @@ final class SisServiceProvider extends PackageServiceProvider
             ->registerPolicies([SisRecord::class => IdentifierPolicy::class])
             ->registerEventListeners([SerialSpaceNearingExhaustion::class => NotifyCapacityWarning::class])
             ->loadFactoriesFrom('database/factories')
-            ->hasTranslations('sis')
+            ->hasTranslations('laranail-sis-wrapper')
             ->registerSeeder(SisDatabaseSeeder::class);
     }
 

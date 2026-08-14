@@ -20,11 +20,11 @@ final class ScopeMatchesClass implements ValidationRule
         $hasScope = is_string($value) && $value !== '';
 
         if ($this->class->isScoped() && !$hasScope) {
-            $fail('sis::validation.form_s_requires_scope')->translate(['class' => $this->class->label()]);
+            $fail('laranail-sis-wrapper::validation.form_s_requires_scope')->translate(['class' => $this->class->label()]);
         }
 
         if (!$this->class->isScoped() && $hasScope) {
-            $fail('sis::validation.form_g_takes_no_scope')->translate(['class' => $this->class->label()]);
+            $fail('laranail-sis-wrapper::validation.form_g_takes_no_scope')->translate(['class' => $this->class->label()]);
         }
     }
 }

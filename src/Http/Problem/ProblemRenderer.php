@@ -59,14 +59,14 @@ final class ProblemRenderer
 
     private static function titleFor(int $status): string
     {
-        $key = "sis::messages.problem.{$status}";
+        $key = "laranail-sis-wrapper::messages.problem.{$status}";
         $title = __($key);
 
         if (is_string($title) && $title !== $key) {
             return $title;
         }
 
-        $default = __('sis::messages.problem.default');
+        $default = __('laranail-sis-wrapper::messages.problem.default');
 
         return is_string($default) ? $default : 'Bad Request';
     }

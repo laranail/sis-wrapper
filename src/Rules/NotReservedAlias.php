@@ -14,7 +14,7 @@ final class NotReservedAlias implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (is_string($value) && app(SisEngine::class)->isReservedAlias($value)) {
-            $fail('sis::validation.reserved_alias_not_allocatable')->translate();
+            $fail('laranail-sis-wrapper::validation.reserved_alias_not_allocatable')->translate();
         }
     }
 }

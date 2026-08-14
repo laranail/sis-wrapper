@@ -40,12 +40,12 @@ final class SerialSpaceNearingExhaustionNotification extends Notification
             : $this->event->class;
 
         return (new MailMessage)
-            ->subject(__('sis::messages.notifications.serial_capacity.subject'))
-            ->line(__('sis::messages.notifications.serial_capacity.usage', [
+            ->subject(__('laranail-sis-wrapper::messages.notifications.serial_capacity.subject'))
+            ->line(__('laranail-sis-wrapper::messages.notifications.serial_capacity.usage', [
                 'where' => $where,
                 'percent' => (int) round($this->event->usage * 100),
             ]))
-            ->line(__('sis::messages.notifications.serial_capacity.advice'));
+            ->line(__('laranail-sis-wrapper::messages.notifications.serial_capacity.advice'));
     }
 
     /**

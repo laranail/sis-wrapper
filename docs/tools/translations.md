@@ -2,16 +2,16 @@
 
 Every user-facing string the package emits is a Laravel translation key, so a consuming app can localise or reword it without touching the source.
 
-The strings live in `resources/lang/en/` and load under the `sis::` namespace (registered by `SisServiceProvider` via package-tools' `hasTranslations('sis')`). The full `laranail/sis-wrapper::` namespace resolves the same files, so `__('sis::messages.problem.409')` and `__('laranail/sis-wrapper::messages.problem.409')` are equivalent. Developer-facing text — exception messages and the `[sis:*]` machine tags the constraint translator parses — is deliberately *not* translated, so log-scraping and error mapping stay stable across locales.
+The strings live in `resources/lang/en/` and load under the `laranail-sis-wrapper::` namespace (registered by `SisServiceProvider` via package-tools' `hasTranslations('laranail-sis-wrapper')`). The full `laranail/sis-wrapper::` namespace resolves the same files, so `__('laranail-sis-wrapper::messages.problem.409')` and `__('laranail/sis-wrapper::messages.problem.409')` are equivalent. Developer-facing text — exception messages and the `[sis:*]` machine tags the constraint translator parses — is deliberately *not* translated, so log-scraping and error mapping stay stable across locales.
 
 ## What is translatable
 
 | Surface | File · group | Example key |
 |---------|--------------|-------------|
-| Validation rule messages (the 10 `Rules/*`) | `validation.php` | `sis::validation.invalid_identifier` |
-| Console output (`sis:install`, `sis:doctor`, `sis:permissions`) | `messages.php` · `commands.*` | `sis::messages.commands.doctor.schema_present` |
-| The serial-capacity notification | `messages.php` · `notifications.serial_capacity` | `sis::messages.notifications.serial_capacity.advice` |
-| RFC 9457 problem titles | `messages.php` · `problem` | `sis::messages.problem.409` |
+| Validation rule messages (the 10 `Rules/*`) | `validation.php` | `laranail-sis-wrapper::validation.invalid_identifier` |
+| Console output (`sis:install`, `sis:doctor`, `sis:permissions`) | `messages.php` · `commands.*` | `laranail-sis-wrapper::messages.commands.doctor.schema_present` |
+| The serial-capacity notification | `messages.php` · `notifications.serial_capacity` | `laranail-sis-wrapper::messages.notifications.serial_capacity.advice` |
+| RFC 9457 problem titles | `messages.php` · `problem` | `laranail-sis-wrapper::messages.problem.409` |
 
 Problem titles are keyed by HTTP status; `ProblemRenderer` falls back to `problem.default` (`Bad Request`) for an unlisted status. The problem `detail` stays the exception's own message and is not translated.
 

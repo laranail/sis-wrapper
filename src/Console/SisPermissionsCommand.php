@@ -31,14 +31,14 @@ final class SisPermissionsCommand extends Command
 
     public function handle(PermissionResolver $resolver): int
     {
-        $this->line(__('sis::messages.commands.permissions.resolver', ['resolver' => $resolver::class]));
+        $this->line(__('laranail-sis-wrapper::messages.commands.permissions.resolver', ['resolver' => $resolver::class]));
 
         $actor = $this->actorOption();
         $context = new AuthorizationContext(app(SisEngine::class)->class(SimClass::STANDARD));
 
         foreach (SisAbility::cases() as $ability) {
             if ($actor === null) {
-                $this->line(__('sis::messages.commands.permissions.ability', [
+                $this->line(__('laranail-sis-wrapper::messages.commands.permissions.ability', [
                     'ability' => $ability->value,
                     'label' => $ability->label(),
                 ]));
@@ -46,7 +46,7 @@ final class SisPermissionsCommand extends Command
                 $description = $ability->description();
 
                 if ($description !== null) {
-                    $this->line(__('sis::messages.commands.permissions.ability_description', [
+                    $this->line(__('laranail-sis-wrapper::messages.commands.permissions.ability_description', [
                         'description' => $description,
                     ]));
                 }
@@ -55,7 +55,7 @@ final class SisPermissionsCommand extends Command
             }
 
             $allowed = $resolver->allows($actor, $ability, $context);
-            $this->line(__('sis::messages.commands.permissions.ability_actor', [
+            $this->line(__('laranail-sis-wrapper::messages.commands.permissions.ability_actor', [
                 'decision' => $allowed ? '<info>[allow]</info>' : '<fg=red>[deny]</>',
                 'ability' => $ability->value,
                 'label' => $ability->label(),

@@ -17,7 +17,7 @@ final class ValidSemver implements ValidationRule
         try {
             Version::parse(is_string($value) ? $value : '');
         } catch (InvalidVersionException) {
-            $fail('sis::validation.invalid_semver')->translate();
+            $fail('laranail-sis-wrapper::validation.invalid_semver')->translate();
         }
     }
 }

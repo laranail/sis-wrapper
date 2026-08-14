@@ -17,7 +17,7 @@ final class ValidAliasShape implements ValidationRule
         try {
             app(SisEngine::class)->alias(is_string($value) ? $value : '');
         } catch (MalformedAliasException) {
-            $fail('sis::validation.invalid_mnemonic_alias')->translate();
+            $fail('laranail-sis-wrapper::validation.invalid_mnemonic_alias')->translate();
         }
     }
 }

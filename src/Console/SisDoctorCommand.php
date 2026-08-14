@@ -39,63 +39,63 @@ final class SisDoctorCommand extends Command
         // 1. Schema present.
         $missing = $this->missingTables();
         if ($missing === []) {
-            $this->ok(__('sis::messages.commands.doctor.schema_present'));
+            $this->ok(__('laranail-sis-wrapper::messages.commands.doctor.schema_present'));
         } else {
             $failed = true;
-            $this->problem(__('sis::messages.commands.doctor.schema_missing', ['tables' => implode(', ', $missing)]));
+            $this->problem(__('laranail-sis-wrapper::messages.commands.doctor.schema_missing', ['tables' => implode(', ', $missing)]));
         }
 
         // 2. Storage-layer guarantee (the triggers) is enforced only on the trigger-capable drivers.
         $driver = $this->driver();
         if (in_array($driver, ['pgsql', 'mysql', 'mariadb'], true)) {
-            $this->ok(__('sis::messages.commands.doctor.triggers_supported', ['driver' => $driver]));
+            $this->ok(__('laranail-sis-wrapper::messages.commands.doctor.triggers_supported', ['driver' => $driver]));
         } else {
-            $this->warn(__('sis::messages.commands.doctor.triggers_unsupported', ['driver' => $driver]));
+            $this->warn(__('laranail-sis-wrapper::messages.commands.doctor.triggers_unsupported', ['driver' => $driver]));
         }
 
         // 3. Check characters verify across a sample (corruption, or a bug in us).
         $corrupt = $integrity->sampleCorrupt();
         if ($corrupt === []) {
-            $this->ok(__('sis::messages.commands.doctor.sample_clean'));
+            $this->ok(__('laranail-sis-wrapper::messages.commands.doctor.sample_clean'));
         } else {
             $failed = true;
-            $this->problem(__('sis::messages.commands.doctor.sample_corrupt', ['identifiers' => implode(', ', array_slice($corrupt, 0, 5))]));
+            $this->problem(__('laranail-sis-wrapper::messages.commands.doctor.sample_corrupt', ['identifiers' => implode(', ', array_slice($corrupt, 0, 5))]));
         }
 
         // 4. The audit hash chain is intact (no rewritten row, no fork from a concurrent write). Skipped
         // when hash-chaining is off, in which case verifyAuditChain() returns [] and this reports clean.
         $broken = $integrity->verifyAuditChain();
         if ($broken === []) {
-            $this->ok(__('sis::messages.commands.doctor.chain_intact'));
+            $this->ok(__('laranail-sis-wrapper::messages.commands.doctor.chain_intact'));
         } else {
             $failed = true;
-            $this->problem(__('sis::messages.commands.doctor.chain_broken', ['rows' => implode(', ', array_slice($broken, 0, 5))]));
+            $this->problem(__('laranail-sis-wrapper::messages.commands.doctor.chain_broken', ['rows' => implode(', ', array_slice($broken, 0, 5))]));
         }
 
         // 5. Every stored subject alias is resolvable through the morph map.
         $unknown = $this->unresolvableSubjectAliases($morphs);
         if ($unknown === []) {
-            $this->ok(__('sis::messages.commands.doctor.aliases_resolve'));
+            $this->ok(__('laranail-sis-wrapper::messages.commands.doctor.aliases_resolve'));
         } else {
             $failed = true;
-            $this->problem(__('sis::messages.commands.doctor.aliases_unknown', ['aliases' => implode(', ', $unknown)]));
+            $this->problem(__('laranail-sis-wrapper::messages.commands.doctor.aliases_unknown', ['aliases' => implode(', ', $unknown)]));
         }
 
         // 6. Outbox lag.
         $pending = SisOutbox::query()->whereNull('relayed_at')->count();
         if ($pending === 0) {
-            $this->ok(__('sis::messages.commands.doctor.outbox_drained'));
+            $this->ok(__('laranail-sis-wrapper::messages.commands.doctor.outbox_drained'));
         } else {
-            $this->warn(__('sis::messages.commands.doctor.outbox_pending', ['count' => $pending]));
+            $this->warn(__('laranail-sis-wrapper::messages.commands.doctor.outbox_pending', ['count' => $pending]));
         }
 
         // 7. Capacity headroom.
         $nearing = $capacity->nearingExhaustion();
         if ($nearing === []) {
-            $this->ok(__('sis::messages.commands.doctor.capacity_headroom'));
+            $this->ok(__('laranail-sis-wrapper::messages.commands.doctor.capacity_headroom'));
         } else {
             foreach ($nearing as $space) {
-                $this->warn(__('sis::messages.commands.doctor.capacity_nearing', [
+                $this->warn(__('laranail-sis-wrapper::messages.commands.doctor.capacity_nearing', [
                     'class' => $space['class'],
                     'scope' => $space['scope'] !== null ? ' scoped to ' . $space['scope'] : '',
                     'percent' => (int) round($space['usage'] * 100),
@@ -107,8 +107,8 @@ final class SisDoctorCommand extends Command
         // none is the norm — the JSON API and the Sis facade are the integration surface.
         $panels = PanelSupport::detected();
         $this->ok($panels === []
-            ? __('sis::messages.commands.doctor.headless')
-            : __('sis::messages.commands.doctor.panels', ['panels' => implode(', ', $panels)]));
+            ? __('laranail-sis-wrapper::messages.commands.doctor.headless')
+            : __('laranail-sis-wrapper::messages.commands.doctor.panels', ['panels' => implode(', ', $panels)]));
 
         return $failed ? self::FAILURE : self::SUCCESS;
     }

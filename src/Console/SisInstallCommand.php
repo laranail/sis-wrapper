@@ -25,7 +25,7 @@ final class SisInstallCommand extends Command
 
     public function handle(): int
     {
-        $this->info(__('sis::messages.commands.install.installing'));
+        $this->info(__('laranail-sis-wrapper::messages.commands.install.installing'));
 
         $force = (bool) $this->option('force');
 

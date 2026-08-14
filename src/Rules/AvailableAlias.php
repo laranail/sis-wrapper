@@ -18,7 +18,7 @@ final class AvailableAlias implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!is_string($value)) {
-            $fail('sis::validation.invalid_alias')->translate();
+            $fail('laranail-sis-wrapper::validation.invalid_alias')->translate();
 
             return;
         }
@@ -26,13 +26,13 @@ final class AvailableAlias implements ValidationRule
         $alias = strtoupper($value);
 
         if (app(SisEngine::class)->isReservedAlias($alias)) {
-            $fail('sis::validation.reserved_alias')->translate();
+            $fail('laranail-sis-wrapper::validation.reserved_alias')->translate();
 
             return;
         }
 
         if (SisRecord::query()->where('alias', $alias)->exists()) {
-            $fail('sis::validation.alias_taken')->translate();
+            $fail('laranail-sis-wrapper::validation.alias_taken')->translate();
         }
     }
 }
