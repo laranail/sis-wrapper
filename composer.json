@@ -38,7 +38,7 @@
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^12.0",
-        "spatie/laravel-permission": "^6.0"
+        "spatie/laravel-permission": "^6.0 || ^8.0"
     },
     "suggest": {
         "spatie/laravel-permission": "Use the Spatie PermissionResolver for role/permission-backed authorization (never required; class_exists-guarded).",
