@@ -2,11 +2,23 @@
     "name": "laranail/sis-wrapper",
     "description": "The Laravel 13 binding for the Simtabi Identifier System: enforced morphs, an immutable append-only register with storage-layer triggers, actions and services, a transactional outbox, deny-by-default pluggable RBAC, and a headless JSON API. Consumes simtabi/sis-sdk.",
     "type": "library",
-    "keywords": ["laravel", "identifier", "register", "sis", "morph", "audit", "headless"],
+    "keywords": [
+        "laravel",
+        "identifier",
+        "register",
+        "sis",
+        "morph",
+        "audit",
+        "headless"
+    ],
     "license": "MIT",
     "homepage": "https://opensource.simtabi.com/products/laranail/sis-wrapper",
     "authors": [
-        { "name": "Imani Manyara", "email": "imani@simtabi.com", "role": "Maintainer" }
+        {
+            "name": "Imani Manyara",
+            "email": "imani@simtabi.com",
+            "role": "Maintainer"
+        }
     ],
     "support": {
         "issues": "https://github.com/laranail/sis-wrapper/issues",
@@ -37,7 +49,7 @@
         "orchestra/testbench": "^11.0",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.0",
-        "phpunit/phpunit": "^12.0",
+        "phpunit/phpunit": "^12.0 || ^13.0",
         "spatie/laravel-permission": "^6.0 || ^8.0"
     },
     "suggest": {
@@ -52,17 +64,36 @@
         }
     },
     "autoload-dev": {
-        "psr-4": { "Simtabi\\Laranail\\SIS\\Tests\\": "tests/" }
+        "psr-4": {
+            "Simtabi\\Laranail\\SIS\\Tests\\": "tests/"
+        }
     },
     "repositories": [
-        { "type": "vcs", "url": "https://github.com/simtabi/sis-sdk" },
-        { "type": "vcs", "url": "https://github.com/laranail/package-tools" },
-        { "type": "vcs", "url": "https://github.com/laranail/console" },
-        { "type": "vcs", "url": "https://github.com/laranail/enumerator" },
-        { "type": "vcs", "url": "https://github.com/laranail/toolkit" }
+        {
+            "type": "vcs",
+            "url": "https://github.com/simtabi/sis-sdk"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/package-tools"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/console"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/enumerator"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/toolkit"
+        }
     ],
     "extra": {
-        "branch-alias": { "dev-main": "0.1.x-dev" },
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        },
         "laravel": {
             "providers": [
                 "Simtabi\\Laranail\\SIS\\Providers\\SisServiceProvider"
