@@ -5,22 +5,12 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Security;
 
 use PHPUnit\Framework\TestCase;
-use Simtabi\Laranail\SIS\Exception\BlockedUrlException;
 use Simtabi\Laranail\SIS\Security\UrlGuard;
+use Simtabi\Laranail\SIS\Exception\BlockedUrlException;
 
 /** The SSRF guard, tested with IP literals so no DNS is needed. */
 final class UrlGuardTest extends TestCase
 {
-    private function assertBlocked(UrlGuard $guard, string $url): void
-    {
-        try {
-            $guard->assertSafe($url);
-            $this->fail("Expected {$url} to be blocked.");
-        } catch (BlockedUrlException) {
-            $this->addToAssertionCount(1);
-        }
-    }
-
     public function test_blocks_metadata_and_private_and_loopback(): void
     {
         $guard = new UrlGuard;
@@ -77,5 +67,15 @@ final class UrlGuardTest extends TestCase
         // With range-blocking off the guard performs no resolution (matching the opt-out), so there is nothing
         // to pin — and a fake test host is not resolved and does not error.
         $this->assertSame([], (new UrlGuard(blockPrivateRanges: false))->assertSafe('https://hooks.example.com/'));
+    }
+
+    private function assertBlocked(UrlGuard $guard, string $url): void
+    {
+        try {
+            $guard->assertSafe($url);
+            $this->fail("Expected {$url} to be blocked.");
+        } catch (BlockedUrlException) {
+            $this->addToAssertionCount(1);
+        }
     }
 }

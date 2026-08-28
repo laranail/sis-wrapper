@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Authorization;
 
 use Closure;
-use Simtabi\Laranail\SIS\Contract\PermissionResolver;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\SIS\Identifier\Actor;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Contract\PermissionResolver;
 
 /**
  * A `role => [abilities]` map in config, enough to be useful on day one without installing an RBAC package.
@@ -17,8 +17,8 @@ use Simtabi\SIS\Identifier\Actor;
 final class ConfigRoleResolver implements PermissionResolver
 {
     /**
-     * @param  array<string, list<string>>  $roleAbilities  role => abilities (a role may list 'sis.*')
-     * @param  Closure(Actor): list<string>  $rolesForActor
+     * @param array<string, list<string>> $roleAbilities role => abilities (a role may list 'sis.*')
+     * @param Closure(Actor): list<string> $rolesForActor
      */
     public function __construct(
         private readonly array $roleAbilities,

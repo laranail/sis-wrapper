@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Illuminate\Contracts\Container\Container;
 use Simtabi\Laranail\SIS\Contract\Registrar;
+use Illuminate\Contracts\Container\Container;
 
 /**
  * Assembles the registrar decorator stack from config. The documented order is the default, not a law — a
@@ -31,7 +31,7 @@ final class RegistrarFactory
                 : $this->container->make($class, ['inner' => $registrar]);
         }
 
-        if (!$registrar instanceof Registrar) {
+        if (! $registrar instanceof Registrar) {
             $registrar = $this->container->make(EloquentRegistrar::class);
         }
 

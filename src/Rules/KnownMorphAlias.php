@@ -20,7 +20,7 @@ final class KnownMorphAlias implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!is_string($value) || !$this->registry->hasAlias($value)) {
+        if (! is_string($value) || ! $this->registry->hasAlias($value)) {
             $fail('laranail-sis-wrapper::validation.unknown_morph_alias')->translate();
         }
     }

@@ -7,8 +7,8 @@ namespace Simtabi\Laranail\SIS\Webhooks;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Simtabi\Laranail\SIS\Enums\CircuitState;
-use Simtabi\Laranail\SIS\Events\WebhookEndpointCircuitOpened;
 use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
+use Simtabi\Laranail\SIS\Events\WebhookEndpointCircuitOpened;
 
 /**
  * A per-endpoint circuit breaker (§2.13): after enough consecutive failures the circuit opens and
@@ -33,7 +33,7 @@ final class CircuitBreaker
         $openedAt = $endpoint->circuit_opened_at;
 
         // Still cooling down: stay open.
-        if ($openedAt === null || !$openedAt->addSeconds($this->cooldownSeconds)->isPast()) {
+        if ($openedAt === null || ! $openedAt->addSeconds($this->cooldownSeconds)->isPast()) {
             return true;
         }
 
@@ -58,8 +58,8 @@ final class CircuitBreaker
     public function recordSuccess(SisWebhookEndpoint $endpoint): void
     {
         $endpoint->forceFill([
-            'failures' => 0,
-            'circuit_state' => CircuitState::Closed,
+            'failures'          => 0,
+            'circuit_state'     => CircuitState::Closed,
             'circuit_opened_at' => null,
         ])->save();
     }
@@ -74,8 +74,8 @@ final class CircuitBreaker
         $opened = $failures >= $this->threshold || $endpoint->circuit_state === CircuitState::HalfOpen;
 
         $endpoint->forceFill([
-            'failures' => $failures,
-            'circuit_state' => $opened ? CircuitState::Open : $endpoint->circuit_state,
+            'failures'          => $failures,
+            'circuit_state'     => $opened ? CircuitState::Open : $endpoint->circuit_state,
             'circuit_opened_at' => $opened ? Date::now() : $endpoint->circuit_opened_at,
         ])->save();
 

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Profile\ClassDefinition;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
  * The headline standalone rule: assert a value is a valid identifier of a specific class.
@@ -22,7 +22,7 @@ final class ValidIdentifierOfClass implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!is_string($value) || app(SisEngine::class)->identify($value)?->code !== $this->class->code) {
+        if (! is_string($value) || app(SisEngine::class)->identify($value)?->code !== $this->class->code) {
             $fail('laranail-sis-wrapper::validation.invalid_identifier_of_class')->translate(['class' => $this->class->label()]);
         }
     }

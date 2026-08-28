@@ -37,21 +37,21 @@ final class UrlGuard
     {
         $parts = parse_url($url);
 
-        if ($parts === false || !isset($parts['scheme'], $parts['host'])) {
+        if ($parts === false || ! isset($parts['scheme'], $parts['host'])) {
             throw BlockedUrlException::of($url, 'it is not a valid absolute URL');
         }
 
-        if (!in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
+        if (! in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
             throw BlockedUrlException::of($url, 'only http and https are permitted');
         }
 
         $host = $parts['host'];
 
-        if ($this->allowlist !== [] && !in_array($host, $this->allowlist, true)) {
+        if ($this->allowlist !== [] && ! in_array($host, $this->allowlist, true)) {
             throw BlockedUrlException::of($url, 'the host is not in the allowlist');
         }
 
-        if (!$this->blockPrivateRanges) {
+        if (! $this->blockPrivateRanges) {
             return [];
         }
 

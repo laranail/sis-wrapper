@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Services;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Simtabi\Laranail\SIS\Contract\SerialIssuer;
+use Illuminate\Support\Facades\Config;
 use Simtabi\SIS\Profile\ClassDefinition;
+use Simtabi\Laranail\SIS\Contract\SerialIssuer;
 
 /**
  * Atomic serial issuance over a per-(class, scope) counter row taken under a row lock. Authoritative,
@@ -37,9 +37,9 @@ final class DatabaseSerialIssuer implements SerialIssuer
             if ($row === null) {
                 $next = $start;
                 $db->table($table)->insert([
-                    'class' => $code,
+                    'class'     => $code,
                     'scope_key' => $scopeKey,
-                    'highest' => $next,
+                    'highest'   => $next,
                 ]);
 
                 return $next;

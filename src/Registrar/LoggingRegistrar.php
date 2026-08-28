@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Psr\Log\LoggerInterface;
-use Simtabi\Laranail\SIS\Contract\Registrar;
-use Simtabi\SIS\Contract\Command;
-use Simtabi\SIS\Contract\SisException;
-use Simtabi\SIS\Decision\Decision;
 use Throwable;
+use Psr\Log\LoggerInterface;
+use Simtabi\SIS\Contract\Command;
+use Simtabi\SIS\Decision\Decision;
+use Simtabi\SIS\Contract\SisException;
+use Simtabi\Laranail\SIS\Contract\Registrar;
 
 /**
  * The outermost decorator: every command and every failure is reported through the central handler. A log
@@ -29,9 +29,9 @@ final class LoggingRegistrar implements Registrar
             $decision = $this->inner->apply($command);
 
             $this->logger->info('sis.command.applied', [
-                'command' => $command::class,
+                'command'        => $command::class,
                 'correlation_id' => $command->correlationId(),
-                'actor' => $command->actor()->reference(),
+                'actor'          => $command->actor()->reference(),
             ]);
 
             return $decision;
@@ -41,10 +41,10 @@ final class LoggingRegistrar implements Registrar
             throw $e;
         } catch (Throwable $e) {
             $this->logger->error('sis.command.error', [
-                'command' => $command::class,
+                'command'        => $command::class,
                 'correlation_id' => $command->correlationId(),
-                'error' => $e::class,
-                'message' => $e->getMessage(),
+                'error'          => $e::class,
+                'message'        => $e->getMessage(),
             ]);
 
             throw $e;

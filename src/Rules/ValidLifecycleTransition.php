@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Simtabi\SIS\Enums\LifecycleState;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 /** Validates that a target state is a legal transition from a given state (§6.2), via the state machine. */
 final class ValidLifecycleTransition implements ValidationRule
@@ -19,7 +19,7 @@ final class ValidLifecycleTransition implements ValidationRule
     {
         $to = is_string($value) ? LifecycleState::tryFrom($value) : null;
 
-        if ($to === null || !$this->from->canTransitionTo($to)) {
+        if ($to === null || ! $this->from->canTransitionTo($to)) {
             $fail('laranail-sis-wrapper::validation.illegal_transition')->translate(['from' => $this->from->value]);
         }
     }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Simtabi\SIS\Contract\SisEngine;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
  * Validates the grammar AND the check characters, by delegating to the core — it restates neither. Usable
@@ -18,7 +18,7 @@ final class ValidIdentifier implements ValidationRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!is_string($value) || !app(SisEngine::class)->validate($value)) {
+        if (! is_string($value) || ! app(SisEngine::class)->validate($value)) {
             $fail('laranail-sis-wrapper::validation.invalid_identifier')->translate();
         }
     }

@@ -5,28 +5,28 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Services;
 
 use LogicException;
-use Simtabi\Laranail\SIS\Models\SisRecord;
-use Simtabi\SIS\Command\AttachSubject;
-use Simtabi\SIS\Command\Commission;
 use Simtabi\SIS\Command\Release;
 use Simtabi\SIS\Command\Reserve;
-use Simtabi\SIS\Command\Supersede;
-use Simtabi\SIS\Command\Transition;
-use Simtabi\SIS\Command\VoidIdentifier;
 use Simtabi\SIS\Contract\Command;
-use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Command\Supersede;
 use Simtabi\SIS\Contract\Snapshot;
+use Simtabi\SIS\Command\Commission;
+use Simtabi\SIS\Command\Transition;
+use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\LifecycleState;
-use Simtabi\SIS\Exception\UnknownIdentifierException;
+use Simtabi\SIS\Command\AttachSubject;
 use Simtabi\SIS\Identifier\Identifier;
 use Simtabi\SIS\Identifier\SubjectRef;
-use Simtabi\SIS\Snapshot\AttachSubjectSnapshot;
-use Simtabi\SIS\Snapshot\CommissionSnapshot;
+use Simtabi\SIS\Snapshot\VoidSnapshot;
+use Simtabi\SIS\Command\VoidIdentifier;
 use Simtabi\SIS\Snapshot\ReleaseSnapshot;
 use Simtabi\SIS\Snapshot\ReserveSnapshot;
+use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\SIS\Snapshot\SupersedeSnapshot;
+use Simtabi\SIS\Snapshot\CommissionSnapshot;
 use Simtabi\SIS\Snapshot\TransitionSnapshot;
-use Simtabi\SIS\Snapshot\VoidSnapshot;
+use Simtabi\SIS\Snapshot\AttachSubjectSnapshot;
+use Simtabi\SIS\Exception\UnknownIdentifierException;
 
 /**
  * Loads the minimal snapshot each command needs from the register — and nothing more. A fat snapshot is a
@@ -38,16 +38,16 @@ final class SnapshotBuilder
     public function for(Command $command): Snapshot
     {
         return match (true) {
-            $command instanceof Reserve => new ReserveSnapshot($this->exists($command->identifier)),
+            $command instanceof Reserve    => new ReserveSnapshot($this->exists($command->identifier)),
             $command instanceof Commission => new CommissionSnapshot(
                 $this->requireState($command->identifier),
                 $command->alias !== null && $this->aliasTaken($command->alias->value),
                 $command->subject !== null && $this->subjectNamed($command->subject),
             ),
-            $command instanceof Transition => new TransitionSnapshot($this->requireState($command->identifier)),
-            $command instanceof Release => new ReleaseSnapshot($this->requireState($command->identifier)),
+            $command instanceof Transition     => new TransitionSnapshot($this->requireState($command->identifier)),
+            $command instanceof Release        => new ReleaseSnapshot($this->requireState($command->identifier)),
             $command instanceof VoidIdentifier => new VoidSnapshot($this->requireState($command->identifier)),
-            $command instanceof AttachSubject => new AttachSubjectSnapshot(
+            $command instanceof AttachSubject  => new AttachSubjectSnapshot(
                 $this->requireState($command->identifier),
                 $this->subjectNamed($command->subject),
             ),
@@ -69,7 +69,7 @@ final class SnapshotBuilder
     {
         $record = SisRecord::query()->find((string) $identifier);
 
-        if (!$record instanceof SisRecord) {
+        if (! $record instanceof SisRecord) {
             throw UnknownIdentifierException::of((string) $identifier);
         }
 

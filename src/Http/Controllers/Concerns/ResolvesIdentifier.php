@@ -14,7 +14,7 @@ trait ResolvesIdentifier
     {
         $engine = app(SisEngine::class);
 
-        if (!$engine->validate($value)) {
+        if (! $engine->validate($value)) {
             abort(404);
         }
 

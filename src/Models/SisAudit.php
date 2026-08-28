@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Simtabi\Laranail\SIS\Database\Factories\SisAuditFactory;
-use Simtabi\Laranail\SIS\Enums\AuditVerdict;
 use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
+use Simtabi\Laranail\SIS\Database\Factories\SisAuditFactory;
 
 /**
  * A row in the append-only audit trail (§2.9). Read-and-insert only; the storage-layer trigger rejects any
@@ -44,25 +44,9 @@ final class SisAudit extends Model
 
     protected $guarded = ['id'];
 
-    /** @return array<string, string> */
-    protected function casts(): array
-    {
-        return [
-            'context' => 'array',
-            'ability' => SisAbility::class,
-            'verdict' => AuditVerdict::class,
-            'created_at' => 'immutable_datetime',
-        ];
-    }
-
     public function getTable(): string
     {
         return $this->sisTableName('audit');
-    }
-
-    protected static function newFactory(): SisAuditFactory
-    {
-        return SisAuditFactory::new();
     }
 
     /**
@@ -73,5 +57,21 @@ final class SisAudit extends Model
     public function actor(): MorphTo
     {
         return $this->morphTo('actor');
+    }
+
+    protected static function newFactory(): SisAuditFactory
+    {
+        return SisAuditFactory::new();
+    }
+
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'context'    => 'array',
+            'ability'    => SisAbility::class,
+            'verdict'    => AuditVerdict::class,
+            'created_at' => 'immutable_datetime',
+        ];
     }
 }

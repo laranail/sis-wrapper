@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\Config;
-use Simtabi\Laranail\SIS\Database\Factories\SisRecordFactory;
+use Simtabi\SIS\Enums\SimClass;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\LifecycleState;
-use Simtabi\SIS\Enums\SimClass;
+use Illuminate\Support\Facades\Config;
 use Simtabi\SIS\Identifier\Identifier;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Simtabi\Laranail\SIS\Database\Factories\SisRecordFactory;
 
 /**
  * A row in the register (§9). It has NO mass-assignable attributes: every write goes through the
@@ -46,29 +46,14 @@ final class SisRecord extends Model
     /** @use HasFactory<SisRecordFactory> */
     use HasFactory;
 
-    protected $primaryKey = 'identifier';
-
     public $incrementing = false;
+
+    protected $primaryKey = 'identifier';
 
     protected $keyType = 'string';
 
     /** No mass assignment — writes go through the Registrar, never a fillable array. */
     protected $fillable = [];
-
-    /** @return array<string, string> */
-    protected function casts(): array
-    {
-        return [
-            // The class is a bare code string, not the SIM enum — the register is profile-driven and may
-            // hold a consuming company's own class codes, which are not SimClass cases.
-            'state' => LifecycleState::class,
-            'serial' => 'integer',
-            'reserved_at' => 'immutable_datetime',
-            'expires_at' => 'immutable_datetime',
-            'commissioned_at' => 'immutable_datetime',
-            'decommissioned_at' => 'immutable_datetime',
-        ];
-    }
 
     public function getTable(): string
     {
@@ -85,11 +70,6 @@ final class SisRecord extends Model
     public function getRouteKeyName(): string
     {
         return 'identifier';
-    }
-
-    protected static function newFactory(): SisRecordFactory
-    {
-        return SisRecordFactory::new();
     }
 
     /** The identifier as a validated core value object. */
@@ -126,5 +106,25 @@ final class SisRecord extends Model
     public function successor(): BelongsTo
     {
         return $this->belongsTo(self::class, 'superseded_by', 'identifier');
+    }
+
+    protected static function newFactory(): SisRecordFactory
+    {
+        return SisRecordFactory::new();
+    }
+
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            // The class is a bare code string, not the SIM enum — the register is profile-driven and may
+            // hold a consuming company's own class codes, which are not SimClass cases.
+            'state'             => LifecycleState::class,
+            'serial'            => 'integer',
+            'reserved_at'       => 'immutable_datetime',
+            'expires_at'        => 'immutable_datetime',
+            'commissioned_at'   => 'immutable_datetime',
+            'decommissioned_at' => 'immutable_datetime',
+        ];
     }
 }

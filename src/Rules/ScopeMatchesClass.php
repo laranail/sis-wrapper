@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Simtabi\SIS\Profile\ClassDefinition;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 /** A Form S class requires a scope; a Form G class takes none (§2, §3). */
 final class ScopeMatchesClass implements ValidationRule
@@ -19,11 +19,11 @@ final class ScopeMatchesClass implements ValidationRule
     {
         $hasScope = is_string($value) && $value !== '';
 
-        if ($this->class->isScoped() && !$hasScope) {
+        if ($this->class->isScoped() && ! $hasScope) {
             $fail('laranail-sis-wrapper::validation.form_s_requires_scope')->translate(['class' => $this->class->label()]);
         }
 
-        if (!$this->class->isScoped() && $hasScope) {
+        if (! $this->class->isScoped() && $hasScope) {
             $fail('laranail-sis-wrapper::validation.form_g_takes_no_scope')->translate(['class' => $this->class->label()]);
         }
     }

@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Database;
 
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\SIS\Enums\SimClass;
 use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Enums\CircuitState;
-use Simtabi\Laranail\SIS\Enums\IdempotencyStatus;
-use Simtabi\Laranail\SIS\Models\SisAudit;
-use Simtabi\Laranail\SIS\Models\SisIdempotencyKey;
-use Simtabi\Laranail\SIS\Models\SisMorphAlias;
-use Simtabi\Laranail\SIS\Models\SisOutbox;
-use Simtabi\Laranail\SIS\Models\SisRecord;
-use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\LifecycleState;
-use Simtabi\SIS\Enums\SimClass;
+use Illuminate\Foundation\Application;
+use Simtabi\Laranail\SIS\Models\SisAudit;
+use Simtabi\Laranail\SIS\Models\SisOutbox;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Simtabi\Laranail\SIS\Enums\CircuitState;
+use Simtabi\Laranail\SIS\Models\SisMorphAlias;
+use Simtabi\Laranail\SIS\Enums\IdempotencyStatus;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\Laranail\SIS\Models\SisIdempotencyKey;
+use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 
 /**
  * The factory computes check characters through the core, so every generated record is one the package
@@ -27,19 +27,6 @@ use Simtabi\SIS\Enums\SimClass;
 final class FactoryTest extends TestCase
 {
     use RefreshDatabase;
-
-    /** @param Application $app @return list<class-string> */
-    protected function getPackageProviders($app): array
-    {
-        return [SisServiceProvider::class];
-    }
-
-    /** @param Application $app */
-    protected function defineEnvironment($app): void
-    {
-        // The webhook secret uses the encrypted cast, which needs an application key.
-        $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
-    }
 
     public function test_default_factory_record_is_a_valid_identifier(): void
     {
@@ -118,5 +105,18 @@ final class FactoryTest extends TestCase
 
         self::assertNotSame('', $alias->alias);
         self::assertTrue(SisMorphAlias::query()->whereKey($alias->alias)->exists());
+    }
+
+    /** @param Application $app @return list<class-string> */
+    protected function getPackageProviders($app): array
+    {
+        return [SisServiceProvider::class];
+    }
+
+    /** @param Application $app */
+    protected function defineEnvironment($app): void
+    {
+        // The webhook secret uses the encrypted cast, which needs an application key.
+        $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
     }
 }

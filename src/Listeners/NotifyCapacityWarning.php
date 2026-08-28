@@ -17,13 +17,13 @@ final class NotifyCapacityWarning
 {
     public function handle(SerialSpaceNearingExhaustion $event): void
     {
-        if (!Config::boolean('sis.notifications.enabled', false)) {
+        if (! Config::boolean('sis.notifications.enabled', false)) {
             return;
         }
 
         $recipient = config('sis.notifications.recipient');
 
-        if (!is_string($recipient) || $recipient === '') {
+        if (! is_string($recipient) || $recipient === '') {
             return;
         }
 

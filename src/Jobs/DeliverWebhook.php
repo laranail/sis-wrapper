@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Jobs;
 
+use Simtabi\Laranail\SIS\Webhooks\CircuitBreaker;
+use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
 use Simtabi\Laranail\SIS\Contract\WebhookDispatcher;
 use Simtabi\Laranail\SIS\Exception\BlockedUrlException;
-use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
-use Simtabi\Laranail\SIS\Webhooks\CircuitBreaker;
 
 /**
  * Delivers one webhook: signed, retried with backoff, and skipped while the endpoint's circuit is open. A
@@ -27,7 +27,7 @@ final class DeliverWebhook extends SisJob
     {
         $endpoint = SisWebhookEndpoint::query()->find($this->endpointId);
 
-        if (!$endpoint instanceof SisWebhookEndpoint || !$endpoint->active || $breaker->isOpen($endpoint)) {
+        if (! $endpoint instanceof SisWebhookEndpoint || ! $endpoint->active || $breaker->isOpen($endpoint)) {
             return;
         }
 

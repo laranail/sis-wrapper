@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Exception;
 
-use Simtabi\SIS\Exception\SisStateException;
 use Throwable;
+use Simtabi\SIS\Exception\SisStateException;
 
 /**
  * The immutability trigger fired: something tried to UPDATE a locked row and the storage layer stopped it.

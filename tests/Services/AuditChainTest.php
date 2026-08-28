@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Services;
 
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
-use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Facades\Sis;
-use Simtabi\Laranail\SIS\Models\SisAudit;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
-use Simtabi\Laranail\SIS\Services\IntegrityService;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
 use Simtabi\SIS\Enums\SimClass;
+use Orchestra\Testbench\TestCase;
+use Illuminate\Support\Facades\DB;
+use Simtabi\Laranail\SIS\Facades\Sis;
+use Illuminate\Foundation\Application;
+use Simtabi\Laranail\SIS\Models\SisAudit;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\Laranail\SIS\Services\IntegrityService;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 
 /**
  * The audit hash chain is only tamper-evident if something actually verifies it. These tests drive real
@@ -23,33 +23,6 @@ use Simtabi\SIS\Enums\SimClass;
 final class AuditChainTest extends TestCase
 {
     use RefreshDatabase;
-
-    /** @param Application $app @return list<class-string> */
-    protected function getPackageProviders($app): array
-    {
-        return [SisServiceProvider::class];
-    }
-
-    /** @param Application $app */
-    protected function defineEnvironment($app): void
-    {
-        $app['config']->set('sis.authorization.resolver', AllowAllResolver::class);
-    }
-
-    private function integrity(): IntegrityService
-    {
-        return $this->app->make(IntegrityService::class);
-    }
-
-    /** A handful of sequential real writes, so the genesis row and its successors form one linked chain. */
-    private function growChain(): void
-    {
-        $first = Sis::reserve(SimClass::CLIENT, reason: 'first');
-        Sis::commission($first);
-
-        $second = Sis::reserve(SimClass::PERSON, reason: 'second');
-        Sis::commission($second);
-    }
 
     public function test_a_genuine_chain_of_sequential_writes_verifies_clean(): void
     {
@@ -98,5 +71,32 @@ final class AuditChainTest extends TestCase
 
         // No chain is maintained, so there is nothing to verify — and no false alarm from unhashed rows.
         $this->assertSame([], $this->integrity()->verifyAuditChain());
+    }
+
+    /** @param Application $app @return list<class-string> */
+    protected function getPackageProviders($app): array
+    {
+        return [SisServiceProvider::class];
+    }
+
+    /** @param Application $app */
+    protected function defineEnvironment($app): void
+    {
+        $app['config']->set('sis.authorization.resolver', AllowAllResolver::class);
+    }
+
+    private function integrity(): IntegrityService
+    {
+        return $this->app->make(IntegrityService::class);
+    }
+
+    /** A handful of sequential real writes, so the genesis row and its successors form one linked chain. */
+    private function growChain(): void
+    {
+        $first = Sis::reserve(SimClass::CLIENT, reason: 'first');
+        Sis::commission($first);
+
+        $second = Sis::reserve(SimClass::PERSON, reason: 'second');
+        Sis::commission($second);
     }
 }

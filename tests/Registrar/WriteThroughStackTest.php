@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Registrar;
 
 use DateTimeImmutable;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\SIS\Enums\SimClass;
 use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
-use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
-use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
+use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Contract\SisEngine;
+use Illuminate\Foundation\Application;
+use Simtabi\SIS\Profile\ClassDefinition;
+use Simtabi\SIS\Event\IdentifierReserved;
+use Simtabi\Laranail\SIS\Data\ReserveData;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Data\CommissionData;
-use Simtabi\Laranail\SIS\Data\ReserveData;
-use Simtabi\Laranail\SIS\Exception\UnauthorizedCommandException;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Enums\SimClass;
-use Simtabi\SIS\Event\IdentifierReserved;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Profile\ClassDefinition;
+use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
+use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
+use Simtabi\Laranail\SIS\Exception\UnauthorizedCommandException;
 
 /**
  * Drives the whole write path through the decorator stack: authorize -> transaction -> idempotency ->
@@ -31,33 +31,6 @@ use Simtabi\SIS\Profile\ClassDefinition;
 final class WriteThroughStackTest extends TestCase
 {
     use RefreshDatabase;
-
-    /** @param Application $app @return list<class-string> */
-    protected function getPackageProviders($app): array
-    {
-        return [SisServiceProvider::class];
-    }
-
-    private function withResolver(string $resolver): void
-    {
-        config(['sis.authorization.resolver' => $resolver]);
-        $this->app->forgetInstance(Registrar::class);
-    }
-
-    private function actor(): Actor
-    {
-        return Actor::of('user', '1');
-    }
-
-    private function class(SimClass $class): ClassDefinition
-    {
-        return $this->app->make(SisEngine::class)->class($class);
-    }
-
-    private function at(): DateTimeImmutable
-    {
-        return new DateTimeImmutable('2026-07-12T12:00:00+00:00');
-    }
 
     public function test_authorised_write_persists_record_audit_and_outbox(): void
     {
@@ -90,5 +63,32 @@ final class WriteThroughStackTest extends TestCase
         }
 
         $this->assertDatabaseCount('sis_register', 0);
+    }
+
+    /** @param Application $app @return list<class-string> */
+    protected function getPackageProviders($app): array
+    {
+        return [SisServiceProvider::class];
+    }
+
+    private function withResolver(string $resolver): void
+    {
+        config(['sis.authorization.resolver' => $resolver]);
+        $this->app->forgetInstance(Registrar::class);
+    }
+
+    private function actor(): Actor
+    {
+        return Actor::of('user', '1');
+    }
+
+    private function class(SimClass $class): ClassDefinition
+    {
+        return $this->app->make(SisEngine::class)->class($class);
+    }
+
+    private function at(): DateTimeImmutable
+    {
+        return new DateTimeImmutable('2026-07-12T12:00:00+00:00');
     }
 }

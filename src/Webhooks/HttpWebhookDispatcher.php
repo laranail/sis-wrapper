@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Webhooks;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
-use Simtabi\Laranail\SIS\Contract\WebhookDispatcher;
-use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
+use Illuminate\Support\Facades\Config;
 use Simtabi\Laranail\SIS\Security\UrlGuard;
+use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
+use Simtabi\Laranail\SIS\Contract\WebhookDispatcher;
 
 /**
  * The default transport: runs the endpoint URL through the SSRF guard, signs the payload, and POSTs it
@@ -50,20 +50,21 @@ final class HttpWebhookDispatcher implements WebhookDispatcher
      * ext-curl's CURLOPT_RESOLVE is unavailable (a non-curl handler ignores it) — the guard still refused any
      * blocked address in every case.
      *
-     * @param  list<string>  $ips  the validated IPs from the guard
+     * @param list<string> $ips the validated IPs from the guard
+     *
      * @return array<string, mixed>
      */
     private function transportOptions(string $url, array $ips): array
     {
         $options = ['allow_redirects' => false];
 
-        if ($ips === [] || !defined('CURLOPT_RESOLVE')) {
+        if ($ips === [] || ! defined('CURLOPT_RESOLVE')) {
             return $options;
         }
 
         $parts = parse_url($url);
 
-        if (!is_array($parts) || !isset($parts['host'], $parts['scheme'])) {
+        if (! is_array($parts) || ! isset($parts['host'], $parts['scheme'])) {
             return $options;
         }
 

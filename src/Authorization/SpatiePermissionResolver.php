@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Authorization;
 
-use Simtabi\Laranail\SIS\Contract\PermissionResolver;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
-use Simtabi\SIS\Identifier\Actor;
 use Throwable;
+use Simtabi\SIS\Identifier\Actor;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
 
 /**
  * Maps a SisAbility to a Spatie permission and checks it, understanding scope-aware permission strings.
@@ -24,7 +24,7 @@ final class SpatiePermissionResolver implements PermissionResolver
 
     public function allows(Actor $actor, SisAbility $ability, AuthorizationContext $context): bool
     {
-        if (!class_exists('Spatie\\Permission\\PermissionServiceProvider')) {
+        if (! class_exists('Spatie\\Permission\\PermissionServiceProvider')) {
             return false;
         }
 
@@ -34,7 +34,7 @@ final class SpatiePermissionResolver implements PermissionResolver
             return false;
         }
 
-        if ($model === null || !method_exists($model, 'hasPermissionTo')) {
+        if ($model === null || ! method_exists($model, 'hasPermissionTo')) {
             return false;
         }
 

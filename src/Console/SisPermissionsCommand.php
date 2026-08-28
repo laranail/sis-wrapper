@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Console;
 
-use Simtabi\Laranail\Console\Tools\Commands\Command;
-use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
-use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
-use Simtabi\Laranail\SIS\Contract\PermissionResolver;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\SimClass;
 use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\Console\Tools\Commands\Command;
+use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
+use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 
 /**
  * The first thing anyone runs when "it says 403 and I don't know why." Prints the ability list, the current
@@ -40,7 +40,7 @@ final class SisPermissionsCommand extends Command
             if ($actor === null) {
                 $this->line(__('laranail-sis-wrapper::messages.commands.permissions.ability', [
                     'ability' => $ability->value,
-                    'label' => $ability->label(),
+                    'label'   => $ability->label(),
                 ]));
 
                 $description = $ability->description();
@@ -57,8 +57,8 @@ final class SisPermissionsCommand extends Command
             $allowed = $resolver->allows($actor, $ability, $context);
             $this->line(__('laranail-sis-wrapper::messages.commands.permissions.ability_actor', [
                 'decision' => $allowed ? '<info>[allow]</info>' : '<fg=red>[deny]</>',
-                'ability' => $ability->value,
-                'label' => $ability->label(),
+                'ability'  => $ability->value,
+                'label'    => $ability->label(),
             ]));
         }
 
@@ -69,7 +69,7 @@ final class SisPermissionsCommand extends Command
     {
         $option = $this->option('actor');
 
-        if (!is_string($option) || !str_contains($option, ':')) {
+        if (! is_string($option) || ! str_contains($option, ':')) {
             return null;
         }
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Services;
 
-use Simtabi\Laranail\SIS\Models\SisAudit;
-use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Identifier\SpecEdition;
+use Simtabi\Laranail\SIS\Models\SisAudit;
+use Simtabi\Laranail\SIS\Models\SisRecord;
 
 /**
  * Recomputes and checks the check characters of stored identifiers (§4), and verifies the append-only audit
@@ -38,7 +38,7 @@ final class IntegrityService
             ->limit($limit)
             ->get()
             ->each(function (SisRecord $record) use (&$corrupt): void {
-                if (!$this->isIntact($record->identifier)) {
+                if (! $this->isIntact($record->identifier)) {
                     $corrupt[] = $record->identifier;
                 }
             });
@@ -63,7 +63,7 @@ final class IntegrityService
      */
     public function verifyAuditChain(): array
     {
-        if (!(bool) config('sis.audit.hash_chain', true)) {
+        if (! (bool) config('sis.audit.hash_chain', true)) {
             return [];
         }
 

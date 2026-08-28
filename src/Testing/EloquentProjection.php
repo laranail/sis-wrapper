@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Testing;
 
-use Simtabi\Laranail\SIS\Contract\SerialIssuer;
-use Simtabi\Laranail\SIS\Models\SisRecord;
-use Simtabi\Laranail\SIS\Registrar\EffectApplier;
-use Simtabi\Laranail\SIS\Services\SnapshotBuilder;
 use Simtabi\SIS\Contract\Command;
-use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Contract\Snapshot;
 use Simtabi\SIS\Decision\Decision;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Testing\Projection;
 use Simtabi\SIS\Enums\LifecycleState;
 use Simtabi\SIS\Identifier\Identifier;
 use Simtabi\SIS\Identifier\SubjectRef;
 use Simtabi\SIS\Profile\ClassDefinition;
-use Simtabi\SIS\Testing\Projection;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Simtabi\Laranail\SIS\Contract\SerialIssuer;
+use Simtabi\Laranail\SIS\Registrar\EffectApplier;
+use Simtabi\Laranail\SIS\Services\SnapshotBuilder;
 
 /**
  * The Eloquent-backed implementation of the core's Projection seam. It exists so the shell can run the

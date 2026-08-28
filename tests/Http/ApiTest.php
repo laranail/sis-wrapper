@@ -4,30 +4,16 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Http;
 
+use Orchestra\Testbench\TestCase;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 
 /** The headless JSON API: stateless endpoints, an idempotent write, reads, and RFC 9457 problem+json. */
 final class ApiTest extends TestCase
 {
     use RefreshDatabase;
-
-    /** @param Application $app @return list<class-string> */
-    protected function getPackageProviders($app): array
-    {
-        return [SisServiceProvider::class];
-    }
-
-    /** @param Application $app */
-    protected function defineEnvironment($app): void
-    {
-        $app['config']->set('sis.api.enabled', true);
-        $app['config']->set('sis.api.auth_middleware', []);
-        $app['config']->set('sis.authorization.resolver', AllowAllResolver::class);
-    }
 
     public function test_classes_endpoint_lists_the_register(): void
     {
@@ -106,5 +92,19 @@ final class ApiTest extends TestCase
         self::assertStringNotContainsStringIgnoringCase('SQLSTATE', $encoded);
         self::assertStringNotContainsStringIgnoringCase('sis_register', $encoded);
         self::assertStringNotContainsString('.php', $encoded);
+    }
+
+    /** @param Application $app @return list<class-string> */
+    protected function getPackageProviders($app): array
+    {
+        return [SisServiceProvider::class];
+    }
+
+    /** @param Application $app */
+    protected function defineEnvironment($app): void
+    {
+        $app['config']->set('sis.api.enabled', true);
+        $app['config']->set('sis.api.auth_middleware', []);
+        $app['config']->set('sis.authorization.resolver', AllowAllResolver::class);
     }
 }

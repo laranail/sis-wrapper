@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Database;
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Schema;
-use Orchestra\Testbench\TestCase;
 use RuntimeException;
+use Orchestra\Testbench\TestCase;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 
 /**
@@ -20,17 +20,6 @@ use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 final class MigrationRollbackTest extends TestCase
 {
     use RefreshDatabase;
-
-    /** @param Application $app @return list<class-string> */
-    protected function getPackageProviders($app): array
-    {
-        return [SisServiceProvider::class];
-    }
-
-    private function migration(): Migration
-    {
-        return require dirname(__DIR__, 2) . '/database/migrations/0001_create_sis_schema.php';
-    }
 
     public function test_rollback_is_refused_when_protected(): void
     {
@@ -50,5 +39,16 @@ final class MigrationRollbackTest extends TestCase
         self::assertFalse(Schema::hasTable('sis_register'));
         self::assertFalse(Schema::hasTable('sis_audit'));
         self::assertFalse(Schema::hasTable('sis_webhook_endpoints'));
+    }
+
+    /** @param Application $app @return list<class-string> */
+    protected function getPackageProviders($app): array
+    {
+        return [SisServiceProvider::class];
+    }
+
+    private function migration(): Migration
+    {
+        return require dirname(__DIR__, 2) . '/database/migrations/0001_create_sis_schema.php';
     }
 }

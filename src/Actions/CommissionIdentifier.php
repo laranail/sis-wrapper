@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Actions;
 
+use Simtabi\SIS\Command\Commission;
+use Simtabi\SIS\Identifier\Identifier;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Data\CommissionData;
 use Simtabi\Laranail\SIS\Services\IdempotencyService;
-use Simtabi\SIS\Command\Commission;
-use Simtabi\SIS\Identifier\Identifier;
 
 /**
  * Commission a reserved identifier and lock it forever. Authorization, transaction, audit, and outbox are

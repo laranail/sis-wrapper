@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Simtabi\Laranail\SIS\Http\Requests\ValidateIdentifierRequest;
 use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\Laranail\SIS\Http\Requests\ValidateIdentifierRequest;
 
 /** Stateless (§2.11): validate an identifier's grammar and check characters. Touches no register. */
 final class ValidateController
@@ -16,16 +16,16 @@ final class ValidateController
         $input = $request->validated('identifier');
         $value = is_string($input) ? $input : '';
 
-        if (!$engine->validate($value)) {
+        if (! $engine->validate($value)) {
             return new JsonResponse(['valid' => false]);
         }
 
         $identifier = $engine->parse($value);
 
         return new JsonResponse([
-            'valid' => true,
-            'class' => $identifier->class->code,
-            'scope' => $identifier->scope,
+            'valid'  => true,
+            'class'  => $identifier->class->code,
+            'scope'  => $identifier->scope,
             'serial' => $identifier->serial,
         ]);
     }

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Requests\Concerns;
 
 use Carbon\CarbonImmutable;
-use Simtabi\Laranail\SIS\Data\CommandContext;
-use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Identifier\Identifier;
+use Simtabi\Laranail\SIS\Data\CommandContext;
 
 /**
  * Shared readers for the SIS FormRequests: the correlation/idempotency attributes threaded by middleware,
@@ -16,14 +16,6 @@ use Simtabi\SIS\Identifier\Identifier;
  */
 trait ReadsSisRequest
 {
-    /** The identifier from the route, already shape-validated by the caller's guard. */
-    protected function routeIdentifier(): Identifier
-    {
-        $value = $this->route('identifier');
-
-        return app(SisEngine::class)->parse(is_string($value) ? $value : '');
-    }
-
     /** The non-domain envelope every write Action takes: who, when, and the threaded correlation/idempotency keys. */
     public function context(Actor $actor): CommandContext
     {
@@ -33,6 +25,14 @@ trait ReadsSisRequest
             correlationId: $this->correlationId(),
             idempotencyKey: $this->idempotencyKey(),
         );
+    }
+
+    /** The identifier from the route, already shape-validated by the caller's guard. */
+    protected function routeIdentifier(): Identifier
+    {
+        $value = $this->route('identifier');
+
+        return app(SisEngine::class)->parse(is_string($value) ? $value : '');
     }
 
     protected function correlationId(): string

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Concerns;
 
-use Illuminate\Support\Facades\Schema;
 use Simtabi\SIS\Profile\SisProfile;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Shared helpers for the register's migrations: the configured connection, the table prefix, and the

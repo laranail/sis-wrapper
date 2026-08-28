@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\Laranail\SIS\Read\SisReadModel;
 use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
 use Simtabi\Laranail\SIS\Authorization\ActorResolver;
-use Simtabi\Laranail\SIS\Http\Requests\ReserveIdentifierRequest;
 use Simtabi\Laranail\SIS\Http\Resources\IdentifierResource;
-use Simtabi\Laranail\SIS\Read\SisReadModel;
-use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\Laranail\SIS\Http\Requests\ReserveIdentifierRequest;
 
 /**
  * Thin: a FormRequest in, an Action call, a Resource out. A controller with a rule in it is a bug. The
@@ -43,7 +43,7 @@ final class IdentifierController
 
     public function show(string $identifier): JsonResponse
     {
-        if (!$this->engine->validate($identifier)) {
+        if (! $this->engine->validate($identifier)) {
             abort(404);
         }
 

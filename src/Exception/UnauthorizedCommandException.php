@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Exception;
 
-use Simtabi\SIS\Exception\SisStateException;
 use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Exception\SisStateException;
 
 /**
  * An actor was not permitted to ask. Checked BEFORE the decider runs, so an unauthorised command never

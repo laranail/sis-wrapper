@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Services;
 
 use DateTimeInterface;
-use Simtabi\Laranail\SIS\Enums\AuditVerdict;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\SIS\Models\SisAudit;
 use Simtabi\SIS\Identifier\Actor;
+use Simtabi\Laranail\SIS\Models\SisAudit;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Enums\AuditVerdict;
 
 /**
  * The one place an audit row is written (§2.9). Both an applied effect (from the EffectApplier, verdict
@@ -24,6 +24,34 @@ use Simtabi\SIS\Identifier\Actor;
  */
 final class AuditWriter
 {
+    /**
+     * The one definition of a chain link. write() computes each row's hash through here, and the verifier
+     * (IntegrityService::verifyAuditChain) recomputes it through the SAME method — so the writer and the
+     * checker cannot drift: a change to the hashed shape changes both at once, and a stored hash that no
+     * longer recomputes is tampering, not a version skew. The ability and verdict are recorded on the row
+     * but are deliberately NOT folded in — the chain shape is a stored contract and must not shift.
+     *
+     * @param string $actorReference the actor's PII-free reference, `actor_type . ':' . actor_id`
+     * @param array<string, mixed> $context the redacted context, re-encoded exactly as stored
+     */
+    public static function chainHash(
+        ?string $prevHash,
+        ?string $identifier,
+        string $action,
+        string $actorReference,
+        ?string $before,
+        ?string $after,
+        string $correlationId,
+        array $context,
+    ): string {
+        $content = json_encode([
+            $identifier, $action, $actorReference,
+            $before, $after, $correlationId, $context,
+        ], JSON_THROW_ON_ERROR);
+
+        return hash('sha256', (string) $prevHash . $content);
+    }
+
     /** @param array<string, mixed> $context redacted */
     public function write(
         ?string $identifier,
@@ -48,54 +76,32 @@ final class AuditWriter
             /** @var string|null $prevHash */
             $prevHash = SisAudit::query()->orderByDesc('id')->value('hash');
             $hash = self::chainHash(
-                $prevHash, $identifier, $action, $actor->reference(),
-                $before, $after, $correlationId, $context,
+                $prevHash,
+                $identifier,
+                $action,
+                $actor->reference(),
+                $before,
+                $after,
+                $correlationId,
+                $context,
             );
         }
 
         SisAudit::query()->create([
-            'identifier' => $identifier,
-            'action' => $action,
-            'actor_type' => $actor->type,
-            'actor_id' => $actor->id,
-            'before_state' => $before,
-            'after_state' => $after,
-            'ability' => $ability?->value,
-            'verdict' => $verdict,
-            'correlation_id' => $correlationId,
+            'identifier'      => $identifier,
+            'action'          => $action,
+            'actor_type'      => $actor->type,
+            'actor_id'        => $actor->id,
+            'before_state'    => $before,
+            'after_state'     => $after,
+            'ability'         => $ability?->value,
+            'verdict'         => $verdict,
+            'correlation_id'  => $correlationId,
             'idempotency_key' => $idempotencyKey,
-            'context' => $context,
-            'hash' => $hash,
-            'prev_hash' => $prevHash,
-            'created_at' => $at,
+            'context'         => $context,
+            'hash'            => $hash,
+            'prev_hash'       => $prevHash,
+            'created_at'      => $at,
         ]);
-    }
-
-    /**
-     * The one definition of a chain link. write() computes each row's hash through here, and the verifier
-     * (IntegrityService::verifyAuditChain) recomputes it through the SAME method — so the writer and the
-     * checker cannot drift: a change to the hashed shape changes both at once, and a stored hash that no
-     * longer recomputes is tampering, not a version skew. The ability and verdict are recorded on the row
-     * but are deliberately NOT folded in — the chain shape is a stored contract and must not shift.
-     *
-     * @param  string  $actorReference  the actor's PII-free reference, `actor_type . ':' . actor_id`
-     * @param  array<string, mixed>  $context  the redacted context, re-encoded exactly as stored
-     */
-    public static function chainHash(
-        ?string $prevHash,
-        ?string $identifier,
-        string $action,
-        string $actorReference,
-        ?string $before,
-        ?string $after,
-        string $correlationId,
-        array $context,
-    ): string {
-        $content = json_encode([
-            $identifier, $action, $actorReference,
-            $before, $after, $correlationId, $context,
-        ], JSON_THROW_ON_ERROR);
-
-        return hash('sha256', (string) $prevHash . $content);
     }
 }

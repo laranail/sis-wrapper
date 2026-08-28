@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Authorization;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Identifier\SubjectRef;
 use Throwable;
+use Simtabi\SIS\Identifier\Actor;
+use Illuminate\Support\Facades\Auth;
+use Simtabi\SIS\Identifier\SubjectRef;
+use Illuminate\Database\Eloquent\Model;
+use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
 
 /**
  * Maps an authenticated model to an Actor, and produces the non-human actors: the scheduler, a console
@@ -42,12 +42,6 @@ final class ActorResolver
         return self::toActor($this->subjectRefFor($model));
     }
 
-    /** The subject reference for a model — its governed morph alias plus its key — via the toolkit registry. */
-    private function subjectRefFor(Model $model): SubjectRef
-    {
-        return SubjectRef::of(...$this->morphs->aliasAndKeyFor($model));
-    }
-
     public function guest(): Actor
     {
         return Actor::of('guest', 'anonymous');
@@ -66,5 +60,11 @@ final class ActorResolver
     private static function toActor(SubjectRef $ref): Actor
     {
         return Actor::of($ref->type, $ref->id);
+    }
+
+    /** The subject reference for a model — its governed morph alias plus its key — via the toolkit registry. */
+    private function subjectRefFor(Model $model): SubjectRef
+    {
+        return SubjectRef::of(...$this->morphs->aliasAndKeyFor($model));
     }
 }
