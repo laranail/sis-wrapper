@@ -88,6 +88,16 @@
         {
             "type": "vcs",
             "url": "https://github.com/laranail/toolkit"
+        },
+        {
+            "type": "composer",
+            "url": "https://repo.packagist.org",
+            "exclude": [
+                "laranail/*"
+            ]
+        },
+        {
+            "packagist.org": false
         }
     ],
     "extra": {
