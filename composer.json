@@ -123,7 +123,7 @@
     },
     "scripts": {
         "lint": "parallel-lint --exclude vendor src tests",
-        "pint": "vendor/bin/pint --test --config vendor/laranail/package-tools/pint.json",
+        "pint": "@php vendor/bin/laranail-pint --test",
         "pint:fix": "pint",
         "analyse": "phpstan analyse -c phpstan.neon --memory-limit=512M",
         "deptrac": "deptrac analyse --config-file=deptrac.yaml",
@@ -135,7 +135,7 @@
             "@analyse",
             "@test"
         ],
-        "pint-fix": "vendor/bin/pint --parallel --config vendor/laranail/package-tools/pint.json",
+        "pint-fix": "@php vendor/bin/laranail-pint --parallel",
         "format": "@pint-fix"
     }
 }
