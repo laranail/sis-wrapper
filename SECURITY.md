@@ -5,7 +5,7 @@
 Please report security vulnerabilities privately. **Do not open a public issue** for a suspected
 vulnerability.
 
-Email **opensource@simtabi.com** with:
+Email **security@simtabi.com** with:
 
 - the affected package (`simtabi/sis-sdk` or `laranail/sis-wrapper`) and version,
 - a description of the vulnerability and its impact,
@@ -16,6 +16,11 @@ You can also use GitHub's private
 
 We aim to acknowledge a report within three business days and to provide a remediation timeline after
 triage. Please give us a reasonable window to release a fix before any public disclosure.
+
+> **Prefer GitHub private vulnerability reporting** when you can: open it from this
+> repository's Security tab. The report arrives attached to the repo with a draft advisory
+> and a CVE request path already in place. Email is the fallback for anyone who would
+> rather not use GitHub.
 
 ## Scope
 
