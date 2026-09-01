@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Contract;
 
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\SIS\Identifier\Actor;
 
 /**
  * The seam behind which permission RESOLUTION is pluggable. A consumer may use Spatie, Bouncer, a homegrown

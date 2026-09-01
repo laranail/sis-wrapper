@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 /**
  * The base for every SIS job: explicit retry policy and the configured connection/queue (never sync by

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Simtabi\Laranail\SIS\Enums\IdempotencyStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
+use Illuminate\Database\Eloquent\Model;
 use Simtabi\Laranail\SIS\Database\Factories\SisIdempotencyKeyFactory;
+use Simtabi\Laranail\SIS\Enums\IdempotencyStatus;
+use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
 
 /**
  * A stored idempotency key, scoped to (actor_reference, idempotency_key) — never key alone (§2.13).
@@ -42,7 +42,7 @@ final class SisIdempotencyKey extends Model
     protected function casts(): array
     {
         return [
-            'status'     => IdempotencyStatus::class,
+            'status' => IdempotencyStatus::class,
             'created_at' => 'immutable_datetime',
             'expires_at' => 'immutable_datetime',
         ];

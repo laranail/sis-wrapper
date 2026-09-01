@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\Laranail\SIS\Models\SisRecord;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Simtabi\SIS\Contract\SisEngine;
 
 /**
  * An alias that is neither reserved (§5.3) nor already taken (§5) — the reserved list comes from the core,

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Panel;
 
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Enums\LifecycleState;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
+use Simtabi\Laranail\SIS\Contract\PermissionResolver;
 use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\Laranail\SIS\Read\SisReadModel;
-use Simtabi\Laranail\SIS\Contract\PermissionResolver;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Enums\LifecycleState;
+use Simtabi\SIS\Identifier\Actor;
 
 /**
  * The framework-agnostic bridge an admin panel binds to. SIS is headless by design — it ships no UI — but a
@@ -39,17 +39,17 @@ final class RegisterPanelPresenter
     public function present(SisRecord $record): array
     {
         return [
-            'identifier'  => $record->identifier,
-            'class'       => $record->class,
+            'identifier' => $record->identifier,
+            'class' => $record->class,
             'class_label' => app(SisEngine::class)->class($record->class)->label(),
-            'scope'       => $record->scope,
-            'serial'      => $record->serial,
-            'alias'       => $record->alias,
-            'state'       => $record->state->value,
-            'subject'     => $record->subject_type !== null
+            'scope' => $record->scope,
+            'serial' => $record->serial,
+            'alias' => $record->alias,
+            'state' => $record->state->value,
+            'subject' => $record->subject_type !== null
                 ? ['type' => $record->subject_type, 'id' => $record->subject_id]
                 : null,
-            'superseded_by'   => $record->superseded_by,
+            'superseded_by' => $record->superseded_by,
             'commissioned_at' => $record->commissioned_at?->toIso8601String(),
         ];
     }
@@ -83,7 +83,7 @@ final class RegisterPanelPresenter
         return array_map(
             static fn (SisAbility $ability): array => [
                 'ability' => $ability->value,
-                'label'   => $ability->label(),
+                'label' => $ability->label(),
             ],
             $this->permittedActions($record, $actor),
         );
@@ -97,9 +97,9 @@ final class RegisterPanelPresenter
     private static function actionsFor(LifecycleState $state): array
     {
         return match ($state) {
-            LifecycleState::Reserved                             => [SisAbility::Commission, SisAbility::AttachSubject, SisAbility::Release],
-            LifecycleState::Commissioned                         => [SisAbility::Suspend, SisAbility::Decommission, SisAbility::Supersede],
-            LifecycleState::Suspended                            => [SisAbility::Restore, SisAbility::Decommission],
+            LifecycleState::Reserved => [SisAbility::Commission, SisAbility::AttachSubject, SisAbility::Release],
+            LifecycleState::Commissioned => [SisAbility::Suspend, SisAbility::Decommission, SisAbility::Supersede],
+            LifecycleState::Suspended => [SisAbility::Restore, SisAbility::Decommission],
             LifecycleState::Decommissioned, LifecycleState::Void => [],
         };
     }

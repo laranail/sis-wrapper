@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Actions;
 
-use Simtabi\SIS\Identifier\Identifier;
-use Simtabi\SIS\Command\VoidIdentifier;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Data\CommandContext;
 use Simtabi\Laranail\SIS\Services\IdempotencyService;
+use Simtabi\SIS\Command\VoidIdentifier;
+use Simtabi\SIS\Identifier\Identifier;
 
 /**
  * Void a RESERVED identifier that will never be used (§6.1). A commissioned identifier can never be voided;

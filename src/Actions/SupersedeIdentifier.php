@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Actions;
 
-use Simtabi\SIS\Command\Supersede;
-use Simtabi\SIS\Identifier\Identifier;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Data\CommandContext;
 use Simtabi\Laranail\SIS\Services\IdempotencyService;
+use Simtabi\SIS\Command\Supersede;
+use Simtabi\SIS\Identifier\Identifier;
 
 /**
  * Record that an identifier has been superseded by a successor (§8) — never editing the superseded one.

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Concerns;
 
-use Simtabi\SIS\Identifier\Identifier;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Simtabi\Laranail\SIS\Models\SisRecord;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Simtabi\SIS\Identifier\Identifier;
 
 /**
  * Gives a consumer model its SIS identifier — relations and accessors ONLY.

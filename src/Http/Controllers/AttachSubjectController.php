@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Simtabi\Laranail\SIS\Read\SisReadModel;
 use Simtabi\Laranail\SIS\Actions\AttachSubject;
 use Simtabi\Laranail\SIS\Authorization\ActorResolver;
-use Simtabi\Laranail\SIS\Http\Resources\IdentifierResource;
-use Simtabi\Laranail\SIS\Http\Requests\AttachSubjectRequest;
 use Simtabi\Laranail\SIS\Http\Controllers\Concerns\ResolvesIdentifier;
+use Simtabi\Laranail\SIS\Http\Requests\AttachSubjectRequest;
+use Simtabi\Laranail\SIS\Http\Resources\IdentifierResource;
+use Simtabi\Laranail\SIS\Read\SisReadModel;
 
 /** POST identifiers/{identifier}/subject — bind the thing this reserved identifier names (§5, §9). */
 final class AttachSubjectController

@@ -98,7 +98,7 @@ final class UrlGuard
         }
 
         if ($ips === []) {
-            throw BlockedUrlException::of('http://' . $host, 'the host could not be resolved');
+            throw BlockedUrlException::of('http://'.$host, 'the host could not be resolved');
         }
 
         return array_values(array_unique($ips));

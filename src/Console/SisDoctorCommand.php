@@ -6,14 +6,14 @@ namespace Simtabi\Laranail\SIS\Console;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
+use Simtabi\Laranail\Console\Tools\Commands\Command;
+use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 use Simtabi\Laranail\SIS\Models\SisOutbox;
 use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\Laranail\SIS\Panel\PanelSupport;
 use Simtabi\Laranail\SIS\Services\CapacityService;
 use Simtabi\Laranail\SIS\Services\IntegrityService;
-use Simtabi\Laranail\Console\Tools\Commands\Command;
 use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
-use Simtabi\Laranail\Console\Tools\Commands\Concerns\SupportsNamespacedNames;
 
 /**
  * "Is the register healthy?" — the first thing anyone runs when something is wrong, and the spine of the
@@ -96,8 +96,8 @@ final class SisDoctorCommand extends Command
         } else {
             foreach ($nearing as $space) {
                 $this->warn(__('laranail-sis-wrapper::messages.commands.doctor.capacity_nearing', [
-                    'class'   => $space['class'],
-                    'scope'   => $space['scope'] !== null ? ' scoped to ' . $space['scope'] : '',
+                    'class' => $space['class'],
+                    'scope' => $space['scope'] !== null ? ' scoped to '.$space['scope'] : '',
                     'percent' => (int) round($space['usage'] * 100),
                 ]));
             }
@@ -121,8 +121,8 @@ final class SisDoctorCommand extends Command
         $missing = [];
 
         foreach (['register', 'audit', 'outbox', 'idempotency_keys', 'serials'] as $table) {
-            if (! Schema::connection($connection)->hasTable($prefix . $table)) {
-                $missing[] = $prefix . $table;
+            if (! Schema::connection($connection)->hasTable($prefix.$table)) {
+                $missing[] = $prefix.$table;
             }
         }
 

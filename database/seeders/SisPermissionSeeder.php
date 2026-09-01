@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 /**
  * Creates the permission rows for a spatie/laravel-permission consumer, idempotently (findOrCreate, never
@@ -43,10 +43,10 @@ final class SisPermissionSeeder extends Seeder
         ];
 
         return [
-            'sis-viewer'    => [SisAbility::ViewRegister, SisAbility::ViewAudit],
-            'sis-operator'  => $operator,
+            'sis-viewer' => [SisAbility::ViewRegister, SisAbility::ViewAudit],
+            'sis-operator' => $operator,
             'sis-registrar' => [...$operator, SisAbility::Reserve, SisAbility::Decommission, SisAbility::Supersede, SisAbility::Release],
-            'sis-admin'     => SisAbility::cases(),
+            'sis-admin' => SisAbility::cases(),
         ];
     }
 }

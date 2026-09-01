@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Http;
 
-use Simtabi\SIS\Enums\SimClass;
-use Orchestra\Testbench\TestCase;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\Laranail\SIS\Facades\Sis;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Orchestra\Testbench\TestCase;
+use Simtabi\Laranail\SIS\Facades\Sis;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Enums\SimClass;
 
 /** The lifecycle endpoints and the Sis facade over the same register — reserve, commission, transition, chain, audit. */
 final class LifecycleApiTest extends TestCase
@@ -23,7 +23,7 @@ final class LifecycleApiTest extends TestCase
         $identifier = Sis::reserve(SimClass::CLIENT, reason: 'test');
 
         $this->postJson(route('sis.identifiers.commission', ['identifier' => (string) $identifier]), [
-            'alias'       => 'ADIQ',
+            'alias' => 'ADIQ',
             'description' => 'Adiq Technologies',
         ], ['Idempotency-Key' => 'commit-1'])
             ->assertOk()

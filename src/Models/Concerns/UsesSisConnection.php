@@ -21,6 +21,6 @@ trait UsesSisConnection
 
     protected function sisTableName(string $name): string
     {
-        return Config::string('sis.database.prefix', 'sis_') . $name;
+        return Config::string('sis.database.prefix', 'sis_').$name;
     }
 }

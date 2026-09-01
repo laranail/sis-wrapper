@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Database;
 
-use RuntimeException;
-use Orchestra\Testbench\TestCase;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
+use Orchestra\Testbench\TestCase;
+use RuntimeException;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 
 /**
@@ -49,6 +49,6 @@ final class MigrationRollbackTest extends TestCase
 
     private function migration(): Migration
     {
-        return require dirname(__DIR__, 2) . '/database/migrations/0001_create_sis_schema.php';
+        return require dirname(__DIR__, 2).'/database/migrations/0001_create_sis_schema.php';
     }
 }

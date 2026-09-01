@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Database;
 
-use Simtabi\SIS\Enums\SimClass;
-use Orchestra\Testbench\TestCase;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Enums\LifecycleState;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\TestCase;
+use Simtabi\Laranail\SIS\Enums\CircuitState;
+use Simtabi\Laranail\SIS\Enums\IdempotencyStatus;
 use Simtabi\Laranail\SIS\Models\SisAudit;
+use Simtabi\Laranail\SIS\Models\SisIdempotencyKey;
+use Simtabi\Laranail\SIS\Models\SisMorphAlias;
 use Simtabi\Laranail\SIS\Models\SisOutbox;
 use Simtabi\Laranail\SIS\Models\SisRecord;
-use Simtabi\Laranail\SIS\Enums\CircuitState;
-use Simtabi\Laranail\SIS\Models\SisMorphAlias;
-use Simtabi\Laranail\SIS\Enums\IdempotencyStatus;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Simtabi\Laranail\SIS\Models\SisIdempotencyKey;
 use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Enums\LifecycleState;
+use Simtabi\SIS\Enums\SimClass;
 
 /**
  * The factory computes check characters through the core, so every generated record is one the package
@@ -117,6 +117,6 @@ final class FactoryTest extends TestCase
     protected function defineEnvironment($app): void
     {
         // The webhook secret uses the encrypted cast, which needs an application key.
-        $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
+        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
     }
 }

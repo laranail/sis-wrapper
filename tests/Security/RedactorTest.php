@@ -12,11 +12,11 @@ final class RedactorTest extends TestCase
     public function test_redacts_secrets_and_leaves_business_data(): void
     {
         $redacted = (new Redactor)->redact([
-            'secret'     => 'top',
-            'api_key'    => 'abc',
+            'secret' => 'top',
+            'api_key' => 'abc',
             'identifier' => 'SIM-PRS-100001-FA',
-            'actor'      => 'user:1',
-            'nested'     => ['password' => 'p', 'count' => 5],
+            'actor' => 'user:1',
+            'nested' => ['password' => 'p', 'count' => 5],
         ]);
 
         self::assertSame('[REDACTED]', $redacted['secret']);

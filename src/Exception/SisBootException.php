@@ -19,7 +19,7 @@ final class SisBootException extends SisExceptionBase
     {
         return new self(
             'Relation::requireMorphMap() is not enforced, but the SIS registrar/API is enabled. A raw class '
-            . 'name written into an immutable register row is a time bomb. Enforcement is non-negotiable.',
+            .'name written into an immutable register row is a time bomb. Enforcement is non-negotiable.',
             ['operation' => 'boot', 'component' => 'morph'],
         );
     }
@@ -29,7 +29,7 @@ final class SisBootException extends SisExceptionBase
         return new self(
             sprintf(
                 'SIS scheduling is enabled with the "%s" cache lock driver, which cannot serialise across '
-                . 'servers. onOneServer() needs redis, database, or memcached, or the sweeps run on every server.',
+                .'servers. onOneServer() needs redis, database, or memcached, or the sweeps run on every server.',
                 $driver,
             ),
             ['operation' => 'boot', 'component' => 'schedule', 'driver' => $driver],

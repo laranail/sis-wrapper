@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Policies;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Simtabi\Laranail\SIS\Authorization\ActorResolver;
+use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
+use Simtabi\Laranail\SIS\Contract\PermissionResolver;
 use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Models\SisRecord;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Simtabi\Laranail\SIS\Authorization\ActorResolver;
-use Simtabi\Laranail\SIS\Contract\PermissionResolver;
-use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
 
 /**
  * The model-bound abilities. Every method funnels into the configured PermissionResolver with the record's

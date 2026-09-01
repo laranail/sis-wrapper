@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Simtabi\SIS\Contract\Command;
-use Simtabi\SIS\Decision\Decision;
 use Illuminate\Database\QueryException;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Error\ConstraintTranslator;
+use Simtabi\SIS\Contract\Command;
+use Simtabi\SIS\Decision\Decision;
 
 /**
  * The database constraints and triggers are the authority. This catches their violations and rethrows the

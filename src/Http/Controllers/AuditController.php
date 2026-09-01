@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Http\Controllers;
 
-use Simtabi\Laranail\SIS\Models\SisAudit;
-use Simtabi\Laranail\SIS\Http\Resources\AuditEntryResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Simtabi\Laranail\SIS\Http\Controllers\Concerns\ResolvesIdentifier;
+use Simtabi\Laranail\SIS\Http\Resources\AuditEntryResource;
+use Simtabi\Laranail\SIS\Models\SisAudit;
 
 /** GET identifiers/{identifier}/audit — the append-only trail for one identifier (§2.9), oldest first. */
 final class AuditController

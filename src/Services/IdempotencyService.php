@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Services;
 
-use Throwable;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Contract\SisEngine;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Config;
-use Simtabi\SIS\Identifier\Identifier;
-use Simtabi\Laranail\SIS\Enums\IdempotencyStatus;
-use Simtabi\Laranail\SIS\Models\SisIdempotencyKey;
 use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Date;
+use Simtabi\Laranail\SIS\Enums\IdempotencyStatus;
 use Simtabi\Laranail\SIS\Exception\IdempotencyConflictException;
+use Simtabi\Laranail\SIS\Models\SisIdempotencyKey;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Identifier\Identifier;
+use Throwable;
 
 /**
  * Idempotency for writes, keyed on the REQUEST payload — not the minted command. A write that a client
@@ -29,7 +29,7 @@ final class IdempotencyService
      * Run $operation at most once for a given (actor, key); on a matching replay, return the stored
      * identifier without re-running it. An empty key opts out (the caller took responsibility).
      *
-     * @param callable(): Identifier $operation
+     * @param  callable(): Identifier  $operation
      */
     public function rememberIdentifier(Actor $actor, string $key, string $requestHash, callable $operation): Identifier
     {
@@ -46,11 +46,11 @@ final class IdempotencyService
             $claim = SisIdempotencyKey::query()->create([
                 'actor_reference' => $reference,
                 'idempotency_key' => $key,
-                'request_hash'    => $requestHash,
-                'response'        => null,
-                'status'          => IdempotencyStatus::Pending,
-                'created_at'      => Date::now(),
-                'expires_at'      => Date::now()->addHours(Config::integer('sis.idempotency.window_hours', 72)),
+                'request_hash' => $requestHash,
+                'response' => null,
+                'status' => IdempotencyStatus::Pending,
+                'created_at' => Date::now(),
+                'expires_at' => Date::now()->addHours(Config::integer('sis.idempotency.window_hours', 72)),
             ]);
         } catch (UniqueConstraintViolationException) {
             return $this->replay($reference, $key, $requestHash);
@@ -67,7 +67,7 @@ final class IdempotencyService
 
         $claim->update([
             'response' => (string) $identifier,
-            'status'   => IdempotencyStatus::Applied,
+            'status' => IdempotencyStatus::Applied,
         ]);
 
         return $identifier;
