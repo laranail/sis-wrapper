@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Jobs;
 
 use Illuminate\Support\Facades\Event;
-use Simtabi\SIS\Identifier\SubjectRef;
-use Simtabi\Laranail\SIS\Models\SisRecord;
-use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
 use Simtabi\Laranail\SIS\Events\OrphanedSubjectDetected;
+use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\Laranail\Toolkit\Morph\Exceptions\UnknownMorphAliasException;
+use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
+use Simtabi\SIS\Identifier\SubjectRef;
 
 /** A morph subject that points at a model that is gone (§2.8). Reports, NEVER deletes. */
 final class DetectOrphanedSubjects extends SisJob

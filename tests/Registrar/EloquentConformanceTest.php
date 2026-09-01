@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Registrar;
 
 use DateTimeImmutable;
-use Orchestra\Testbench\TestCase;
 use Illuminate\Foundation\Application;
-use Simtabi\SIS\Testing\DeciderConformanceSuite;
-use Simtabi\Laranail\SIS\Registrar\EffectApplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\TestCase;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Registrar\EffectApplier;
+use Simtabi\Laranail\SIS\Services\DatabaseSerialIssuer;
 use Simtabi\Laranail\SIS\Services\SnapshotBuilder;
 use Simtabi\Laranail\SIS\Testing\EloquentProjection;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
-use Simtabi\Laranail\SIS\Services\DatabaseSerialIssuer;
+use Simtabi\SIS\Testing\DeciderConformanceSuite;
 
 /**
  * The Eloquent shell must pass the exact same conformance suite as the in-memory core. If snapshot

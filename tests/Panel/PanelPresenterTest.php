@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Panel;
 
-use Simtabi\SIS\Enums\SimClass;
-use Orchestra\Testbench\TestCase;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\Laranail\SIS\Facades\Sis;
 use Illuminate\Foundation\Application;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\SIS\Read\SisReadModel;
-use Simtabi\Laranail\SIS\Panel\PanelSupport;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Orchestra\Testbench\TestCase;
+use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
 use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Facades\Sis;
+use Simtabi\Laranail\SIS\Panel\PanelSupport;
 use Simtabi\Laranail\SIS\Panel\RegisterPanelPresenter;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
-use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
+use Simtabi\Laranail\SIS\Read\SisReadModel;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Enums\SimClass;
+use Simtabi\SIS\Identifier\Actor;
 
 /** The headless panel bridge: legal-and-permitted action sets, a display row, and dependency-free detection. */
 final class PanelPresenterTest extends TestCase

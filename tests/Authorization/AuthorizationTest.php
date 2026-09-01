@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Authorization;
 
-use Orchestra\Testbench\TestCase;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Gate;
+use Orchestra\Testbench\TestCase;
 use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
 
 final class AuthorizationTest extends TestCase
 {

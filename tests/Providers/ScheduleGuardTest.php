@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Providers;
 
-use Orchestra\Testbench\TestCase;
 use Illuminate\Foundation\Application;
+use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Simtabi\Laranail\SIS\Exception\SisBootException;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
@@ -39,8 +39,8 @@ final class ScheduleGuardTest extends TestCase
 
         config([
             'sis.schedule.enabled' => true,
-            'cache.stores.probe'   => [],
-            'cache.default'        => 'probe',
+            'cache.stores.probe' => [],
+            'cache.default' => 'probe',
         ]);
 
         (new SisServiceProvider($this->app))->packageBooted();
@@ -64,8 +64,8 @@ final class ScheduleGuardTest extends TestCase
     {
         config([
             'sis.schedule.enabled' => true,
-            'cache.stores.probe'   => ['driver' => $driver],
-            'cache.default'        => 'probe',
+            'cache.stores.probe' => ['driver' => $driver],
+            'cache.default' => 'probe',
         ]);
 
         (new SisServiceProvider($this->app))->packageBooted();

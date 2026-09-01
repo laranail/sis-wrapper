@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Enums;
 
-use Simtabi\Laranail\Enumerator\Attributes\Label;
-use Simtabi\Laranail\Enumerator\Contracts\Enumerator;
 use Simtabi\Laranail\Enumerator\Attributes\Description;
+use Simtabi\Laranail\Enumerator\Attributes\Label;
 use Simtabi\Laranail\Enumerator\Concerns\HasEnumeratorBehavior;
+use Simtabi\Laranail\Enumerator\Contracts\Enumerator;
 
 /**
  * The canonical ability list — a PUBLIC CONTRACT. These strings appear in consumers' permission tables and
@@ -94,15 +94,15 @@ enum SisAbility: string implements Enumerator
     public static function forAuditAction(string $action): ?self
     {
         return match ($action) {
-            'reserve'                   => self::Reserve,
-            'commission'                => self::Commission,
-            'supersede'                 => self::Supersede,
-            'release', 'void'           => self::Release,
-            'attach-subject'            => self::AttachSubject,
-            'transition:suspended'      => self::Suspend,
+            'reserve' => self::Reserve,
+            'commission' => self::Commission,
+            'supersede' => self::Supersede,
+            'release', 'void' => self::Release,
+            'attach-subject' => self::AttachSubject,
+            'transition:suspended' => self::Suspend,
             'transition:decommissioned' => self::Decommission,
-            'transition:commissioned'   => self::Restore,
-            default                     => null,
+            'transition:commissioned' => self::Restore,
+            default => null,
         };
     }
 }

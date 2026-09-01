@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Simtabi\SIS\Version\Version;
-use Illuminate\Http\JsonResponse;
 
 /** Stateless (§7.2): compare two release versions. An invalid version surfaces as a problem+json. */
 final class CompareVersionsController

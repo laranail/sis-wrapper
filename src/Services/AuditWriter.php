@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Services;
 
 use DateTimeInterface;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\Laranail\SIS\Models\SisAudit;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Models\SisAudit;
+use Simtabi\SIS\Identifier\Actor;
 
 /**
  * The one place an audit row is written (§2.9). Both an applied effect (from the EffectApplier, verdict
@@ -31,8 +31,8 @@ final class AuditWriter
      * longer recomputes is tampering, not a version skew. The ability and verdict are recorded on the row
      * but are deliberately NOT folded in — the chain shape is a stored contract and must not shift.
      *
-     * @param string $actorReference the actor's PII-free reference, `actor_type . ':' . actor_id`
-     * @param array<string, mixed> $context the redacted context, re-encoded exactly as stored
+     * @param  string  $actorReference  the actor's PII-free reference, `actor_type . ':' . actor_id`
+     * @param  array<string, mixed>  $context  the redacted context, re-encoded exactly as stored
      */
     public static function chainHash(
         ?string $prevHash,
@@ -49,7 +49,7 @@ final class AuditWriter
             $before, $after, $correlationId, $context,
         ], JSON_THROW_ON_ERROR);
 
-        return hash('sha256', (string) $prevHash . $content);
+        return hash('sha256', (string) $prevHash.$content);
     }
 
     /** @param array<string, mixed> $context redacted */
@@ -88,20 +88,20 @@ final class AuditWriter
         }
 
         SisAudit::query()->create([
-            'identifier'      => $identifier,
-            'action'          => $action,
-            'actor_type'      => $actor->type,
-            'actor_id'        => $actor->id,
-            'before_state'    => $before,
-            'after_state'     => $after,
-            'ability'         => $ability?->value,
-            'verdict'         => $verdict,
-            'correlation_id'  => $correlationId,
+            'identifier' => $identifier,
+            'action' => $action,
+            'actor_type' => $actor->type,
+            'actor_id' => $actor->id,
+            'before_state' => $before,
+            'after_state' => $after,
+            'ability' => $ability?->value,
+            'verdict' => $verdict,
+            'correlation_id' => $correlationId,
             'idempotency_key' => $idempotencyKey,
-            'context'         => $context,
-            'hash'            => $hash,
-            'prev_hash'       => $prevHash,
-            'created_at'      => $at,
+            'context' => $context,
+            'hash' => $hash,
+            'prev_hash' => $prevHash,
+            'created_at' => $at,
         ]);
     }
 }

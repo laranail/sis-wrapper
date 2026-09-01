@@ -6,8 +6,8 @@ namespace Simtabi\Laranail\SIS\Http\Support;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use Simtabi\SIS\Identifier\Actor;
 use Simtabi\Laranail\SIS\Data\CommandContext;
+use Simtabi\SIS\Identifier\Actor;
 
 /**
  * Builds the CommandContext every write Action takes from the incoming request: the actor, the wall clock as

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Requests;
 
 use Carbon\CarbonImmutable;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Identifier\SubjectRef;
 use Illuminate\Foundation\Http\FormRequest;
 use Simtabi\Laranail\SIS\Data\CommissionData;
 use Simtabi\Laranail\SIS\Http\Requests\Concerns\ReadsSisRequest;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Identifier\SubjectRef;
 
 /**
  * Commission a reserved identifier: optionally binding its alias and subject in the same act. The alias and
@@ -30,11 +30,11 @@ final class CommissionIdentifierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'alias'        => ['nullable', 'string', 'max:64'],
-            'description'  => ['nullable', 'string', 'max:1024'],
-            'subject'      => ['nullable', 'array'],
+            'alias' => ['nullable', 'string', 'max:64'],
+            'description' => ['nullable', 'string', 'max:1024'],
+            'subject' => ['nullable', 'array'],
             'subject.type' => ['required_with:subject', 'string', 'max:64'],
-            'subject.id'   => ['required_with:subject', 'string', 'max:64'],
+            'subject.id' => ['required_with:subject', 'string', 'max:64'],
         ];
     }
 

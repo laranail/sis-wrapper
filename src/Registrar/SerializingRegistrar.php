@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Simtabi\SIS\Contract\Command;
-use Simtabi\SIS\Decision\Decision;
 use Illuminate\Support\Facades\Cache;
 use Simtabi\Laranail\SIS\Contract\Registrar;
+use Simtabi\SIS\Contract\Command;
+use Simtabi\SIS\Decision\Decision;
 
 /**
  * Serialises every register write behind a single named lock so the append-only audit hash chain cannot

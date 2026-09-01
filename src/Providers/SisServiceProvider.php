@@ -5,58 +5,58 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Providers;
 
 use Closure;
-use Throwable;
-use Simtabi\SIS\Sis;
-use Illuminate\Http\Request;
-use Psr\Log\LoggerInterface;
-use Simtabi\SIS\Enums\SimClass;
+use Illuminate\Console\Scheduling\Event as ScheduledEvent;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\JsonResponse;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Profile\SisProfile;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Config;
-use Simtabi\SIS\Contract\SisException;
-use Illuminate\Database\Eloquent\Model;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\SIS\Jobs\RelayOutbox;
-use Simtabi\Laranail\SIS\Models\SisRecord;
-use Illuminate\Console\Scheduling\Schedule;
+use Psr\Log\LoggerInterface;
 use Simtabi\Laranail\Package\Tools\Package;
-use Simtabi\Laranail\SIS\Security\UrlGuard;
-use Simtabi\Laranail\SIS\Contract\Registrar;
-use Simtabi\Laranail\SIS\Services\SisManager;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Simtabi\Laranail\SIS\Contract\SerialIssuer;
-use Illuminate\Contracts\Debug\ExceptionHandler;
+use Simtabi\Laranail\Package\Tools\Providers\PackageServiceProvider;
+use Simtabi\Laranail\SIS\Authorization\ActorResolver;
+use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
+use Simtabi\Laranail\SIS\Authorization\ConfigRoleResolver;
+use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
 use Simtabi\Laranail\SIS\Console\SisDoctorCommand;
 use Simtabi\Laranail\SIS\Console\SisInstallCommand;
-use Simtabi\Laranail\SIS\Jobs\PruneIdempotencyKeys;
-use Simtabi\Laranail\SIS\Jobs\ReportSerialCapacity;
-use Simtabi\Laranail\SIS\Policies\IdentifierPolicy;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Simtabi\Laranail\SIS\Contract\WebhookDispatcher;
-use Simtabi\Laranail\SIS\Exception\SisBootException;
-use Simtabi\Laranail\SIS\Registrar\RegistrarFactory;
-use Simtabi\Laranail\SIS\Authorization\ActorResolver;
-use Simtabi\Laranail\SIS\Contract\PermissionResolver;
-use Simtabi\Laranail\SIS\Jobs\DetectOrphanedSubjects;
-use Simtabi\Laranail\SIS\Jobs\ReapLapsedReservations;
-use Simtabi\Laranail\SIS\Http\Problem\ProblemRenderer;
-use Simtabi\Laranail\SIS\Jobs\VerifyRegisterIntegrity;
-use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
-use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
 use Simtabi\Laranail\SIS\Console\SisPermissionsCommand;
-use Simtabi\Laranail\SIS\Services\DatabaseSerialIssuer;
-use Simtabi\Laranail\SIS\Webhooks\HttpWebhookDispatcher;
-use Simtabi\Laranail\SIS\Listeners\NotifyCapacityWarning;
-use Illuminate\Console\Scheduling\Event as ScheduledEvent;
-use Simtabi\Laranail\SIS\Authorization\ConfigRoleResolver;
-use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
+use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\SIS\Contract\Registrar;
+use Simtabi\Laranail\SIS\Contract\SerialIssuer;
+use Simtabi\Laranail\SIS\Contract\WebhookDispatcher;
 use Simtabi\Laranail\SIS\Database\Seeders\SisDatabaseSeeder;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
 use Simtabi\Laranail\SIS\Events\SerialSpaceNearingExhaustion;
-use Simtabi\Laranail\Package\Tools\Providers\PackageServiceProvider;
+use Simtabi\Laranail\SIS\Exception\SisBootException;
+use Simtabi\Laranail\SIS\Http\Problem\ProblemRenderer;
+use Simtabi\Laranail\SIS\Jobs\DetectOrphanedSubjects;
+use Simtabi\Laranail\SIS\Jobs\PruneIdempotencyKeys;
+use Simtabi\Laranail\SIS\Jobs\ReapLapsedReservations;
+use Simtabi\Laranail\SIS\Jobs\RelayOutbox;
+use Simtabi\Laranail\SIS\Jobs\ReportSerialCapacity;
+use Simtabi\Laranail\SIS\Jobs\VerifyRegisterIntegrity;
+use Simtabi\Laranail\SIS\Listeners\NotifyCapacityWarning;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Simtabi\Laranail\SIS\Policies\IdentifierPolicy;
+use Simtabi\Laranail\SIS\Registrar\RegistrarFactory;
+use Simtabi\Laranail\SIS\Security\UrlGuard;
+use Simtabi\Laranail\SIS\Services\DatabaseSerialIssuer;
+use Simtabi\Laranail\SIS\Services\SisManager;
+use Simtabi\Laranail\SIS\Webhooks\HttpWebhookDispatcher;
+use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Contract\SisException;
+use Simtabi\SIS\Enums\SimClass;
+use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Profile\SisProfile;
+use Simtabi\SIS\Sis;
+use Throwable;
 
 /**
  * The package's single service provider. Built on `laranail/package-tools`, it folds together what used to
@@ -237,7 +237,7 @@ final class SisServiceProvider extends PackageServiceProvider
         // The URL prefix and middleware are set here; the route-name tree (the `sis.` prefix and below) is
         // owned entirely by routes/api.php via its group `->name()` prefixes.
         Route::group([
-            'prefix'     => Config::string('sis.api.prefix', 'api/sis/v1'),
+            'prefix' => Config::string('sis.api.prefix', 'api/sis/v1'),
             'middleware' => array_merge(
                 Config::array('sis.api.middleware', ['api']),
                 Config::array('sis.api.auth_middleware', []),

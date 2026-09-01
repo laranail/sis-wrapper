@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Simtabi\SIS\Enums\LifecycleState;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Simtabi\SIS\Enums\LifecycleState;
 
 /** Validates that a target state is a legal transition from a given state (§6.2), via the state machine. */
 final class ValidLifecycleTransition implements ValidationRule

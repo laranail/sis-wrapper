@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Simtabi\SIS\Profile\ClassDefinition;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Simtabi\SIS\Profile\ClassDefinition;
 
 /** Validates a subtype against its class's controlled vocabulary (§3.7). An empty value is left to `nullable`. */
 final class ValidSubtype implements ValidationRule

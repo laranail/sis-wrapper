@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Http\Requests;
 
-use Illuminate\Validation\Rule;
-use Simtabi\SIS\Enums\LifecycleState;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Simtabi\Laranail\SIS\Http\Requests\Concerns\ReadsSisRequest;
+use Simtabi\SIS\Enums\LifecycleState;
 
 /**
  * A lifecycle transition on a commissioned identifier (§6.2). Only the operator-driven targets are accepted

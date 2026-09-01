@@ -13,7 +13,7 @@ final class WebhookSigner
 {
     public function sign(string $payload, string $secret, int $timestamp): string
     {
-        return hash_hmac('sha256', $timestamp . '.' . $payload, $secret);
+        return hash_hmac('sha256', $timestamp.'.'.$payload, $secret);
     }
 
     public function verify(string $payload, string $secret, int $timestamp, string $signature, int $tolerance, ?int $now = null): bool

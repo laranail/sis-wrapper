@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Authorization;
 
 use DateTimeImmutable;
-use Simtabi\SIS\Enums\SimClass;
-use Orchestra\Testbench\TestCase;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Contract\SisEngine;
 use Illuminate\Foundation\Application;
-use Simtabi\SIS\Profile\ClassDefinition;
-use Simtabi\Laranail\SIS\Data\ReserveData;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\TestCase;
+use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
+use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
+use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Data\CommissionData;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
-use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
-use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
-use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
+use Simtabi\Laranail\SIS\Data\ReserveData;
 use Simtabi\Laranail\SIS\Exception\UnauthorizedCommandException;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Enums\SimClass;
+use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Profile\ClassDefinition;
 
 /**
  * The audit trail records authorization outcomes, not just applied effects: a DENIED attempt writes a
@@ -47,10 +47,10 @@ final class DenyAuditTest extends TestCase
         // No serial burned, nothing in the register — but the denial is on the trail.
         $this->assertDatabaseCount('sis_register', 0);
         $this->assertDatabaseHas('sis_audit', [
-            'identifier'     => null,
-            'action'         => 'authorize',
-            'verdict'        => 'denied',
-            'ability'        => 'sis.identifier.reserve',
+            'identifier' => null,
+            'action' => 'authorize',
+            'verdict' => 'denied',
+            'ability' => 'sis.identifier.reserve',
             'correlation_id' => 'corr-deny',
         ]);
     }
@@ -76,10 +76,10 @@ final class DenyAuditTest extends TestCase
         }
 
         $this->assertDatabaseHas('sis_audit', [
-            'identifier'     => (string) $id,
-            'action'         => 'authorize',
-            'verdict'        => 'denied',
-            'ability'        => 'sis.identifier.commission',
+            'identifier' => (string) $id,
+            'action' => 'authorize',
+            'verdict' => 'denied',
+            'ability' => 'sis.identifier.commission',
             'correlation_id' => 'corr-deny-c',
         ]);
     }
@@ -93,9 +93,9 @@ final class DenyAuditTest extends TestCase
 
         $this->assertDatabaseHas('sis_audit', [
             'identifier' => (string) $id,
-            'action'     => 'reserve',
-            'ability'    => 'sis.identifier.reserve',
-            'verdict'    => 'allowed',
+            'action' => 'reserve',
+            'ability' => 'sis.identifier.reserve',
+            'verdict' => 'allowed',
         ]);
 
         $commission = $this->app->make(CommissionIdentifier::class);
@@ -103,9 +103,9 @@ final class DenyAuditTest extends TestCase
 
         $this->assertDatabaseHas('sis_audit', [
             'identifier' => (string) $id,
-            'action'     => 'commission',
-            'ability'    => 'sis.identifier.commission',
-            'verdict'    => 'allowed',
+            'action' => 'commission',
+            'ability' => 'sis.identifier.commission',
+            'verdict' => 'allowed',
         ]);
     }
 

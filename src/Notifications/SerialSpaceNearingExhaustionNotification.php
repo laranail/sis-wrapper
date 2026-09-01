@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 use Simtabi\Laranail\SIS\Events\SerialSpaceNearingExhaustion;
 
 /**
@@ -42,7 +42,7 @@ final class SerialSpaceNearingExhaustionNotification extends Notification
         return (new MailMessage)
             ->subject(__('laranail-sis-wrapper::messages.notifications.serial_capacity.subject'))
             ->line(__('laranail-sis-wrapper::messages.notifications.serial_capacity.usage', [
-                'where'   => $where,
+                'where' => $where,
                 'percent' => (int) round($this->event->usage * 100),
             ]))
             ->line(__('laranail-sis-wrapper::messages.notifications.serial_capacity.advice'));

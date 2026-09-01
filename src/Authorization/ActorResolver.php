@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Authorization;
 
-use Throwable;
-use Simtabi\SIS\Identifier\Actor;
-use Illuminate\Support\Facades\Auth;
-use Simtabi\SIS\Identifier\SubjectRef;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Simtabi\Laranail\Toolkit\Morph\MorphAliasRegistry;
+use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Identifier\SubjectRef;
+use Throwable;
 
 /**
  * Maps an authenticated model to an Actor, and produces the non-human actors: the scheduler, a console

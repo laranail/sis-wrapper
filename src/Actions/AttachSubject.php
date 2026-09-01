@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Actions;
 
-use Simtabi\SIS\Identifier\Identifier;
-use Simtabi\SIS\Identifier\SubjectRef;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Data\CommandContext;
 use Simtabi\Laranail\SIS\Services\IdempotencyService;
 use Simtabi\SIS\Command\AttachSubject as AttachSubjectCommand;
+use Simtabi\SIS\Identifier\Identifier;
+use Simtabi\SIS\Identifier\SubjectRef;
 
 /**
  * Attach the polymorphic subject to a still-reserved identifier (§5, §9). Once commissioned the subject is

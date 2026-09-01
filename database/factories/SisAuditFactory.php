@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Database\Factories;
 
-use Simtabi\SIS\Sis;
-use Simtabi\SIS\Enums\SimClass;
-use Illuminate\Support\Facades\Date;
-use Simtabi\SIS\Enums\LifecycleState;
-use Simtabi\Laranail\SIS\Models\SisAudit;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\SIS\Enums\AuditVerdict;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Date;
+use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Models\SisAudit;
+use Simtabi\SIS\Enums\LifecycleState;
+use Simtabi\SIS\Enums\SimClass;
+use Simtabi\SIS\Sis;
 
 /**
  * An append-only audit row (§2.9). The identifier is a REAL minted identifier — its check characters are
@@ -30,20 +30,20 @@ final class SisAuditFactory extends Factory
     public function definition(): array
     {
         return [
-            'identifier'      => $this->mintIdentifier(),
-            'action'          => 'reserve',
-            'actor_type'      => 'console',
-            'actor_id'        => (string) fake()->numberBetween(1, 9999),
-            'before_state'    => null,
-            'after_state'     => LifecycleState::Reserved->value,
-            'ability'         => SisAbility::Reserve->value,
-            'verdict'         => AuditVerdict::Allowed,
-            'correlation_id'  => (string) fake()->uuid(),
+            'identifier' => $this->mintIdentifier(),
+            'action' => 'reserve',
+            'actor_type' => 'console',
+            'actor_id' => (string) fake()->numberBetween(1, 9999),
+            'before_state' => null,
+            'after_state' => LifecycleState::Reserved->value,
+            'ability' => SisAbility::Reserve->value,
+            'verdict' => AuditVerdict::Allowed,
+            'correlation_id' => (string) fake()->uuid(),
             'idempotency_key' => null,
-            'context'         => ['source' => 'factory'],
-            'hash'            => null,
-            'prev_hash'       => null,
-            'created_at'      => Date::now(),
+            'context' => ['source' => 'factory'],
+            'hash' => null,
+            'prev_hash' => null,
+            'created_at' => Date::now(),
         ];
     }
 
@@ -51,11 +51,11 @@ final class SisAuditFactory extends Factory
     public function commissioned(): static
     {
         return $this->state([
-            'action'       => 'commission',
-            'ability'      => SisAbility::Commission->value,
+            'action' => 'commission',
+            'ability' => SisAbility::Commission->value,
             'before_state' => LifecycleState::Reserved->value,
-            'after_state'  => LifecycleState::Commissioned->value,
-            'verdict'      => AuditVerdict::Allowed,
+            'after_state' => LifecycleState::Commissioned->value,
+            'verdict' => AuditVerdict::Allowed,
         ]);
     }
 
@@ -63,7 +63,7 @@ final class SisAuditFactory extends Factory
     public function denied(): static
     {
         return $this->state([
-            'verdict'     => AuditVerdict::Denied,
+            'verdict' => AuditVerdict::Denied,
             'after_state' => null,
         ]);
     }

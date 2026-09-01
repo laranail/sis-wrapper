@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Services;
 
-use Simtabi\SIS\Enums\SimClass;
-use Orchestra\Testbench\TestCase;
-use Illuminate\Support\Facades\DB;
-use Simtabi\Laranail\SIS\Facades\Sis;
 use Illuminate\Foundation\Application;
-use Simtabi\Laranail\SIS\Models\SisAudit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
-use Simtabi\Laranail\SIS\Services\IntegrityService;
+use Illuminate\Support\Facades\DB;
+use Orchestra\Testbench\TestCase;
+use Simtabi\Laranail\SIS\Facades\Sis;
+use Simtabi\Laranail\SIS\Models\SisAudit;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Services\IntegrityService;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\SIS\Enums\SimClass;
 
 /**
  * The audit hash chain is only tamper-evident if something actually verifies it. These tests drive real
@@ -45,7 +45,7 @@ final class AuditChainTest extends TestCase
         $broken = $this->integrity()->verifyAuditChain();
 
         $this->assertNotSame([], $broken);
-        $this->assertStringContainsString('#' . $victim->id, implode(' ', $broken));
+        $this->assertStringContainsString('#'.$victim->id, implode(' ', $broken));
     }
 
     public function test_a_forked_prev_hash_is_detected(): void
@@ -61,7 +61,7 @@ final class AuditChainTest extends TestCase
         $broken = $this->integrity()->verifyAuditChain();
 
         $this->assertNotSame([], $broken);
-        $this->assertStringContainsString('#' . $victim->id, implode(' ', $broken));
+        $this->assertStringContainsString('#'.$victim->id, implode(' ', $broken));
     }
 
     public function test_verification_is_skipped_when_hash_chaining_is_off(): void

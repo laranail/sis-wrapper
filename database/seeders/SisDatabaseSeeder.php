@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Seeder;
 
 /**
  * The register's aggregate seeder — the one entry point a consumer wires into their own DatabaseSeeder. It

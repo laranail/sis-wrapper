@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Http;
 
-use Orchestra\Testbench\TestCase;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Orchestra\Testbench\TestCase;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
 
 /** The headless JSON API: stateless endpoints, an idempotent write, reads, and RFC 9457 problem+json. */
 final class ApiTest extends TestCase

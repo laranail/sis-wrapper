@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Actions;
 
-use Simtabi\SIS\Command\Release;
-use Simtabi\SIS\Identifier\Identifier;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Data\CommandContext;
 use Simtabi\Laranail\SIS\Services\IdempotencyService;
+use Simtabi\SIS\Command\Release;
+use Simtabi\SIS\Identifier\Identifier;
 
 /**
  * Return a RESERVED identifier to the pool. The decider refuses any other state — the single most

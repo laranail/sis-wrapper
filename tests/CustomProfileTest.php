@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests;
 
-use Simtabi\SIS\Sis;
-use Orchestra\Testbench\TestCase;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\TestCase;
 use Simtabi\Laranail\SIS\Facades\Sis as SisFacade;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
 use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\SIS\Sis;
 
 /**
  * The whole point of the config-driven design: a consuming company edits config/sis.php with THEIR issuer
@@ -43,8 +43,8 @@ final class CustomProfileTest extends TestCase
 
         $this->assertDatabaseHas('sis_register', [
             'identifier' => (string) $identifier,
-            'class'      => 'CUST',
-            'state'      => 'commissioned',
+            'class' => 'CUST',
+            'state' => 'commissioned',
         ]);
     }
 

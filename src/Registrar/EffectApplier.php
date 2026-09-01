@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Simtabi\SIS\Decision\Decision;
-use Simtabi\SIS\Decision\SetSubject;
+use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Simtabi\Laranail\SIS\Services\AuditWriter;
 use Simtabi\SIS\Decision\AppendAudit;
 use Simtabi\SIS\Decision\AssignAlias;
 use Simtabi\SIS\Decision\ChangeState;
-use Simtabi\SIS\Enums\LifecycleState;
+use Simtabi\SIS\Decision\Decision;
 use Simtabi\SIS\Decision\DeleteRecord;
 use Simtabi\SIS\Decision\InsertRecord;
-use Simtabi\SIS\Identifier\Identifier;
+use Simtabi\SIS\Decision\SetSubject;
 use Simtabi\SIS\Decision\SetSupersededBy;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\SIS\Models\SisRecord;
-use Simtabi\Laranail\SIS\Enums\AuditVerdict;
-use Simtabi\Laranail\SIS\Services\AuditWriter;
+use Simtabi\SIS\Enums\LifecycleState;
 use Simtabi\SIS\Exception\UnknownIdentifierException;
+use Simtabi\SIS\Identifier\Identifier;
 
 /**
  * Applies a Decision's effects to the register and the audit trail. The core produced these as pure
@@ -44,14 +44,14 @@ final class EffectApplier
 
         foreach ($decision->effects() as $effect) {
             match (true) {
-                $effect instanceof InsertRecord    => $this->insert($effect),
-                $effect instanceof ChangeState     => $this->changeState($effect, $this->staged($effect->identifier, $updates)),
-                $effect instanceof AssignAlias     => $this->assignAlias($effect, $this->staged($effect->identifier, $updates)),
-                $effect instanceof SetSubject      => $this->setSubject($effect, $this->staged($effect->identifier, $updates)),
+                $effect instanceof InsertRecord => $this->insert($effect),
+                $effect instanceof ChangeState => $this->changeState($effect, $this->staged($effect->identifier, $updates)),
+                $effect instanceof AssignAlias => $this->assignAlias($effect, $this->staged($effect->identifier, $updates)),
+                $effect instanceof SetSubject => $this->setSubject($effect, $this->staged($effect->identifier, $updates)),
                 $effect instanceof SetSupersededBy => $this->setSupersededBy($effect, $this->staged($effect->identifier, $updates)),
-                $effect instanceof DeleteRecord    => $this->delete($effect),
-                $effect instanceof AppendAudit     => $this->appendAudit($effect),
-                default                            => null,
+                $effect instanceof DeleteRecord => $this->delete($effect),
+                $effect instanceof AppendAudit => $this->appendAudit($effect),
+                default => null,
             };
         }
 
@@ -140,7 +140,7 @@ final class EffectApplier
      * The single loaded record for an identifier within this Decision, loaded once and mutated in place so
      * all of a Decision's register updates land in one save (see the class docblock).
      *
-     * @param array<string, SisRecord> $updates
+     * @param  array<string, SisRecord>  $updates
      */
     private function staged(Identifier $identifier, array &$updates): SisRecord
     {

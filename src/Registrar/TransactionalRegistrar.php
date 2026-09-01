@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Simtabi\SIS\Contract\Command;
 use Illuminate\Support\Facades\DB;
-use Simtabi\SIS\Decision\Decision;
 use Simtabi\Laranail\SIS\Contract\Registrar;
+use Simtabi\SIS\Contract\Command;
+use Simtabi\SIS\Decision\Decision;
 
 /**
  * Wraps the write in one transaction: the effects, the audit rows, the outbox rows, and the idempotency

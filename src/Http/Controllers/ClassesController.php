@@ -14,11 +14,11 @@ final class ClassesController
     public function __invoke(SisEngine $engine): JsonResponse
     {
         $classes = array_values(array_map(static fn (ClassDefinition $class): array => [
-            'code'         => $class->code,
-            'label'        => $class->label(),
-            'form'         => $class->isScoped() ? 'S' : 'G',
+            'code' => $class->code,
+            'label' => $class->label(),
+            'form' => $class->isScoped() ? 'S' : 'G',
             'serial_start' => $class->serialStart(),
-            'uses_alias'   => $class->usesAlias(),
+            'uses_alias' => $class->usesAlias(),
         ], $engine->classes()->all()));
 
         return new JsonResponse(['classes' => $classes]);

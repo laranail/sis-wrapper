@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Rules;
 
-use Simtabi\SIS\Enums\SimClass;
-use Orchestra\Testbench\TestCase;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Enums\LifecycleState;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Application;
-use Simtabi\SIS\Profile\ClassDefinition;
-use Simtabi\Laranail\SIS\Rules\ValidSemver;
-use Simtabi\Laranail\SIS\Rules\ValidSubtype;
-use Simtabi\Laranail\SIS\Rules\ValidAliasShape;
-use Simtabi\Laranail\SIS\Rules\ValidIdentifier;
+use Illuminate\Translation\PotentiallyTranslatedString;
+use Orchestra\Testbench\TestCase;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 use Simtabi\Laranail\SIS\Rules\NotReservedAlias;
 use Simtabi\Laranail\SIS\Rules\ScopeMatchesClass;
-use Illuminate\Contracts\Validation\ValidationRule;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Rules\ValidAliasShape;
+use Simtabi\Laranail\SIS\Rules\ValidIdentifier;
 use Simtabi\Laranail\SIS\Rules\ValidIdentifierOfClass;
-use Illuminate\Translation\PotentiallyTranslatedString;
 use Simtabi\Laranail\SIS\Rules\ValidLifecycleTransition;
+use Simtabi\Laranail\SIS\Rules\ValidSemver;
+use Simtabi\Laranail\SIS\Rules\ValidSubtype;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\SIS\Enums\LifecycleState;
+use Simtabi\SIS\Enums\SimClass;
+use Simtabi\SIS\Profile\ClassDefinition;
 
 /**
  * The core-delegating rules are usable in a consumer's own validation with no database and no HTTP — they

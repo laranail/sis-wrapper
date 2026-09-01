@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Model;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\SIS\Enums\AuditVerdict;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Simtabi\Laranail\SIS\Database\Factories\SisAuditFactory;
+use Simtabi\Laranail\SIS\Enums\AuditVerdict;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
 
 /**
  * A row in the append-only audit trail (§2.9). Read-and-insert only; the storage-layer trigger rejects any
@@ -68,9 +68,9 @@ final class SisAudit extends Model
     protected function casts(): array
     {
         return [
-            'context'    => 'array',
-            'ability'    => SisAbility::class,
-            'verdict'    => AuditVerdict::class,
+            'context' => 'array',
+            'ability' => SisAbility::class,
+            'verdict' => AuditVerdict::class,
             'created_at' => 'immutable_datetime',
         ];
     }

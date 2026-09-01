@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Profile\ClassDefinition;
-use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
  * The headline standalone rule: assert a value is a valid identifier of a specific class.

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Simtabi\SIS\Version\Version;
-use Simtabi\SIS\Exception\InvalidVersionException;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Simtabi\SIS\Exception\InvalidVersionException;
+use Simtabi\SIS\Version\Version;
 
 /** Validates a release version `{ALIAS}-{semver}` via the core parser (§7.2). */
 final class ValidSemver implements ValidationRule

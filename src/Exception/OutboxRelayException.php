@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Exception;
 
-use Throwable;
 use Simtabi\SIS\Exception\SisExceptionBase;
+use Throwable;
 
 /**
  * The outbox relay failed. Degradable (Part II): the write committed and nothing is corrupted — the relay

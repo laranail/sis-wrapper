@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use Simtabi\Laranail\SIS\Http\Problem\ProblemRenderer;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * POST /identifiers is NOT idempotent — it burns a serial. This requires an Idempotency-Key header before
@@ -23,8 +23,8 @@ final class RequireIdempotencyKey
 
         if (! is_string($key) || $key === '') {
             return new JsonResponse([
-                'type'   => ProblemRenderer::TYPE_BASE . '#idempotency-key-required',
-                'title'  => 'Bad Request',
+                'type' => ProblemRenderer::TYPE_BASE.'#idempotency-key-required',
+                'title' => 'Bad Request',
                 'status' => 400,
                 'detail' => 'A write to the register requires an Idempotency-Key header.',
             ], 400, ['Content-Type' => 'application/problem+json']);
