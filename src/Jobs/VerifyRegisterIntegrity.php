@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Jobs;
 
 use Illuminate\Support\Facades\Event;
-use Simtabi\Laranail\SIS\Events\RegisterIntegrityCheckFailed;
 use Simtabi\Laranail\SIS\Services\IntegrityService;
+use Simtabi\Laranail\SIS\Events\RegisterIntegrityCheckFailed;
 
 /**
  * The scheduled integrity sweep (§2.4.7, §2.9). It runs BOTH register checks the ability's #[Description]

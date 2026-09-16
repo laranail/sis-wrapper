@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Database;
 
-use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Orchestra\Testbench\TestCase;
-use PHPUnit\Framework\Attributes\Group;
-use Simtabi\Laranail\SIS\Facades\Sis;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
-use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\SimClass;
+use Orchestra\Testbench\TestCase;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\Laranail\SIS\Facades\Sis;
+use Illuminate\Foundation\Application;
 use Simtabi\SIS\Identifier\Identifier;
+use Illuminate\Database\QueryException;
+use PHPUnit\Framework\Attributes\Group;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 
 /**
  * The storage-layer immutability guarantee (§6.4, §9) is enforced by PostgreSQL triggers, not the app — a
@@ -109,15 +109,15 @@ final class PostgresTriggersTest extends TestCase
     {
         $app['config']->set('database.default', 'pgsql');
         $app['config']->set('database.connections.pgsql', [
-            'driver' => 'pgsql',
-            'host' => getenv('DB_HOST') ?: '127.0.0.1',
-            'port' => getenv('DB_PORT') ?: '5432',
+            'driver'   => 'pgsql',
+            'host'     => getenv('DB_HOST') ?: '127.0.0.1',
+            'port'     => getenv('DB_PORT') ?: '5432',
             'database' => getenv('DB_DATABASE') ?: 'sis_test',
             'username' => getenv('DB_USERNAME') ?: 'sis',
             'password' => getenv('DB_PASSWORD') ?: 'sis',
-            'charset' => 'utf8',
-            'prefix' => '',
-            'schema' => 'public',
+            'charset'  => 'utf8',
+            'prefix'   => '',
+            'schema'   => 'public',
         ]);
         $app['config']->set('sis.authorization.resolver', AllowAllResolver::class);
     }

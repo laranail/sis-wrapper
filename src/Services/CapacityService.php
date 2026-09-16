@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Services;
 
-use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Policy\CapacityPolicy;
 use Simtabi\SIS\Profile\ClassDefinition;
+use Simtabi\Laranail\SIS\Models\SisRecord;
 
 /**
  * How full each serial space is (§2.13). Reserving burns a serial permanently, so a human is warned before

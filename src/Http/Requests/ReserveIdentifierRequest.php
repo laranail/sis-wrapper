@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Requests;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Simtabi\Laranail\SIS\Data\ReserveData;
-use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\SimClass;
 use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\Laranail\SIS\Data\ReserveData;
+use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * authorize() defers to the Action/registrar (never an inline if); rules() composes framework rules; and
@@ -29,10 +29,10 @@ final class ReserveIdentifierRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'class' => ['required', Rule::enum(SimClass::class)],
-            'scope' => ['nullable', 'string', 'max:6'],
+            'class'  => ['required', Rule::enum(SimClass::class)],
+            'scope'  => ['nullable', 'string', 'max:6'],
             'reason' => ['required', 'string'],
-            'width' => ['nullable', 'integer', 'min:6', 'max:9'],
+            'width'  => ['nullable', 'integer', 'min:6', 'max:9'],
         ];
     }
 

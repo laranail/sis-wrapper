@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Problem;
 
 use ReflectionClass;
-use Simtabi\Laranail\SIS\Exception\IdempotencyConflictException;
-use Simtabi\Laranail\SIS\Exception\UnauthorizedCommandException;
 use Simtabi\SIS\Contract\SisException;
+use Simtabi\SIS\Exception\SisStateException;
 use Simtabi\SIS\Exception\SisCapacityException;
 use Simtabi\SIS\Exception\SisConflictException;
 use Simtabi\SIS\Exception\SisIntegrityException;
-use Simtabi\SIS\Exception\SisStateException;
+use Simtabi\Laranail\SIS\Exception\IdempotencyConflictException;
+use Simtabi\Laranail\SIS\Exception\UnauthorizedCommandException;
 
 /**
  * Renders a SIS exception as RFC 9457 application/problem+json. The `type` URI is STABLE and a PUBLIC
@@ -31,10 +31,10 @@ final class ProblemRenderer
         $status = self::statusFor($exception);
 
         $body = [
-            'type' => self::TYPE_BASE.'#'.self::slug($exception),
-            'title' => self::titleFor($status),
-            'status' => $status,
-            'detail' => $exception->getMessage(),
+            'type'        => self::TYPE_BASE . '#' . self::slug($exception),
+            'title'       => self::titleFor($status),
+            'status'      => $status,
+            'detail'      => $exception->getMessage(),
             'spec_clause' => $exception->specClause(),
         ];
 
@@ -48,12 +48,12 @@ final class ProblemRenderer
     private static function statusFor(SisException $exception): int
     {
         return match (true) {
-            $exception instanceof UnauthorizedCommandException => 403,
-            $exception instanceof IdempotencyConflictException => 422,
-            $exception instanceof SisIntegrityException => 500,
+            $exception instanceof UnauthorizedCommandException                                  => 403,
+            $exception instanceof IdempotencyConflictException                                  => 422,
+            $exception instanceof SisIntegrityException                                         => 500,
             $exception instanceof SisConflictException, $exception instanceof SisStateException => 409,
-            $exception instanceof SisCapacityException => 507,
-            default => 400,
+            $exception instanceof SisCapacityException                                          => 507,
+            default                                                                             => 400,
         };
     }
 

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Database\Seeders;
 
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Seeder;
-use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
-use Simtabi\Laranail\SIS\Contract\PermissionResolver;
-use Simtabi\Laranail\SIS\Contract\Registrar;
-use Simtabi\Laranail\SIS\Enums\SisAbility;
-use Simtabi\Laranail\SIS\Services\SisManager;
-use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\SimClass;
 use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Contract\SisEngine;
+use Simtabi\Laranail\SIS\Enums\SisAbility;
+use Simtabi\Laranail\SIS\Contract\Registrar;
+use Simtabi\Laranail\SIS\Services\SisManager;
+use Illuminate\Contracts\Foundation\Application;
+use Simtabi\Laranail\SIS\Contract\PermissionResolver;
+use Simtabi\Laranail\SIS\Authorization\AuthorizationContext;
 
 /**
  * A dev-only demo register: a handful of reserved-then-commissioned identifiers so a fresh install has

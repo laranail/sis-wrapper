@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Actions;
 
-use Simtabi\Laranail\SIS\Read\SisReadModel;
 use Simtabi\SIS\Identifier\Identifier;
 use Simtabi\SIS\Identifier\SubjectRef;
+use Simtabi\Laranail\SIS\Read\SisReadModel;
 
 /** Reverse lookup: which identifier names this thing? (§2.5). A read; authorize it as hard as a write (§2.13). */
 final class ResolveSubject

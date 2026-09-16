@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Simtabi\SIS\Sis;
+use Simtabi\SIS\Enums\SimClass;
 use Illuminate\Support\Facades\Date;
 use Simtabi\Laranail\SIS\Models\SisOutbox;
-use Simtabi\SIS\Enums\SimClass;
-use Simtabi\SIS\Sis;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * A transactional-outbox event (§2.7). Pending by default (relayed_at null, zero attempts); the identifier
@@ -27,14 +27,14 @@ final class SisOutboxFactory extends Factory
         $identifier = $this->mintIdentifier();
 
         return [
-            'event_type' => 'sis.identifier.reserved',
-            'identifier' => $identifier,
-            'payload' => ['identifier' => $identifier, 'state' => 'reserved'],
+            'event_type'     => 'sis.identifier.reserved',
+            'identifier'     => $identifier,
+            'payload'        => ['identifier' => $identifier, 'state' => 'reserved'],
             'correlation_id' => (string) fake()->uuid(),
-            'available_at' => Date::now(),
-            'relayed_at' => null,
-            'attempts' => 0,
-            'created_at' => Date::now(),
+            'available_at'   => Date::now(),
+            'relayed_at'     => null,
+            'attempts'       => 0,
+            'created_at'     => Date::now(),
         ];
     }
 
@@ -43,7 +43,7 @@ final class SisOutboxFactory extends Factory
     {
         return $this->state([
             'relayed_at' => Date::now(),
-            'attempts' => 1,
+            'attempts'   => 1,
         ]);
     }
 

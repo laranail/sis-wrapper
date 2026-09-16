@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Simtabi\Laranail\SIS\Http\Requests\Concerns\ReadsSisRequest;
-use Simtabi\Laranail\SIS\Rules\KnownMorphAlias;
 use Simtabi\SIS\Identifier\SubjectRef;
+use Illuminate\Foundation\Http\FormRequest;
+use Simtabi\Laranail\SIS\Rules\KnownMorphAlias;
+use Simtabi\Laranail\SIS\Http\Requests\Concerns\ReadsSisRequest;
 
 /**
  * Attach the polymorphic subject to a still-reserved identifier (§5, §9). The type must be a mapped morph
@@ -27,7 +27,7 @@ final class AttachSubjectRequest extends FormRequest
     {
         return [
             'type' => ['required', 'string', 'max:64', app(KnownMorphAlias::class)],
-            'id' => ['required', 'string', 'max:64'],
+            'id'   => ['required', 'string', 'max:64'],
         ];
     }
 

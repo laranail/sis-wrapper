@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Simtabi\SIS\Profile\ClassDefinition;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 /** A Form S class requires a scope; a Form G class takes none (§2, §3). */
 final class ScopeMatchesClass implements ValidationRule

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
-use Simtabi\Laranail\SIS\Authorization\ActorResolver;
-use Simtabi\Laranail\SIS\Http\Controllers\Concerns\ResolvesIdentifier;
-use Simtabi\Laranail\SIS\Http\Requests\CommissionIdentifierRequest;
-use Simtabi\Laranail\SIS\Http\Resources\IdentifierResource;
 use Simtabi\Laranail\SIS\Read\SisReadModel;
+use Simtabi\Laranail\SIS\Authorization\ActorResolver;
+use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
+use Simtabi\Laranail\SIS\Http\Resources\IdentifierResource;
+use Simtabi\Laranail\SIS\Http\Requests\CommissionIdentifierRequest;
+use Simtabi\Laranail\SIS\Http\Controllers\Concerns\ResolvesIdentifier;
 
 /** POST identifiers/{identifier}/commission — lock a reserved identifier forever, optionally binding its alias and subject. */
 final class CommissionController

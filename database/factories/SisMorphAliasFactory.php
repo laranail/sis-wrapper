@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Date;
 use Simtabi\Laranail\SIS\Models\SisMorphAlias;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * An append-only morph-alias allocation (decision D4). The alias is a shape-valid snake_case morph handle
@@ -26,9 +26,9 @@ final class SisMorphAliasFactory extends Factory
         $alias = Str::snake((string) fake()->unique()->word());
 
         return [
-            'alias' => $alias,
-            'model_class' => 'App\\Models\\'.Str::studly($alias),
-            'created_at' => Date::now(),
+            'alias'       => $alias,
+            'model_class' => 'App\\Models\\' . Str::studly($alias),
+            'created_at'  => Date::now(),
         ];
     }
 }

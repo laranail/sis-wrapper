@@ -19,7 +19,8 @@ final class Redactor
     private const string MASK = '[REDACTED]';
 
     /**
-     * @param  array<string, mixed>  $data
+     * @param array<string, mixed> $data
+     *
      * @return array<string, mixed>
      */
     public function redact(array $data): array

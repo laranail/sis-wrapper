@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Simtabi\SIS\Identifier\SubjectRef;
+use Simtabi\Laranail\SIS\Read\SisReadModel;
 use Simtabi\Laranail\SIS\Actions\ResolveSubject;
 use Simtabi\Laranail\SIS\Http\Resources\IdentifierResource;
-use Simtabi\Laranail\SIS\Read\SisReadModel;
-use Simtabi\SIS\Identifier\SubjectRef;
 
 /** GET subjects?type=&id= — reverse lookup: which identifier names this thing? (§2.5). Authorized like a write (§2.13). */
 final class ResolveSubjectController

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Simtabi\Laranail\SIS\Database\Factories\SisWebhookEndpointFactory;
 use Simtabi\Laranail\SIS\Enums\CircuitState;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
+use Simtabi\Laranail\SIS\Database\Factories\SisWebhookEndpointFactory;
 
 /**
  * A webhook endpoint (§2.13). The secret is encrypted at rest and hidden from serialisation — it is
@@ -41,9 +41,9 @@ final class SisWebhookEndpoint extends Model
      * @var array<string, mixed>
      */
     protected $attributes = [
-        'active' => true,
+        'active'        => true,
         'circuit_state' => 'closed',
-        'failures' => 0,
+        'failures'      => 0,
     ];
 
     /** @var list<string> */
@@ -73,10 +73,10 @@ final class SisWebhookEndpoint extends Model
     protected function casts(): array
     {
         return [
-            'secret' => 'encrypted',
-            'events' => 'array',
-            'active' => 'boolean',
-            'circuit_state' => CircuitState::class,
+            'secret'            => 'encrypted',
+            'events'            => 'array',
+            'active'            => 'boolean',
+            'circuit_state'     => CircuitState::class,
             'circuit_opened_at' => 'immutable_datetime',
         ];
     }

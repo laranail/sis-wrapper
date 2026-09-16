@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Services;
 
-use Simtabi\Laranail\SIS\Models\SisAudit;
-use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Identifier\SpecEdition;
+use Simtabi\Laranail\SIS\Models\SisAudit;
+use Simtabi\Laranail\SIS\Models\SisRecord;
 
 /**
  * Recomputes and checks the check characters of stored identifiers (§4), and verifies the append-only audit
@@ -75,7 +75,7 @@ final class IntegrityService
                 $row->prev_hash,
                 $row->identifier,
                 $row->action,
-                (string) $row->actor_type.':'.(string) $row->actor_id,
+                (string) $row->actor_type . ':' . (string) $row->actor_id,
                 $row->before_state,
                 $row->after_state,
                 $row->correlation_id,
@@ -83,7 +83,7 @@ final class IntegrityService
             );
 
             if ($row->prev_hash !== $expectedPrev || $row->hash !== $recomputed) {
-                $broken[] = '#'.$row->id.($row->identifier !== null ? " ({$row->identifier})" : '');
+                $broken[] = '#' . $row->id . ($row->identifier !== null ? " ({$row->identifier})" : '');
             }
 
             $expectedPrev = $row->hash;

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Date;
-use Simtabi\Laranail\SIS\Models\SisRecord;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Enums\LifecycleState;
 use Simtabi\SIS\Enums\SimClass;
+use Simtabi\SIS\Contract\SisEngine;
+use Illuminate\Support\Facades\Date;
+use Simtabi\SIS\Enums\LifecycleState;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * Feeds the whole suite, so it must never lie. Check characters are computed THROUGH THE CORE — never
@@ -55,8 +55,8 @@ final class SisRecordFactory extends Factory
     public function decommissioned(): static
     {
         return $this->state([
-            'state' => LifecycleState::Decommissioned,
-            'commissioned_at' => Date::now(),
+            'state'             => LifecycleState::Decommissioned,
+            'commissioned_at'   => Date::now(),
             'decommissioned_at' => Date::now(),
         ]);
     }
@@ -74,13 +74,13 @@ final class SisRecordFactory extends Factory
         $identifier = $engine->codec()->mint($engine->class($class), $serial, $scope);
 
         return [
-            'identifier' => (string) $identifier,
-            'class' => $class->value,
-            'scope' => $scope !== null ? strtoupper($scope) : null,
-            'serial' => $serial,
-            'spec_edition' => 'SIS/1',
-            'state' => LifecycleState::Reserved,
-            'reserved_at' => Date::now(),
+            'identifier'      => (string) $identifier,
+            'class'           => $class->value,
+            'scope'           => $scope !== null ? strtoupper($scope) : null,
+            'serial'          => $serial,
+            'spec_edition'    => 'SIS/1',
+            'state'           => LifecycleState::Reserved,
+            'reserved_at'     => Date::now(),
             'reserved_reason' => 'factory',
         ];
     }
