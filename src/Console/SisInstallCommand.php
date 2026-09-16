@@ -16,9 +16,6 @@ final class SisInstallCommand extends Command
 {
     use SupportsNamespacedNames;
 
-    /** @var list<string> */
-    protected array $commandAliases = ['sis:install'];
-
     protected $signature = 'laranail::sis-wrapper.install {--force : Overwrite any published config or migrations}';
 
     protected $description = 'Install the Simtabi Identifier System: publish, migrate, and run the doctor.';

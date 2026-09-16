@@ -32,7 +32,7 @@ The resolver checks the scoped permission (`sis.identifier.commission.adiq`) fir
 Verify what an actor can do:
 
 ```bash
-php artisan sis:permissions --actor=user:1
+php artisan laranail::sis-wrapper.permissions --actor=user:1
 ```
 
 Remember: authorization decides *who may ask*, never *what is legal* — no Spatie permission can authorize an illegal operation. See [authorization](../tools/authorization.md).

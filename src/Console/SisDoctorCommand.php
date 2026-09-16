@@ -25,9 +25,6 @@ final class SisDoctorCommand extends Command
 {
     use SupportsNamespacedNames;
 
-    /** @var list<string> */
-    protected array $commandAliases = ['sis:doctor'];
-
     protected $signature = 'laranail::sis-wrapper.doctor';
 
     protected $description = 'Check the health of the SIS register (schema, triggers, integrity, capacity).';

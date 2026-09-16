@@ -43,7 +43,7 @@ This is the load-bearing rule: a resolver decides **who may ask**, never **what 
 | `Backfill` | Backfill register | `sis.register.backfill` |
 | `ManageWebhooks` | Manage webhooks | `sis.webhooks.manage` |
 
-`SisAbility` adopts `laranail/enumerator`: each case carries a `#[Label('…')]` attribute and the enum uses the `HasEnumeratorBehavior` trait, so `SisAbility::Reserve->label()` returns `'Reserve identifier'` and `SisAbility::labels()` / `SisAbility::options()` produce select-ready maps. The panel presenter (`permittedActionLabels()`) and `sis:permissions` print these labels instead of hand-formatting the enum names. The backing **values** remain the public contract — the labels are display sugar and may be re-worded or translated freely.
+`SisAbility` adopts `laranail/enumerator`: each case carries a `#[Label('…')]` attribute and the enum uses the `HasEnumeratorBehavior` trait, so `SisAbility::Reserve->label()` returns `'Reserve identifier'` and `SisAbility::labels()` / `SisAbility::options()` produce select-ready maps. The panel presenter (`permittedActionLabels()`) and `laranail::sis-wrapper.permissions` print these labels instead of hand-formatting the enum names. The backing **values** remain the public contract — the labels are display sugar and may be re-worded or translated freely.
 
 > `Reserve` is gated **harder** than the rest and should be granted to fewer actors than `Commission`: reserving burns a serial permanently, and serials are never reused, so an actor who can reserve in a loop can exhaust the space forever. It is the most dangerous ability in the package, not the safest.
 
@@ -85,8 +85,8 @@ Bind any implementation — Spatie, Bouncer, a homegrown roles table, an IdP's c
 ## Inspecting permissions
 
 ```bash
-php artisan sis:permissions                      # the ability list + current resolver
-php artisan sis:permissions --actor=user:1       # exactly what user:1 may do
+php artisan laranail::sis-wrapper.permissions                      # the ability list + current resolver
+php artisan laranail::sis-wrapper.permissions --actor=user:1       # exactly what user:1 may do
 ```
 
 This is the first thing to run when "it says 403 and I don't know why". See [the Artisan commands](console.md).

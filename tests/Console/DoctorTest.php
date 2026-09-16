@@ -17,7 +17,7 @@ final class DoctorTest extends TestCase
 
     public function test_doctor_reports_healthy_on_a_fresh_register(): void
     {
-        $this->artisan('sis:doctor')->assertExitCode(0);
+        $this->artisan('laranail::sis-wrapper.doctor')->assertExitCode(0);
     }
 
     public function test_the_canonical_namespaced_name_dispatches(): void
@@ -30,7 +30,7 @@ final class DoctorTest extends TestCase
     public function test_doctor_reports_the_headless_panel_status(): void
     {
         // No admin panel is installed in the test environment, so the informational check reports headless.
-        $this->artisan('sis:doctor')
+        $this->artisan('laranail::sis-wrapper.doctor')
             ->expectsOutputToContain('headless')
             ->assertExitCode(0);
     }
@@ -51,7 +51,7 @@ final class DoctorTest extends TestCase
             'updated_at' => Date::now(),
         ]);
 
-        $this->artisan('sis:doctor')->assertExitCode(1);
+        $this->artisan('laranail::sis-wrapper.doctor')->assertExitCode(1);
     }
 
     /** @param Application $app @return list<class-string> */

@@ -62,7 +62,7 @@ The core's preconditions are **advisory**; the database is **authoritative**. Bo
 | Invariant | Core (advisory) | Database (authoritative) |
 |-----------|-----------------|--------------------------|
 | Identifier grammar (§2) | `Identifier::parse()` regex | `identifier_shape` `CHECK` |
-| Check characters (§4) | `CheckCharacters::verify()` | (verified on read; corruption caught by `sis:doctor`) |
+| Check characters (§4) | `CheckCharacters::verify()` | (verified on read; corruption caught by `laranail::sis-wrapper.doctor`) |
 | Lifecycle transitions (§6.2) | `LifecycleState::canTransitionTo()` | immutability triggers |
 | Commissioned = locked (§6.4) | decider refuses | trigger rejects any edit to a frozen row |
 | Subtype vocabulary (§3.7) | `ClassDefinition::permitsSubtype()` | `subtype_vocabulary` `CHECK` |

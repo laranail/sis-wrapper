@@ -29,7 +29,7 @@ final class AuthorizationTest extends TestCase
 
     public function test_permissions_command_runs(): void
     {
-        $this->artisan('sis:permissions')->assertExitCode(0);
+        $this->artisan('laranail::sis-wrapper.permissions')->assertExitCode(0);
         $this->artisan('sis:permissions --actor=user:1')->assertExitCode(0);
     }
 
