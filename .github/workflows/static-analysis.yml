@@ -56,7 +56,11 @@ jobs:
         run: composer lint
 
       - name: Pint (code style)
-        run: vendor/bin/pint --test
+        # laranail-pint, not bare pint: it resolves the ONE shared config in
+        # vendor/laranail/package-tools and errors if it is absent. Bare `pint`
+        # silently falls back to its own defaults and exits 0, so this step was
+        # reporting "clean" against a rule set no other package here uses.
+        run: vendor/bin/laranail-pint --test
 
       - name: PHPStan (Larastan level 9)
         run: vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=github

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Simtabi\Laranail\SIS\Models\SisRecord;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * The versioned, stable wire format for a register record — not "whatever toArray() did today." Changing a
@@ -23,14 +23,14 @@ final class IdentifierResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'identifier' => $this->identifier,
-            'class' => $this->class,
-            'scope' => $this->scope,
-            'serial' => $this->serial,
-            'alias' => $this->alias,
-            'state' => $this->state->value,
+            'identifier'   => $this->identifier,
+            'class'        => $this->class,
+            'scope'        => $this->scope,
+            'serial'       => $this->serial,
+            'alias'        => $this->alias,
+            'state'        => $this->state->value,
             'spec_edition' => $this->spec_edition,
-            'subject' => $this->subject_type !== null
+            'subject'      => $this->subject_type !== null
                 ? ['type' => $this->subject_type, 'id' => $this->subject_id]
                 : null,
             'superseded_by' => $this->superseded_by,

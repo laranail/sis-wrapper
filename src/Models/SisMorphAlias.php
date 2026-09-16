@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Simtabi\Laranail\SIS\Database\Factories\SisMorphAliasFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Simtabi\Laranail\SIS\Models\Concerns\UsesSisConnection;
+use Simtabi\Laranail\SIS\Database\Factories\SisMorphAliasFactory;
 
 /** An append-only record of a morph alias allocation (decision D4). Config resolves; this table remembers. */
 final class SisMorphAlias extends Model

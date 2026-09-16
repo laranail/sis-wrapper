@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Outbox;
 
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Date;
 use Simtabi\Laranail\SIS\Models\SisOutbox;
+use Illuminate\Contracts\Events\Dispatcher;
 
 /**
  * Drains the outbox after commit: dispatches each unrelayed message through Laravel's event dispatcher

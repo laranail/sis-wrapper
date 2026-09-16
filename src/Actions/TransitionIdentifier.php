@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Actions;
 
-use Simtabi\Laranail\SIS\Contract\Registrar;
-use Simtabi\Laranail\SIS\Data\CommandContext;
-use Simtabi\Laranail\SIS\Services\IdempotencyService;
 use Simtabi\SIS\Command\Transition;
 use Simtabi\SIS\Enums\LifecycleState;
 use Simtabi\SIS\Identifier\Identifier;
+use Simtabi\Laranail\SIS\Contract\Registrar;
+use Simtabi\Laranail\SIS\Data\CommandContext;
+use Simtabi\Laranail\SIS\Services\IdempotencyService;
 
 /**
  * Apply a lifecycle transition (§6.2). The named methods are the vocabulary a caller uses; every one funnels

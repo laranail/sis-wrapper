@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Read;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Simtabi\Laranail\SIS\Models\SisRecord;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Identifier\Identifier;
 use Simtabi\SIS\Identifier\SubjectRef;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * The query side (§2.11). Reads hit the register directly and NEVER go through the Registrar — CQRS-lite,

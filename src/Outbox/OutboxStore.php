@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Outbox;
 
-use Simtabi\Laranail\SIS\Models\SisOutbox;
-use Simtabi\SIS\Contract\DomainEvent;
 use Simtabi\SIS\Event\AbstractEvent;
+use Simtabi\SIS\Contract\DomainEvent;
+use Simtabi\Laranail\SIS\Models\SisOutbox;
 
 /**
  * Writes the core's returned events to the transactional outbox — in the SAME transaction as the effects.
@@ -21,13 +21,13 @@ final class OutboxStore
     {
         foreach ($events as $event) {
             SisOutbox::query()->create([
-                'event_type' => $event::class,
-                'identifier' => $event->identifier(),
-                'payload' => $this->payload($event),
+                'event_type'     => $event::class,
+                'identifier'     => $event->identifier(),
+                'payload'        => $this->payload($event),
                 'correlation_id' => $event instanceof AbstractEvent ? $event->correlationId : '',
-                'available_at' => $event->occurredAt(),
-                'created_at' => $event->occurredAt(),
-                'attempts' => 0,
+                'available_at'   => $event->occurredAt(),
+                'created_at'     => $event->occurredAt(),
+                'attempts'       => 0,
             ]);
         }
     }

@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Registrar;
 
 use DateTimeImmutable;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\SIS\Enums\SimClass;
 use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
-use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
-use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
+use Simtabi\SIS\Identifier\Actor;
+use Simtabi\SIS\Contract\SisEngine;
+use Illuminate\Foundation\Application;
+use Simtabi\SIS\Profile\ClassDefinition;
+use Simtabi\SIS\Event\IdentifierReserved;
+use Simtabi\Laranail\SIS\Data\ReserveData;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Data\CommissionData;
-use Simtabi\Laranail\SIS\Data\ReserveData;
-use Simtabi\Laranail\SIS\Exception\UnauthorizedCommandException;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Enums\SimClass;
-use Simtabi\SIS\Event\IdentifierReserved;
-use Simtabi\SIS\Identifier\Actor;
-use Simtabi\SIS\Profile\ClassDefinition;
+use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
+use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
+use Simtabi\Laranail\SIS\Exception\UnauthorizedCommandException;
 
 /**
  * Drives the whole write path through the decorator stack: authorize -> transaction -> idempotency ->

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Cast;
 
-use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Illuminate\Database\Eloquent\Model;
 use RuntimeException;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Identifier\Identifier;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 /**
  * Casts a stored identifier string to and from the core `Identifier` value object — which validates the

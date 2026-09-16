@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Services;
 
 use DateTimeImmutable;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Actions\TransitionIdentifier;
-use Simtabi\Laranail\SIS\Data\CommandContext;
-use Simtabi\Laranail\SIS\Exception\IdempotencyConflictException;
-use Simtabi\Laranail\SIS\Facades\Sis;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
-use Simtabi\SIS\Enums\LifecycleState;
 use Simtabi\SIS\Enums\SimClass;
+use Orchestra\Testbench\TestCase;
 use Simtabi\SIS\Identifier\Actor;
+use Simtabi\Laranail\SIS\Facades\Sis;
+use Simtabi\SIS\Enums\LifecycleState;
+use Illuminate\Foundation\Application;
 use Simtabi\SIS\Identifier\Identifier;
+use Simtabi\Laranail\SIS\Data\CommandContext;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\Laranail\SIS\Actions\TransitionIdentifier;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Exception\IdempotencyConflictException;
 
 /**
  * Idempotency covers every write, not only reserve/commission: a retried transition/supersede/etc. replays

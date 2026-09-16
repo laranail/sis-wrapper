@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Simtabi\SIS\Contract\SisEngine;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
  * Validates the grammar AND the check characters, by delegating to the core — it restates neither. Usable

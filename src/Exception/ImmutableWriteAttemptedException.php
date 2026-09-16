@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Exception;
 
-use Simtabi\SIS\Exception\SisStateException;
 use Throwable;
+use Simtabi\SIS\Exception\SisStateException;
 
 /**
  * The immutability trigger fired: something tried to UPDATE a locked row and the storage layer stopped it.
@@ -20,7 +20,7 @@ final class ImmutableWriteAttemptedException extends SisStateException
     {
         return new self(
             'A locked register row was modified in the database and the immutability trigger rejected it '
-            .'(SIM-STD-0001:2026 §6.4). This is a security event.',
+            . '(SIM-STD-0001:2026 §6.4). This is a security event.',
             ['operation' => 'update', 'component' => 'immutability-trigger'],
             $previous,
         );

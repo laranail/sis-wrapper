@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Simtabi\Laranail\SIS\Concerns\SisSchema;
 use Simtabi\SIS\Enums\LifecycleState;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Simtabi\Laranail\SIS\Concerns\SisSchema;
+use Illuminate\Database\Migrations\Migration;
 
 /**
  * The whole SIS storage layer — SIM-STD-0001:2026 §9 — as one profile-aware migration. Tables are built in
@@ -51,9 +51,9 @@ return new class extends Migration
         if ($this->rollbackIsProtected()) {
             throw new RuntimeException(
                 'Refusing to roll back the SIS schema in a protected environment: the audit trail and the '
-                .'morph-alias register are append-only, and a rollback destroys them. This guard is active in '
-                .'production (or wherever sis.migrations.protect_rollback is true). On a disposable environment '
-                .'(dev/test/CI) down() is permitted, or use migrate:fresh anywhere.',
+                . 'morph-alias register are append-only, and a rollback destroys them. This guard is active in '
+                . 'production (or wherever sis.migrations.protect_rollback is true). On a disposable environment '
+                . '(dev/test/CI) down() is permitted, or use migrate:fresh anywhere.',
             );
         }
 
@@ -68,8 +68,8 @@ return new class extends Migration
         if ($this->isPostgres()) {
             DB::connection($connection)->unprepared(
                 'DROP FUNCTION IF EXISTS sis_enforce_immutability() CASCADE;'
-                .'DROP FUNCTION IF EXISTS sis_forbid_delete() CASCADE;'
-                .'DROP FUNCTION IF EXISTS sis_audit_append_only() CASCADE;',
+                . 'DROP FUNCTION IF EXISTS sis_forbid_delete() CASCADE;'
+                . 'DROP FUNCTION IF EXISTS sis_audit_append_only() CASCADE;',
             );
         }
     }
@@ -145,13 +145,13 @@ return new class extends Migration
         $formS = "^{$issuer}-[A-Z]{3,4}-[A-Z][A-Z0-9]{3,5}-[0-9]{6,9}-[0-9A-Z]{2}$";
 
         $constraints = [
-            'serial_positive' => 'serial > 0',
-            'state_vocabulary' => 'state IN ('.$this->quotedList($this->lifecycleStates()).')',
-            'alias_shape' => "alias IS NULL OR alias {$match} '^[A-Z][A-Z0-9]{3,5}$'",
-            'identifier_shape' => "spec_edition = 'pre-SIS' OR identifier {$match} '{$formG}' OR identifier {$match} '{$formS}'",
+            'serial_positive'            => 'serial > 0',
+            'state_vocabulary'           => 'state IN (' . $this->quotedList($this->lifecycleStates()) . ')',
+            'alias_shape'                => "alias IS NULL OR alias {$match} '^[A-Z][A-Z0-9]{3,5}$'",
+            'identifier_shape'           => "spec_edition = 'pre-SIS' OR identifier {$match} '{$formG}' OR identifier {$match} '{$formS}'",
             'commissioned_has_timestamp' => "state <> 'commissioned' OR commissioned_at IS NOT NULL",
-            'subject_pair' => '(subject_type IS NULL AND subject_id IS NULL) OR (subject_type IS NOT NULL AND subject_id IS NOT NULL)',
-            'subtype_vocabulary' => $this->subtypeVocabulary(),
+            'subject_pair'               => '(subject_type IS NULL AND subject_id IS NULL) OR (subject_type IS NOT NULL AND subject_id IS NOT NULL)',
+            'subtype_vocabulary'         => $this->subtypeVocabulary(),
         ];
 
         $connection = DB::connection($this->sisConnection());
@@ -383,7 +383,7 @@ return new class extends Migration
                 continue;
             }
 
-            $expression .= " OR (class = '{$definition->code}' AND subtype IN (".$this->quotedList($subtypes).'))';
+            $expression .= " OR (class = '{$definition->code}' AND subtype IN (" . $this->quotedList($subtypes) . '))';
         }
 
         return $expression;
@@ -392,11 +392,11 @@ return new class extends Migration
     /**
      * A comma-separated list of single-quoted SQL literals.
      *
-     * @param  list<string>  $values
+     * @param list<string> $values
      */
     private function quotedList(array $values): string
     {
-        return "'".implode("','", $values)."'";
+        return "'" . implode("','", $values) . "'";
     }
 
     private function postgresImmutabilityTriggers(string $table): string

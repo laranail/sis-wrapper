@@ -5,28 +5,28 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Registrar;
 
 use DateTimeImmutable;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
-use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
-use Simtabi\Laranail\SIS\Actions\ResolveAlias;
-use Simtabi\Laranail\SIS\Actions\ResolveSubject;
-use Simtabi\Laranail\SIS\Actions\SupersedeIdentifier;
-use Simtabi\Laranail\SIS\Actions\TraceSupersessionChain;
-use Simtabi\Laranail\SIS\Actions\TransitionIdentifier;
-use Simtabi\Laranail\SIS\Data\CommandContext;
-use Simtabi\Laranail\SIS\Data\CommissionData;
-use Simtabi\Laranail\SIS\Data\ReserveData;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
-use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\SimClass;
+use Orchestra\Testbench\TestCase;
 use Simtabi\SIS\Identifier\Actor;
 use Simtabi\SIS\Identifier\Alias;
+use Simtabi\SIS\Contract\SisEngine;
+use Illuminate\Foundation\Application;
 use Simtabi\SIS\Identifier\Identifier;
 use Simtabi\SIS\Identifier\SubjectRef;
 use Simtabi\SIS\Profile\ClassDefinition;
+use Simtabi\Laranail\SIS\Data\ReserveData;
+use Simtabi\Laranail\SIS\Data\CommandContext;
+use Simtabi\Laranail\SIS\Data\CommissionData;
+use Simtabi\Laranail\SIS\Actions\ResolveAlias;
+use Simtabi\Laranail\SIS\Actions\ResolveSubject;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
+use Simtabi\Laranail\SIS\Actions\SupersedeIdentifier;
+use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
+use Simtabi\Laranail\SIS\Actions\TransitionIdentifier;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Actions\TraceSupersessionChain;
 
 /** The full lifecycle and the read side, driven through the decorator stack against a real database. */
 final class LifecycleThroughStackTest extends TestCase
@@ -86,7 +86,7 @@ final class LifecycleThroughStackTest extends TestCase
 
     private function ctx(): CommandContext
     {
-        return new CommandContext(Actor::of('user', '1'), new DateTimeImmutable('2026-07-13T00:00:00+00:00'), 'corr', 'k-'.++$this->counter);
+        return new CommandContext(Actor::of('user', '1'), new DateTimeImmutable('2026-07-13T00:00:00+00:00'), 'corr', 'k-' . ++$this->counter);
     }
 
     private function class(SimClass $class): ClassDefinition
@@ -102,10 +102,10 @@ final class LifecycleThroughStackTest extends TestCase
     private function reserveCommission(ClassDefinition $class, ?string $scope, ?Alias $alias = null, ?SubjectRef $subject = null): Identifier
     {
         $reserve = $this->app->make(ReserveIdentifier::class);
-        $id = $reserve(new ReserveData($class, $scope, 'test', Actor::of('user', '1'), new DateTimeImmutable('2026-07-13T00:00:00+00:00'), 'corr', 'k-'.++$this->counter));
+        $id = $reserve(new ReserveData($class, $scope, 'test', Actor::of('user', '1'), new DateTimeImmutable('2026-07-13T00:00:00+00:00'), 'corr', 'k-' . ++$this->counter));
 
         $commission = $this->app->make(CommissionIdentifier::class);
-        $commission(new CommissionData($id, Actor::of('user', '1'), new DateTimeImmutable('2026-07-13T00:00:00+00:00'), 'corr', 'k-'.++$this->counter, $alias, '', $subject));
+        $commission(new CommissionData($id, Actor::of('user', '1'), new DateTimeImmutable('2026-07-13T00:00:00+00:00'), 'corr', 'k-' . ++$this->counter, $alias, '', $subject));
 
         return $id;
     }

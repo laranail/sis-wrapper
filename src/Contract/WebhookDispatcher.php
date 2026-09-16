@@ -13,7 +13,8 @@ use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
 interface WebhookDispatcher
 {
     /**
-     * @param  array<string, mixed>  $payload
+     * @param array<string, mixed> $payload
+     *
      * @return bool whether the endpoint accepted the delivery
      */
     public function dispatch(SisWebhookEndpoint $endpoint, array $payload): bool;

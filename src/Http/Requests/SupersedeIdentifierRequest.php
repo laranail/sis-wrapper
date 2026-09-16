@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Simtabi\Laranail\SIS\Http\Requests\Concerns\ReadsSisRequest;
-use Simtabi\Laranail\SIS\Rules\ValidIdentifier;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Identifier\Identifier;
+use Illuminate\Foundation\Http\FormRequest;
+use Simtabi\Laranail\SIS\Rules\ValidIdentifier;
+use Simtabi\Laranail\SIS\Http\Requests\Concerns\ReadsSisRequest;
 
 /**
  * Supersede an identifier with a successor (§8). The successor's shape is validated by ValidIdentifier;

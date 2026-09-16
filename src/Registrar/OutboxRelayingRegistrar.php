@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
+use Throwable;
 use Psr\Log\LoggerInterface;
-use Simtabi\Laranail\SIS\Contract\Registrar;
-use Simtabi\Laranail\SIS\Outbox\OutboxRelay;
 use Simtabi\SIS\Contract\Command;
 use Simtabi\SIS\Decision\Decision;
-use Throwable;
+use Simtabi\Laranail\SIS\Contract\Registrar;
+use Simtabi\Laranail\SIS\Outbox\OutboxRelay;
 
 /**
  * After the write commits (this sits outside the transaction), relays the outbox eagerly for lower
@@ -33,8 +33,8 @@ final class OutboxRelayingRegistrar implements Registrar
         } catch (Throwable $e) {
             $this->logger->warning('sis.outbox.relay_deferred', [
                 'correlation_id' => $command->correlationId(),
-                'error' => $e::class,
-                'message' => $e->getMessage(),
+                'error'          => $e::class,
+                'message'        => $e->getMessage(),
             ]);
         }
 

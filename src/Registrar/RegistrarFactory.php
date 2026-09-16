@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Illuminate\Contracts\Container\Container;
 use Simtabi\Laranail\SIS\Contract\Registrar;
+use Illuminate\Contracts\Container\Container;
 
 /**
  * Assembles the registrar decorator stack from config. The documented order is the default, not a law — a

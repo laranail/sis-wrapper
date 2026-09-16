@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use Simtabi\Laranail\SIS\Authorization\ConfigRoleResolver;
-use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
-use Simtabi\Laranail\SIS\Authorization\GateResolver;
-use Simtabi\Laranail\SIS\Authorization\SpatiePermissionResolver;
-use Simtabi\Laranail\SIS\Registrar\AuthorizingRegistrar;
-use Simtabi\Laranail\SIS\Registrar\ConstraintTranslatingRegistrar;
-use Simtabi\Laranail\SIS\Registrar\EloquentRegistrar;
-use Simtabi\Laranail\SIS\Registrar\LoggingRegistrar;
-use Simtabi\Laranail\SIS\Registrar\OutboxRelayingRegistrar;
-use Simtabi\Laranail\SIS\Registrar\SerializingRegistrar;
-use Simtabi\Laranail\SIS\Registrar\TransactionalRegistrar;
 use Simtabi\SIS\Enums\Environment;
+use Simtabi\Laranail\SIS\Authorization\GateResolver;
+use Simtabi\Laranail\SIS\Registrar\LoggingRegistrar;
+use Simtabi\Laranail\SIS\Registrar\EloquentRegistrar;
+use Simtabi\Laranail\SIS\Authorization\DenyAllResolver;
+use Simtabi\Laranail\SIS\Registrar\AuthorizingRegistrar;
+use Simtabi\Laranail\SIS\Registrar\SerializingRegistrar;
+use Simtabi\Laranail\SIS\Authorization\ConfigRoleResolver;
+use Simtabi\Laranail\SIS\Registrar\TransactionalRegistrar;
+use Simtabi\Laranail\SIS\Registrar\OutboxRelayingRegistrar;
+use Simtabi\Laranail\SIS\Authorization\SpatiePermissionResolver;
+use Simtabi\Laranail\SIS\Registrar\ConstraintTranslatingRegistrar;
 
 return [
 
@@ -99,12 +99,12 @@ return [
     | the SDK's Environment enum, so a consumer never has to list every alias.
     */
     'environments' => [
-        'test' => 'TST',
+        'test'        => 'TST',
         'development' => 'DEV',
-        'support' => 'SPT',
-        'training' => 'TRN',
-        'staging' => 'STG',
-        'production' => 'PRD',
+        'support'     => 'SPT',
+        'training'    => 'TRN',
+        'staging'     => 'STG',
+        'production'  => 'PRD',
     ],
 
     /*
@@ -118,7 +118,7 @@ return [
     */
     'database' => [
         'connection' => env('SIS_DB_CONNECTION'),
-        'prefix' => env('SIS_DB_PREFIX', 'sis_'),
+        'prefix'     => env('SIS_DB_PREFIX', 'sis_'),
     ],
 
     /*
@@ -169,7 +169,7 @@ return [
     | (`Simtabi\SIS\Identifier`), not a swappable in-package strategy class.
     */
     'aliases' => [
-        'grammar' => ['min' => 4, 'max' => 6],
+        'grammar'  => ['min' => 4, 'max' => 6],
         'reserved' => [
             'SIMT', 'PROS', 'TEST', 'NULL', 'VOID', 'TEMP',
             'DEMO', 'NONE', 'ADMIN', 'ROOT', 'SYST',
@@ -187,9 +187,9 @@ return [
                 'INDUSTRIES', 'INTERNATIONAL', 'GLOBAL', 'AND',
             ],
             'padding' => 'X',
-            'vowels' => ['A', 'E', 'I', 'O', 'U'],
-            'min' => 4,
-            'max' => 6,
+            'vowels'  => ['A', 'E', 'I', 'O', 'U'],
+            'min'     => 4,
+            'max'     => 6,
         ],
     ],
 
@@ -205,11 +205,11 @@ return [
     | come from the class register; 'start_overrides' is rarely needed.
     */
     'serials' => [
-        'global_start' => 100001,
-        'scoped_start' => 1,
-        'min_width' => 6,
-        'max_width' => 9,
-        'default_width' => 6,
+        'global_start'    => 100001,
+        'scoped_start'    => 1,
+        'min_width'       => 6,
+        'max_width'       => 9,
+        'default_width'   => 6,
         'start_overrides' => [
             // 'INV' => 1000,
         ],
@@ -232,8 +232,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'cache' => [
-        'store' => env('SIS_CACHE_STORE'),
-        'ttl' => 3600,
+        'store'  => env('SIS_CACHE_STORE'),
+        'ttl'    => 3600,
         'prefix' => 'sis',
     ],
 
@@ -245,7 +245,7 @@ return [
     */
     'queue' => [
         'connection' => env('SIS_QUEUE_CONNECTION'),
-        'queue' => env('SIS_QUEUE', 'sis'),
+        'queue'      => env('SIS_QUEUE', 'sis'),
     ],
 
     /*
@@ -260,12 +260,12 @@ return [
     | schedule off without touching the lock driver.
     */
     'schedule' => [
-        'enabled' => filter_var(env('SIS_SCHEDULE_ENABLED', true), FILTER_VALIDATE_BOOL),
-        'relay_outbox' => ['enabled' => true, 'cron' => '* * * * *'],
-        'reap_lapsed' => ['enabled' => true, 'cron' => '0 * * * *'],
-        'report_capacity' => ['enabled' => true, 'cron' => '0 6 * * *'],
-        'verify_integrity' => ['enabled' => true, 'cron' => '0 3 * * 0'],
-        'detect_orphans' => ['enabled' => true, 'cron' => '0 4 * * 0'],
+        'enabled'           => filter_var(env('SIS_SCHEDULE_ENABLED', true), FILTER_VALIDATE_BOOL),
+        'relay_outbox'      => ['enabled' => true, 'cron' => '* * * * *'],
+        'reap_lapsed'       => ['enabled' => true, 'cron' => '0 * * * *'],
+        'report_capacity'   => ['enabled' => true, 'cron' => '0 6 * * *'],
+        'verify_integrity'  => ['enabled' => true, 'cron' => '0 3 * * 0'],
+        'detect_orphans'    => ['enabled' => true, 'cron' => '0 4 * * 0'],
         'prune_idempotency' => ['enabled' => true, 'cron' => '30 3 * * *'],
     ],
 
@@ -277,9 +277,9 @@ return [
     | is degradable and per-channel: a dead Slack hook never suppresses email.
     */
     'notifications' => [
-        'enabled' => false,
+        'enabled'   => false,
         'recipient' => env('SIS_NOTIFY_TO'),
-        'channels' => ['mail'],
+        'channels'  => ['mail'],
     ],
 
     /*
@@ -292,14 +292,14 @@ return [
     | redirects. An outbound client a user can aim is a proxy into your VPC.
     */
     'webhooks' => [
-        'enabled' => false,
-        'timeout' => 5,
-        'follow_redirects' => false,
-        'verify_tls' => true,
-        'allowlist' => [],
+        'enabled'              => false,
+        'timeout'              => 5,
+        'follow_redirects'     => false,
+        'verify_tls'           => true,
+        'allowlist'            => [],
         'block_private_ranges' => true,
-        'max_attempts' => 5,
-        'signature_tolerance' => 300,
+        'max_attempts'         => 5,
+        'signature_tolerance'  => 300,
     ],
 
     /*
@@ -321,11 +321,11 @@ return [
     | consumer's — default auth:sanctum if present, deny otherwise.
     */
     'api' => [
-        'enabled' => false,
-        'prefix' => 'api/sis/v1',
-        'middleware' => ['api'],
+        'enabled'         => false,
+        'prefix'          => 'api/sis/v1',
+        'middleware'      => ['api'],
         'auth_middleware' => ['auth:sanctum'],
-        'rate_limit' => '60,1',
+        'rate_limit'      => '60,1',
     ],
 
     /*
@@ -337,11 +337,11 @@ return [
     | or bypass can make an illegal operation legal.
     */
     'authorization' => [
-        'resolver' => DenyAllResolver::class,
+        'resolver'  => DenyAllResolver::class,
         'resolvers' => [
-            'deny-all' => DenyAllResolver::class,
-            'gate' => GateResolver::class,
-            'spatie' => SpatiePermissionResolver::class,
+            'deny-all'     => DenyAllResolver::class,
+            'gate'         => GateResolver::class,
+            'spatie'       => SpatiePermissionResolver::class,
             'config-roles' => ConfigRoleResolver::class,
         ],
         'config_roles' => [

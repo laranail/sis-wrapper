@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Jobs;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Date;
+use Simtabi\SIS\Enums\LifecycleState;
+use Simtabi\Laranail\SIS\Models\SisRecord;
+use Simtabi\Laranail\SIS\Data\CommandContext;
 use Simtabi\Laranail\SIS\Actions\VoidReservation;
 use Simtabi\Laranail\SIS\Authorization\ActorResolver;
-use Simtabi\Laranail\SIS\Data\CommandContext;
-use Simtabi\Laranail\SIS\Models\SisRecord;
-use Simtabi\SIS\Enums\LifecycleState;
 
 /**
  * Voids reservations that passed their expiry and were never claimed (§6.5). It only ever touches RESERVED

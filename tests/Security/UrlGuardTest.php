@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Security;
 
 use PHPUnit\Framework\TestCase;
-use Simtabi\Laranail\SIS\Exception\BlockedUrlException;
 use Simtabi\Laranail\SIS\Security\UrlGuard;
+use Simtabi\Laranail\SIS\Exception\BlockedUrlException;
 
 /** The SSRF guard, tested with IP literals so no DNS is needed. */
 final class UrlGuardTest extends TestCase

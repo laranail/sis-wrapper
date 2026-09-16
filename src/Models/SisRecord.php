@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Models;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\Config;
-use Simtabi\Laranail\SIS\Database\Factories\SisRecordFactory;
+use Simtabi\SIS\Enums\SimClass;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\LifecycleState;
-use Simtabi\SIS\Enums\SimClass;
+use Illuminate\Support\Facades\Config;
 use Simtabi\SIS\Identifier\Identifier;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Simtabi\Laranail\SIS\Database\Factories\SisRecordFactory;
 
 /**
  * A row in the register (§9). It has NO mass-assignable attributes: every write goes through the
@@ -57,7 +57,7 @@ final class SisRecord extends Model
 
     public function getTable(): string
     {
-        return Config::string('sis.database.prefix', 'sis_').'register';
+        return Config::string('sis.database.prefix', 'sis_') . 'register';
     }
 
     public function getConnectionName(): ?string
@@ -119,11 +119,11 @@ final class SisRecord extends Model
         return [
             // The class is a bare code string, not the SIM enum — the register is profile-driven and may
             // hold a consuming company's own class codes, which are not SimClass cases.
-            'state' => LifecycleState::class,
-            'serial' => 'integer',
-            'reserved_at' => 'immutable_datetime',
-            'expires_at' => 'immutable_datetime',
-            'commissioned_at' => 'immutable_datetime',
+            'state'             => LifecycleState::class,
+            'serial'            => 'integer',
+            'reserved_at'       => 'immutable_datetime',
+            'expires_at'        => 'immutable_datetime',
+            'commissioned_at'   => 'immutable_datetime',
             'decommissioned_at' => 'immutable_datetime',
         ];
     }

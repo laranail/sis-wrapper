@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Tests\Database;
 
 use DateTimeImmutable;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Schema;
+use Simtabi\SIS\Enums\SimClass;
 use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
-use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
-use Simtabi\Laranail\SIS\Contract\Registrar;
-use Simtabi\Laranail\SIS\Data\CommissionData;
-use Simtabi\Laranail\SIS\Data\ReserveData;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
-use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\SIS\Identifier\Actor;
 use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\SIS\Enums\LifecycleState;
-use Simtabi\SIS\Enums\SimClass;
-use Simtabi\SIS\Identifier\Actor;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Schema;
+use Simtabi\Laranail\SIS\Data\ReserveData;
+use Simtabi\Laranail\SIS\Contract\Registrar;
+use Simtabi\Laranail\SIS\Data\CommissionData;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\Laranail\SIS\Testing\AllowAllResolver;
+use Simtabi\Laranail\SIS\Actions\ReserveIdentifier;
+use Simtabi\Laranail\SIS\Actions\CommissionIdentifier;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
 
 /**
  * Proves the single merged migration builds the whole schema — every table, and every register column and
@@ -34,7 +34,7 @@ final class SchemaTest extends TestCase
     public function test_every_table_is_built(): void
     {
         foreach (['register', 'serials', 'audit', 'outbox', 'idempotency_keys', 'morph_aliases', 'webhook_endpoints'] as $table) {
-            self::assertTrue(Schema::hasTable('sis_'.$table), "sis_{$table} should exist");
+            self::assertTrue(Schema::hasTable('sis_' . $table), "sis_{$table} should exist");
         }
     }
 
@@ -98,7 +98,7 @@ final class SchemaTest extends TestCase
 
         $this->assertDatabaseHas('sis_register', [
             'identifier' => (string) $identifier,
-            'state' => LifecycleState::Commissioned->value,
+            'state'      => LifecycleState::Commissioned->value,
         ]);
     }
 

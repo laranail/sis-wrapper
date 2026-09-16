@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Simtabi\Laranail\SIS\Read\SisReadModel;
 use Simtabi\Laranail\SIS\Actions\ResolveAlias;
 use Simtabi\Laranail\SIS\Http\Resources\IdentifierResource;
-use Simtabi\Laranail\SIS\Read\SisReadModel;
 
 /** GET aliases/{alias} — resolve a mnemonic alias (ADIQ, MALISA) to its canonical identifier record (§5). */
 final class ResolveAliasController

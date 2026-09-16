@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Tests\Webhooks;
 
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\TestCase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
-use Orchestra\Testbench\TestCase;
-use Simtabi\Laranail\SIS\Contract\WebhookDispatcher;
-use Simtabi\Laranail\SIS\Enums\CircuitState;
-use Simtabi\Laranail\SIS\Events\WebhookEndpointCircuitOpened;
-use Simtabi\Laranail\SIS\Exception\BlockedUrlException;
-use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
-use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Foundation\Application;
 use Simtabi\Laranail\SIS\Security\UrlGuard;
-use Simtabi\Laranail\SIS\Webhooks\CircuitBreaker;
-use Simtabi\Laranail\SIS\Webhooks\HttpWebhookDispatcher;
+use Simtabi\Laranail\SIS\Enums\CircuitState;
 use Simtabi\Laranail\SIS\Webhooks\WebhookSigner;
+use Simtabi\Laranail\SIS\Webhooks\CircuitBreaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Simtabi\Laranail\SIS\Models\SisWebhookEndpoint;
+use Simtabi\Laranail\SIS\Contract\WebhookDispatcher;
+use Simtabi\Laranail\SIS\Providers\SisServiceProvider;
+use Simtabi\Laranail\SIS\Exception\BlockedUrlException;
+use Simtabi\Laranail\SIS\Webhooks\HttpWebhookDispatcher;
+use Simtabi\Laranail\SIS\Events\WebhookEndpointCircuitOpened;
 
 /** Webhook delivery (§2.13): constant-time signatures, an SSRF-guarded transport, and a per-endpoint circuit. */
 final class WebhooksTest extends TestCase
@@ -87,9 +87,9 @@ final class WebhooksTest extends TestCase
         // still-open row, then race to probe — only the ONE that atomically flips open -> half_open is allowed.
         $endpoint = $this->endpoint();
         $endpoint->forceFill([
-            'circuit_state' => CircuitState::Open,
+            'circuit_state'     => CircuitState::Open,
             'circuit_opened_at' => Date::now()->subMinutes(10),
-            'failures' => 5,
+            'failures'          => 5,
         ])->save();
 
         $breaker = new CircuitBreaker(threshold: 5, cooldownSeconds: 300);
@@ -178,14 +178,14 @@ final class WebhooksTest extends TestCase
     protected function defineEnvironment($app): void
     {
         // The endpoint secret is encrypted at rest, so the cipher needs a key.
-        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+        $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
     }
 
     /** @param array<string, mixed> $overrides */
     private function endpoint(array $overrides = []): SisWebhookEndpoint
     {
         return SisWebhookEndpoint::query()->create([
-            'url' => 'https://hooks.example.com/sis',
+            'url'    => 'https://hooks.example.com/sis',
             'secret' => 'shhh',
             'events' => ['identifier.commissioned'],
             'active' => true,

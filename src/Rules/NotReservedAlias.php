@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\SIS\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Simtabi\SIS\Contract\SisEngine;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 /** Rejects the reserved aliases (§5.3), read from the core list — never a hard-coded array here. */
 final class NotReservedAlias implements ValidationRule

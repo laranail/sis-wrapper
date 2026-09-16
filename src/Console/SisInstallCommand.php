@@ -31,6 +31,6 @@ final class SisInstallCommand extends Command
         $this->call('vendor:publish', ['--tag' => 'laranail::sis-wrapper-migrations', '--force' => $force]);
         $this->call('migrate');
 
-        return $this->call('sis:doctor');
+        return $this->call('laranail::sis-wrapper.doctor');
     }
 }

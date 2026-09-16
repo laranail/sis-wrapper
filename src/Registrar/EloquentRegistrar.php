@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
+use Simtabi\SIS\Contract\Command;
+use Simtabi\SIS\Decision\Decision;
+use Simtabi\SIS\Contract\SisEngine;
 use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\Laranail\SIS\Outbox\OutboxStore;
 use Simtabi\Laranail\SIS\Services\SnapshotBuilder;
-use Simtabi\SIS\Contract\Command;
-use Simtabi\SIS\Contract\SisEngine;
-use Simtabi\SIS\Decision\Decision;
 
 /**
  * The innermost registrar: load the snapshot, run the pure decider, apply its effects. It performs no

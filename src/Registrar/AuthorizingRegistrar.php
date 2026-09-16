@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\SIS\Registrar;
 
-use Simtabi\Laranail\SIS\Authorization\Authorizer;
-use Simtabi\Laranail\SIS\Contract\Registrar;
 use Simtabi\SIS\Contract\Command;
 use Simtabi\SIS\Decision\Decision;
+use Simtabi\Laranail\SIS\Contract\Registrar;
+use Simtabi\Laranail\SIS\Authorization\Authorizer;
 
 /**
  * Authorizes the command before the decider runs. Every write path goes through here — a test asserts no
