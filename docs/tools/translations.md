@@ -9,7 +9,7 @@ The strings live in `resources/lang/en/` and load under the `laranail-sis-wrappe
 | Surface | File · group | Example key |
 |---------|--------------|-------------|
 | Validation rule messages (the 10 `Rules/*`) | `validation.php` | `laranail-sis-wrapper::validation.invalid_identifier` |
-| Console output (`sis:install`, `sis:doctor`, `sis:permissions`) | `messages.php` · `commands.*` | `laranail-sis-wrapper::messages.commands.doctor.schema_present` |
+| Console output (`laranail::sis-wrapper.install`, `laranail::sis-wrapper.doctor`, `laranail::sis-wrapper.permissions`) | `messages.php` · `commands.*` | `laranail-sis-wrapper::messages.commands.doctor.schema_present` |
 | The serial-capacity notification | `messages.php` · `notifications.serial_capacity` | `laranail-sis-wrapper::messages.notifications.serial_capacity.advice` |
 | RFC 9457 problem titles | `messages.php` · `problem` | `laranail-sis-wrapper::messages.problem.409` |
 
@@ -27,7 +27,7 @@ Publish the English files, then edit them or add a sibling locale directory:
 php artisan vendor:publish --tag=laranail::sis-wrapper-translations
 ```
 
-They land in `lang/vendor/sis/en/{validation,messages}.php`. A published key overrides the packaged one; an unpublished key falls through to the package default, so you only copy what you change. Add `lang/vendor/sis/{locale}/…` for another language — the active locale (`app()->getLocale()`) selects the file. Translations are opt-in overrides and are **not** published by `sis:install`; publish them only when you want to customise.
+They land in `lang/vendor/sis/en/{validation,messages}.php`. A published key overrides the packaged one; an unpublished key falls through to the package default, so you only copy what you change. Add `lang/vendor/sis/{locale}/…` for another language — the active locale (`app()->getLocale()`) selects the file. Translations are opt-in overrides and are **not** published by `laranail::sis-wrapper.install`; publish them only when you want to customise.
 
 ---
 

@@ -1,6 +1,6 @@
 # Configuration
 
-Every section of `config/sis.php`, published by `sis:install`.
+Every section of `config/sis.php`, published by `laranail::sis-wrapper.install`.
 
 Nothing is hard-coded to Simtabi. The whole SIS vocabulary — the issuer prefix, the segment separator, the class register, the alias grammar, and the serial policy — lives in `config/sis.php` as data, so another company runs the standard for itself by editing values, never by touching the engine.
 
@@ -146,7 +146,7 @@ Serial widths are 6 to 9 digits — widening is always safe, narrowing is forbid
 ],
 ```
 
-Reserving burns a serial permanently, so warning before a space is gone is a real safety control. Drives `sis:doctor`, the `GET /health` probe, and the capacity notification.
+Reserving burns a serial permanently, so warning before a space is gone is a real safety control. Drives `laranail::sis-wrapper.doctor`, the `GET /health` probe, and the capacity notification.
 
 ## Cache & queue
 

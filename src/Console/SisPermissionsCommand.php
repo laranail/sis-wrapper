@@ -22,9 +22,6 @@ final class SisPermissionsCommand extends Command
 {
     use SupportsNamespacedNames;
 
-    /** @var list<string> */
-    protected array $commandAliases = ['sis:permissions'];
-
     protected $signature = 'laranail::sis-wrapper.permissions {--actor= : Check an actor, given as type:id (e.g. user:1)}';
 
     protected $description = 'List SIS abilities, the current resolver, and what an actor can do.';

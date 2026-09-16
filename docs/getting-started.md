@@ -71,7 +71,7 @@ Sis::aliasCandidates('AdelsaIQ LLC');      // ranked: ADIQ, ADEL, ...
 
 ## From the console
 
-The register API is the same from a queued job, a seeder, or Tinker — because every path funnels through the same actions and registrar stack. See [the Artisan commands](tools/console.md) for the operational commands (`sis:doctor`, `sis:permissions`, `sis:install`).
+The register API is the same from a queued job, a seeder, or Tinker — because every path funnels through the same actions and registrar stack. See [the Artisan commands](tools/console.md) for the operational commands (`laranail::sis-wrapper.doctor`, `laranail::sis-wrapper.permissions`, `laranail::sis-wrapper.install`).
 
 ## Over HTTP
 

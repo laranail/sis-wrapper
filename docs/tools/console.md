@@ -6,9 +6,9 @@ both dispatch to the same command.
 
 | Canonical name | Short alias |
 |----------------|-------------|
-| `laranail::sis-wrapper.install` | `sis:install` |
-| `laranail::sis-wrapper.doctor` | `sis:doctor` |
-| `laranail::sis-wrapper.permissions` | `sis:permissions` |
+| `laranail::sis-wrapper.install` | `laranail::sis-wrapper.install` |
+| `laranail::sis-wrapper.doctor` | `laranail::sis-wrapper.doctor` |
+| `laranail::sis-wrapper.permissions` | `laranail::sis-wrapper.permissions` |
 
 > The `::` in the canonical name carries an empty namespace segment that Symfony's validator would normally
 > reject; the `SupportsNamespacedNames` trait from `laranail/console` writes it past the validator, and the
@@ -16,18 +16,18 @@ both dispatch to the same command.
 
 The examples below use the short alias; the canonical name works identically.
 
-## `sis:install`
+## `laranail::sis-wrapper.install`
 
 Publishes config and migrations, runs the migrations, and finishes by running the doctor — the one-liner after `composer require`.
 
 ```bash
-php artisan sis:install
-php artisan sis:install --force     # overwrite already-published config/migrations
+php artisan laranail::sis-wrapper.install
+php artisan laranail::sis-wrapper.install --force     # overwrite already-published config/migrations
 ```
 
-It runs, in order: `vendor:publish --tag=laranail::sis-wrapper-config`, `vendor:publish --tag=laranail::sis-wrapper-migrations`, `migrate`, then `sis:doctor` (whose exit code becomes the install's). Zero required config to start. It does not publish the language files — do that opt-in with `vendor:publish --tag=laranail::sis-wrapper-translations` when you want to [localise the output](translations.md).
+It runs, in order: `vendor:publish --tag=laranail::sis-wrapper-config`, `vendor:publish --tag=laranail::sis-wrapper-migrations`, `migrate`, then `laranail::sis-wrapper.doctor` (whose exit code becomes the install's). Zero required config to start. It does not publish the language files — do that opt-in with `vendor:publish --tag=laranail::sis-wrapper-translations` when you want to [localise the output](translations.md).
 
-## `sis:doctor`
+## `laranail::sis-wrapper.doctor`
 
 The health check — the first thing to run when something is wrong, and the spine of the runbook. It reports each check as `[OK]` / `[WARN]` / `[FAIL]` and exits non-zero if any check is a hard failure.
 
@@ -42,18 +42,18 @@ The health check — the first thing to run when something is wrong, and the spi
 | 7 | Admin panels detected (informational) | OK — reports which panels the register presenter can bind to, or "headless" |
 
 ```bash
-php artisan sis:doctor
+php artisan laranail::sis-wrapper.doctor
 ```
 
 A hard failure (missing schema, corrupt identifiers, unresolvable morphs) exits `FAILURE`; warnings alone exit `SUCCESS`.
 
-## `sis:permissions`
+## `laranail::sis-wrapper.permissions`
 
 Lists the ability set and the configured resolver, and — with `--actor` — exactly what an actor may do. Run this when "it says 403 and I don't know why".
 
 ```bash
-php artisan sis:permissions                    # ability list + current resolver
-php artisan sis:permissions --actor=user:1     # per-ability [allow]/[deny] for user:1
+php artisan laranail::sis-wrapper.permissions                    # ability list + current resolver
+php artisan laranail::sis-wrapper.permissions --actor=user:1     # per-ability [allow]/[deny] for user:1
 ```
 
 Without `--actor`, each ability is listed with its label and a one-line description of what it governs and how dangerous it is (`Reserve`, which burns a serial, is called out as the ability to grant most sparingly) — sourced from the `#[Label]`/`#[Description]` attributes on `SisAbility` via `laranail/enumerator`. With `--actor` (a `type:id` value such as `user:1`), each of the fourteen `SisAbility` values is checked against the resolver and printed `[allow]` or `[deny]`. See [authorization](authorization.md).

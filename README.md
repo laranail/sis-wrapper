@@ -13,10 +13,10 @@ Requires PHP `^8.5`, Laravel `^13.0`, and `simtabi/sis-sdk ^0.1`. Headless by de
 
 ```bash
 composer require laranail/sis-wrapper
-php artisan sis:install     # publishes config + migrations, migrates, runs the doctor
+php artisan laranail::sis-wrapper.install     # publishes config + migrations, migrates, runs the doctor
 ```
 
-`sis:install` needs zero configuration to start; everything is configurable when you need it. The HTTP API and webhooks are off by default (opt in via `config/sis.php`). The package registers a single `SisServiceProvider` (built on `laranail/package-tools`) which binds the config-driven `simtabi/sis-sdk` engine and the register schema.
+`laranail::sis-wrapper.install` needs zero configuration to start; everything is configurable when you need it. The HTTP API and webhooks are off by default (opt in via `config/sis.php`). The package registers a single `SisServiceProvider` (built on `laranail/package-tools`) which binds the config-driven `simtabi/sis-sdk` engine and the register schema.
 
 ## Quick start
 
@@ -82,7 +82,7 @@ Hosted docs: **https://opensource.simtabi.com/documentation/laranail/sis-wrapper
 
 ### Guides
 
-- [Installation](docs/installation.md) — requirements, `sis:install`, drivers.
+- [Installation](docs/installation.md) — requirements, `laranail::sis-wrapper.install`, drivers.
 - [Getting started](docs/getting-started.md) — reserve, commission, and query your first identifier.
 - [Configuration](docs/configuration.md) — every `config/sis.php` section.
 - [Architecture](docs/architecture.md) — functional core / imperative shell, the decider pattern, the registrar stack.
@@ -129,7 +129,7 @@ composer test           # the Laravel testsuite (Orchestra Testbench)
 composer quality        # lint · pint · deptrac · phpstan · phpunit
 ```
 
-PostgreSQL is the reference production driver (its triggers enforce the §6.4 storage-layer immutability guarantee); MySQL 8 is supported with an equivalent trigger; SQLite is for tests only and cannot enforce it — `sis:doctor` reports the reduced protection.
+PostgreSQL is the reference production driver (its triggers enforce the §6.4 storage-layer immutability guarantee); MySQL 8 is supported with an equivalent trigger; SQLite is for tests only and cannot enforce it — `laranail::sis-wrapper.doctor` reports the reduced protection.
 
 ## Sister packages
 

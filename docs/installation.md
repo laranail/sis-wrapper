@@ -24,19 +24,19 @@ Because `laranail/*` packages resolve through git VCS repositories rather than P
 ## Run the installer
 
 ```bash
-php artisan sis:install
+php artisan laranail::sis-wrapper.install
 ```
 
-`sis:install` publishes the config and migrations, runs `migrate`, and finishes by running `sis:doctor`. Pass `--force` to overwrite already-published files. The steps individually:
+`laranail::sis-wrapper.install` publishes the config and migrations, runs `migrate`, and finishes by running `laranail::sis-wrapper.doctor`. Pass `--force` to overwrite already-published files. The steps individually:
 
 ```bash
 php artisan vendor:publish --tag=laranail::sis-wrapper-config      # config/sis.php
 php artisan vendor:publish --tag=laranail::sis-wrapper-migrations  # 0001_create_sis_schema.php
 php artisan migrate
-php artisan sis:doctor                           # health check
+php artisan laranail::sis-wrapper.doctor                           # health check
 ```
 
-The `laranail::sis-wrapper-translations` tag publishes the language files for [localising or rewording](tools/translations.md) the package's output. It is opt-in — `sis:install` does not publish it.
+The `laranail::sis-wrapper-translations` tag publishes the language files for [localising or rewording](tools/translations.md) the package's output. It is opt-in — `laranail::sis-wrapper.install` does not publish it.
 
 The whole storage layer ships as a single migration, `0001_create_sis_schema.php`, which builds all seven tables (`register`, `serials`, `audit`, `outbox`, `idempotency_keys`, `morph_aliases`, `webhook_endpoints`) with their profile-generated `CHECK` constraints and immutability triggers in dependency order.
 
@@ -60,14 +60,14 @@ The register's §6.4 immutability guarantee — a commissioned identifier can ne
 | MySQL 8 / MariaDB | Equivalent triggers + `CHECK` | Production |
 | SQLite | Not enforceable (`ALTER TABLE ADD CONSTRAINT` unsupported) | Tests only |
 
-`sis:doctor` loudly reports the reduced protection on a driver that cannot enforce the triggers. Never run SIS on SQLite in production.
+`laranail::sis-wrapper.doctor` loudly reports the reduced protection on a driver that cannot enforce the triggers. Never run SIS on SQLite in production.
 
 The register may use its own connection and table prefix — see [configuration](configuration.md).
 
 ## Verify
 
 ```bash
-php artisan sis:doctor
+php artisan laranail::sis-wrapper.doctor
 ```
 
 A healthy install reports `[OK]` for the schema, the storage-layer triggers, check-character integrity, morph resolvability, the outbox, and capacity headroom.
