@@ -24,7 +24,7 @@ jobs:
       # `composer require illuminate/contracts` and REWRITES composer.json, so
       # the suite would test a manifest this package does not ship. Remove this
       # line only once that default is ["*"].
-      laravel-versions: '[\"*\"]'
+      laravel-versions: '["*"]'
       # This package runs its suite through `composer test`, not the pest binary
       # directly -- sis-wrapper maps it to phpunit, error-pages to pest --no-coverage.
       test-command: 'composer test'
