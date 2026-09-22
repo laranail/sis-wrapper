@@ -4,7 +4,7 @@
 [![Static analysis](https://img.shields.io/github/actions/workflow/status/laranail/sis-wrapper/static-analysis.yml?branch=main&label=phpstan&style=flat-square)](https://github.com/laranail/sis-wrapper/actions)
 [![License MIT](https://img.shields.io/packagist/l/laranail/sis-wrapper.svg?style=flat-square)](LICENSE)
 
-`laranail/sis-wrapper` is not published to Packagist, so there is no registry-version badge to show — see [Install](#install).
+`laranail/sis-wrapper` is not published to Packagist, so there is no registry-version badge to show: see [Install](#install).
 
 > The Laravel 13 binding for the Simtabi Identifier System: an immutable, append-only register with storage-layer immutability triggers, enforced polymorphic morphs, actions and services, a transactional outbox, deny-by-default pluggable RBAC, and a headless JSON API. Consumes `simtabi/sis-sdk`.
 
